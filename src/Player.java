@@ -1,28 +1,30 @@
 public class Player {
 
+    // Members
     private LocationComponent _location;
     private CurrencyComponent _currency;
     private ActingRole _role;
-    private static int _id = 1;
+    private static int _ID = 1;
     private int _personalId;
     private int _score;
     private int _currentRank;
 
+    // Constructors
     private Player()
     {
         Set_PersonalId(Get_Id());
-        _id++;
+        _ID++;
         Set_CurrentRank(1);
     }
 
     private Player(int startingRank)
     {
         Set_PersonalId(Get_Id());
-        _id++;
+        _ID++;
         Set_CurrentRank(startingRank);
     }
 
-    //setter start
+    // Setter start
     public void Set_Currency(CurrencyComponent _currency) {
         this._currency = _currency;
     }
@@ -47,7 +49,7 @@ public class Player {
         this._score = _score;
     }
 
-    //getter start
+    // Getter start
     public CurrencyComponent Get_Currency() {
         return _currency;
     }
@@ -73,12 +75,13 @@ public class Player {
     }
 
     public int Get_Id() {
-        return _id;
+        return _ID;
     }
 
+    // Methods
     public boolean HasRole(ActingRole role)
     {
-        //need to implement a equality check in ActingRole
+        // need to implement a equality check in ActingRole
         return role == get_role();
     }
 
@@ -87,7 +90,7 @@ public class Player {
         return "Player{" +
                 "_location=" + _location +
                 ", _currency=" + _currency +
-                ", _id=" + _id +
+                ", _id=" + _ID +
                 ", _personalId='" + _personalId + '\'' +
                 ", _score=" + _score +
                 ", _currentRank=" + _currentRank +
