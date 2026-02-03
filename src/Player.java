@@ -8,13 +8,15 @@ public class Player {
     private int _score;
     private int _currentRank;
 
-    private Player(){
+    private Player()
+    {
         Set_PersonalId(Get_Id());
         _id++;
         Set_CurrentRank(1);
     }
 
-    private Player(int startingRank){
+    private Player(int startingRank)
+    {
         Set_PersonalId(Get_Id());
         _id++;
         Set_CurrentRank(startingRank);
@@ -74,14 +76,15 @@ public class Player {
         return _id;
     }
 
-    public boolean HasRole(ActingRole role){
-
+    public boolean HasRole(ActingRole role)
+    {
         //need to implement a equality check in ActingRole
         return role == get_role();
         return false;
     }
 
-    public String ToString() {
+    public String ToString()
+    {
         return "Player{" +
                 "_location=" + _location +
                 ", _currency=" + _currency +
