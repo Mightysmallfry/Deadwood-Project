@@ -80,7 +80,6 @@ public class Player {
     {
         //need to implement a equality check in ActingRole
         return role == get_role();
-        return false;
     }
 
     public String ToString()
