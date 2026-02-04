@@ -7,3 +7,4 @@
 - _privateMembersAreCamels
 - CONSTANTS_ARE_ALL_CAPS
 - _PRIVATE_CONSTANTS
+- parametersLikeCamels

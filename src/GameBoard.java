@@ -2,8 +2,8 @@ public class GameBoard {
 
     // Members
     private GameSet[] _gameSets;
-    private GameSet _startingGameSet;
-    private CastingSet _upgradeSet;
+    private GameSet _startingGameSet;   // Trailer Set
+    private CastingSet _upgradeSet;     // Casting Office Set
 
     // Constructors
     public GameBoard()

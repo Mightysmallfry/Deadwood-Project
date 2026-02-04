@@ -42,6 +42,10 @@ public class ActingRole {
         return _rank;
     }
 
+    public Area GetArea() {
+        return _area;
+    }
+
     public void SetName(String name) {
         _name = name;
     }
@@ -56,10 +60,6 @@ public class ActingRole {
 
     public void SetArea(Area area) {
         _area = area;
-    }
-
-    public Area GetArea() {
-        return _area;
     }
 
     public String ToString() {

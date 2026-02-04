@@ -44,4 +44,12 @@ public class Area {
         return _height;
     }
 
+    public String ToString() {
+        return "Area{" +
+                "_x=" + _x +
+                ", _y=" + _y +
+                ", _width=" + _width +
+                ", _height=" + _height +
+                '}';
+    }
 }

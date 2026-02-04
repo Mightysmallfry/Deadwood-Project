@@ -4,8 +4,8 @@ import java.util.Map;
 
 public class SceneCard {
     // Members
-    private int _difficulty;
     private boolean _visible;
+    private int _difficulty;
     private int _cardNumber;
 
     private String _name;
@@ -96,23 +96,24 @@ public class SceneCard {
                      String description, boolean visible, String imageName)
     {
         _difficulty = difficulty;
-        _cardNumber = cardNumber;
-        _visible = visible;
         _name = name;
+        _cardNumber = cardNumber;
         _description = description;
+        _visible = visible;
         _imageName = imageName;
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
     public SceneCard(int difficulty, String name, int cardNumber,
-                     String description, boolean visible, String imageName, ArrayList<ActingRole> roles)
+                     String description, boolean visible, String imageName,
+                     ArrayList<ActingRole> roles)
     {
         _difficulty = difficulty;
-        _cardNumber = cardNumber;
-        _visible = visible;
         _name = name;
+        _cardNumber = cardNumber;
         _description = description;
+        _visible = visible;
         _imageName = imageName;
         _roles = roles;
         _roleCatalog = new Hashtable<ActingRole, Player>();
@@ -148,10 +149,8 @@ public class SceneCard {
     public ArrayList<ActingRole> GetEmptyRoles()
     {
         ArrayList<ActingRole> emptyRoles = new ArrayList<ActingRole>();
-        for (ActingRole role : _roleCatalog.keySet())
-        {
-            if (_roleCatalog.get(role) == null)
-            {
+        for (ActingRole role : _roleCatalog.keySet()) {
+            if (_roleCatalog.get(role) == null) {
                 emptyRoles.add(role);
             }
         }
@@ -183,7 +182,6 @@ public class SceneCard {
     public void SetImageName(String imageName) {
         _imageName = imageName;
     }
-
 
     public String ToString() {
         return "SceneCard{" +
