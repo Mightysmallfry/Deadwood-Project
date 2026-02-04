@@ -43,14 +43,20 @@ public class GameManager {
 
     }
 
+    /**
+     * This makes sure that the player is rewarded after their turn and that the day is not over.
+     */
     private void UpdateGame()
     //This plays after the player is done with a turn, rewarding the player and checking if the day/game is over.
     {
 
     }
 
+    /**
+     * Gets called if there is only one scene card remaining UpdateGame.
+     * Removes SceneCards and Resets Shot Tokens
+     */
     private void EndDay()
-     //Gets called if there is only one scene card remaining UpdateGame. This removes the SceneCards from the GameSets.
     {
 
     }
@@ -60,30 +66,46 @@ public class GameManager {
         return(Get_PlayerLibrary().length);
     }
 
+    /**
+     * Checks the ammount of scene cards in play to know how many remain
+     * If there is one left returns True
+     * @return boolean
+     */
     public boolean IsEndDay()
     {
         return false;
     }
-    //Is there only 1 SceneCard left?
 
+    /**
+     * If there is only one card left from IsEndDay()
+     * compair day limit to current day, if they  are the same return true
+     * @return boolean
+     */
     public boolean IsEndGame()
     {
         return false;
     }
-    //Is it the last day?
 
+    /**
+     * Hmmmmm TBD
+     */
     public void BasicPay()
     //Pays the players after they are done acting (this is NOT the Scene end pay)
     {
 
     }
 
+    /**
+     * Runs through the list of players and Tallys their Score
+     * @param players
+     * @return int[] of player scores
+     */
     public int[] TallyScore(Player[] players)
-    //as the last day finishes this tallys the score and displays it before the Deadwood ends.
+    //as the last day finishes this tally's the score and displays it before the Deadwood ends.
     {
         int[] scores = new int[players.length];
 
-        //for each player we count up their points
+        //for each player calculate their score then retrieve it.
         for (int i = 0; i < players.length; i++)
         {
             Player p = players[i];
