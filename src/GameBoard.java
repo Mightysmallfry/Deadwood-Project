@@ -25,6 +25,7 @@ public class GameBoard {
 
     public void Populate()
      //This method places the game sets including Upgrade and Casting
+     //My understanding is that this just populates the sets and decides if they are Acting, the SceneCard will come into existence if a player steps on an acting scene.
     {
 
     }
