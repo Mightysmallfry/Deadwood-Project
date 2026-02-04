@@ -10,14 +10,14 @@ public class Player {
     private int _currentRank;
 
     // Constructors
-    private Player()
+    public Player()
     {
         Set_PersonalId(Get_Id());
         _ID++;
         Set_CurrentRank(1);
     }
 
-    private Player(int startingRank)
+    public Player(int startingRank)
     {
         Set_PersonalId(Get_Id());
         _ID++;
@@ -29,7 +29,7 @@ public class Player {
         this._currency = _currency;
     }
 
-    public void set_role(ActingRole _role) {
+    public void Set_Role(ActingRole _role) {
         this._role = _role;
     }
 
@@ -54,7 +54,7 @@ public class Player {
         return _currency;
     }
 
-    public ActingRole get_role() {
+    public ActingRole Get_Role() {
         return _role;
     }
 
@@ -62,7 +62,7 @@ public class Player {
         return _personalId;
     }
 
-    public int Get_GurrentRank() {
+    public int Get_CurrentRank() {
         return _currentRank;
     }
 
@@ -70,22 +70,20 @@ public class Player {
         return _score;
     }
 
-    public LocationComponent get_location() {
+    public LocationComponent Get_Location() {
         return _location;
     }
 
-    public int Get_Id() {
-        return _ID;
-    }
+    public int Get_Id() { return _ID; }
 
     // Methods
     public boolean HasRole(ActingRole role)
     {
         // need to implement a equality check in ActingRole
-        return role == get_role();
+        return _role != null && _role.equals(role);
     }
 
-    public String ToString()
+    private String ToString()
     {
         return "Player{" +
                 "_location=" + _location +
