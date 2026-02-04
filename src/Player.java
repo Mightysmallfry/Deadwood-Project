@@ -45,9 +45,14 @@ public class Player {
         this._currentRank = _currentRank;
     }
 
-    public void Set_Score(int _score) {
-        this._score = _score;
+    public void Set_Score()
+    {
+        CurrencyComponent currency = Get_Currency();
+        this._score = ((Get_CurrentRank() * 5) + currency.Get_Coins() + currency.Get_Credits());
     }
+
+    public void Set_Score(int _score){this._score = _score;}
+
 
     // Getter start
     public CurrencyComponent Get_Currency() {
@@ -83,7 +88,8 @@ public class Player {
         return _role != null && _role.equals(role);
     }
 
-    public String ToString()
+    @Override
+    public String toString()
     {
         return "Player{" +
                 "_location=" + _location +
