@@ -38,36 +38,48 @@ public class GameManager {
 
     // Methods
     private void UpdateRules()
+    //This is used after Deadwood asks for players to change the rules depending on the player number.
     {
 
     }
 
     private void UpdateGame()
+    //This plays after the player is done with a turn, rewarding the player and checking if the day/game is over.
     {
 
     }
 
     private void EndDay()
+     //Gets called if there is only one scene card remaining UpdateGame. This removes the SceneCards from the GameSets.
     {
 
     }
 
     public int GetPlayerCount()
     {
-        return(0); //Temp int so it will work
+        return(Get_PlayerLibrary().length);
     }
 
     public boolean IsEndDay()
     {
         return false;
     }
+    //Is there only 1 SceneCard left?
 
     public boolean IsEndGame()
     {
         return false;
     }
+    //Is there 1 SceneCard left, and it's the last day?
 
     public void BasicPay()
+    //Pays the players after they are done acting (this is NOT the Scene end pay)
+    {
+
+    }
+
+    public void TallyScore(Player[] players)
+    //as the last day finishes this tallys the score and displays it before the Deadwood ends.
     {
 
     }
