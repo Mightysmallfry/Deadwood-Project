@@ -1,15 +1,18 @@
 import java.util.ArrayList;
 
 public class GameSet {
-    private String _name;
-    private ArrayList<GameSet> _neighbors;
-    private ArrayList<Player> _players;
+    protected String _name;
+    protected ArrayList<GameSet> _neighbors;
+    protected ArrayList<Player> _players;
+
+    protected Area _area;
 
     public GameSet()
     {
         _name = "Test GameSet Name";
         _neighbors = new ArrayList<GameSet>();
         _players = new ArrayList<Player>();
+        _area = new Area();
     }
 
     public GameSet(String name)
@@ -17,6 +20,7 @@ public class GameSet {
         _name = name;
         _neighbors = new ArrayList<GameSet>();
         _players = new ArrayList<Player>();
+        _area = new Area();
     }
 
     public GameSet(String name, ArrayList<GameSet> neighbors)
@@ -24,7 +28,17 @@ public class GameSet {
         _name = name;
         _neighbors = neighbors;
         _players = new ArrayList<Player>();
+        _area = new Area();
     }
+
+    public GameSet(String name, ArrayList<GameSet> neighbors, Area area)
+    {
+        _name = name;
+        _neighbors = neighbors;
+        _players = new ArrayList<Player>();
+        _area = area;
+    }
+
 
     public void SetNeighbors(ArrayList<GameSet> neighbors) {
         _neighbors = neighbors;
@@ -42,6 +56,14 @@ public class GameSet {
         }
     }
 
+    public void RemoveNeighbor(GameSet neighbor) {
+        if (!_neighbors.contains(neighbor)) {
+            return;
+        }
+
+        _neighbors.remove(neighbor);
+    }
+
     public ArrayList<GameSet> GetNeighbors() {
         return _neighbors;
     }
@@ -50,8 +72,39 @@ public class GameSet {
         return _players;
     }
 
+    /**
+     * Adds player to the current set if they are not already present
+     * @param player
+     */
+    public void AddPlayer(Player player) {
+        if (!_players.contains(player))
+        {
+            _players.add(player);
+        }
+    }
+
+    public void RemovePlayer(Player player) {
+        if (!_players.contains(player)){
+            return;
+        }
+
+        _players.remove(player);
+    }
+
+    public void SetName(String name){
+        _name = name;
+    }
+
     public String GetName() {
         return _name;
+    }
+
+    public void SetArea(Area area) {
+        _area = area;
+    }
+
+    public Area GetArea() {
+        return _area;
     }
 
     public String ToString() {

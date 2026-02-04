@@ -3,19 +3,30 @@ public class ActingRole {
     // Members
     private String _name;    // Name of Role
     private String _line;    // Speaking Line
-
     private int _rank;       // Also called level
+
+    private Area _area;
 
     // Constructors
     public ActingRole(int rank, String name) {
         _rank = rank;
         _name = name;
+        _line = "";
+        _area = new Area();
     }
 
     public ActingRole(int rank, String name, String line) {
         _rank = rank;
         _name = name;
         _line = line;
+        _area = new Area();
+    }
+
+    public ActingRole(int rank, String name, String line, Area area) {
+        _rank = rank;
+        _name = name;
+        _line = line;
+        _area = area;
     }
 
     // Methods
@@ -41,6 +52,14 @@ public class ActingRole {
 
     public void SetRank(int rank) {
         _rank = rank;
+    }
+
+    public void SetArea(Area area) {
+        _area = area;
+    }
+
+    public Area GetArea() {
+        return _area;
     }
 
     public String ToString() {

@@ -6,9 +6,11 @@ public class SceneCard {
     // Members
     private int _difficulty;
     private boolean _visible;
+    private int _cardNumber;
 
     private String _name;
     private String _description;
+    private String _imageName;
 
     private ArrayList<ActingRole> _roles;
     private Map<ActingRole, Player> _roleCatalog;
@@ -17,9 +19,11 @@ public class SceneCard {
     public SceneCard()
     {
         _difficulty = 1;
+        _cardNumber = 0;
         _visible = false;
         _name = "Test Card";
         _description = "Descriptive description";
+        _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
@@ -27,9 +31,11 @@ public class SceneCard {
     public SceneCard(int difficulty)
     {
         _difficulty = difficulty;
+        _cardNumber = 0;
         _visible = false;
         _name = "Test Card";
         _description = "Descriptive description";
+        _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
@@ -37,38 +43,77 @@ public class SceneCard {
     public SceneCard(int difficulty, String name)
     {
         _difficulty = difficulty;
+        _cardNumber = 0;
         _visible = false;
         _name = name;
         _description = "Descriptive description";
+        _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
-    public SceneCard(int difficulty, String name, String description)
+
+    public SceneCard(int difficulty, String name, int cardNumber)
     {
         _difficulty = difficulty;
+        _cardNumber = cardNumber;
+        _visible = false;
+        _name = name;
+        _description = "Descriptive description";
+        _imageName = "";
+        _roles = new ArrayList<ActingRole>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
+    }
+
+
+    public SceneCard(int difficulty, String name, int cardNumber,
+                     String description)
+    {
+        _difficulty = difficulty;
+        _cardNumber = cardNumber;
         _visible = false;
         _name = name;
         _description = description;
+        _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
-    public SceneCard(int difficulty, String name, String description, boolean visible)
+    public SceneCard(int difficulty, String name, int cardNumber,
+                     String description, boolean visible)
     {
         _difficulty = difficulty;
+        _cardNumber = cardNumber;
         _visible = visible;
         _name = name;
         _description = description;
+        _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
-    public SceneCard(int difficulty, String name, String description, boolean visible, ArrayList<ActingRole> roles)
+
+    public SceneCard(int difficulty, String name, int cardNumber,
+                     String description, boolean visible, String imageName)
     {
         _difficulty = difficulty;
+        _cardNumber = cardNumber;
         _visible = visible;
         _name = name;
         _description = description;
+        _imageName = imageName;
+        _roles = new ArrayList<ActingRole>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
+    }
+
+    public SceneCard(int difficulty, String name, int cardNumber,
+                     String description, boolean visible, String imageName, ArrayList<ActingRole> roles)
+    {
+        _difficulty = difficulty;
+        _cardNumber = cardNumber;
+        _visible = visible;
+        _name = name;
+        _description = description;
+        _imageName = imageName;
         _roles = roles;
         _roleCatalog = new Hashtable<ActingRole, Player>();
 
@@ -125,6 +170,18 @@ public class SceneCard {
 
     public Map<ActingRole, Player> GetRoleCatalog(){
         return _roleCatalog;
+    }
+
+    public int GetCardNumber() {
+        return _cardNumber;
+    }
+
+    public String GetImageName() {
+        return _imageName;
+    }
+
+    public void SetImageName(String imageName) {
+        _imageName = imageName;
     }
 
 
