@@ -42,11 +42,9 @@ public class CurrencyComponent {
     }
 
     // Methods
-
-
-
+    
     @Override
-    public String toString() {
+    public String ToString() {
         return "Coins: " + Get_Coins() + ", Credits: " + Get_Credits();
     }
 }
