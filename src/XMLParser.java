@@ -84,10 +84,11 @@ public class XMLParser {
             // Get Card Details - scene details, roles
             NodeList cardDetails = card.getChildNodes();
 
+            // Within a card, we have a scene and parts
             for (int j = 0; j < cardDetails.getLength(); j++){
                 Node detail = cardDetails.item(j);
 
-                // If the detail is a scene, get number and description
+                // If the cardDetail is a scene, get number and description
                 // Then set it for the found card
                 if ("scene".equals(detail.getNodeName())) {
                     int sceneNumber = Integer.parseInt(detail.getAttributes().getNamedItem("number").getNodeValue());
@@ -97,15 +98,20 @@ public class XMLParser {
                     foundCard.SetDescription(sceneDescription);
                 }
 
-                // If the detail is an acting role, create and add it
+                // If the cardDetail is an acting role,
+                // create and add it to the foundCard def
                 if ("part".equals(detail.getNodeName())) {
+
+                    // Get Basic role - Name, Level
                     String roleName = detail.getAttributes().getNamedItem("role").getNodeValue();
-                    String roleQuote = detail.getAttributes().getNamedItem("line").getTextContent();
                     int roleRank = Integer.parseInt(detail.getAttributes().getNamedItem("level").getNodeValue());
+
+                    // Create for use in constructor
+                    String roleQuote  = "";
                     Area roleArea = new Area();
 
+                    // Dive into the role, getting - Area, Line
                     NodeList partDetails = detail.getChildNodes();
-
                     for (int k = 0; k < partDetails.getLength(); k++)
                     {
                         Node partDetail = partDetails.item(k);
@@ -118,14 +124,13 @@ public class XMLParser {
                                     Integer.parseInt(partDetail.getAttributes().getNamedItem("h").getNodeValue())
                             );
                         }
-
                         if ("line".equals(partDetail.getNodeName())){
                             roleQuote = partDetail.getTextContent();
                         }
-
-
                     }
 
+                    // Combine, construct and add
+                    // Our new Role to the card
                     foundCard.AddRole(new ActingRole(
                             roleRank,
                             roleName,
@@ -133,18 +138,16 @@ public class XMLParser {
                             roleArea
                     ));
                 }
-
             }
 
 
-            foundCards.set(i, new SceneCard(
-                    cardDifficulty,
-                    cardName));
-
-
+            // Add the card into the array of possible cards
+            foundCards.set(i, foundCard);
         }
-
         return foundCards;
     }
+
+
+
 
 }
