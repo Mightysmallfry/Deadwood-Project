@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Dictionary;
+import java.util.Map;
 
 public class SceneCard {
     // Members
@@ -11,7 +11,7 @@ public class SceneCard {
     private String _description;
 
     private ArrayList<ActingRole> _roles;
-    private Dictionary<ActingRole, Player> _roleDictionary;
+    private Map<ActingRole, Player> _roleCatalog;
 
     // Constructors
     public SceneCard()
@@ -21,7 +21,7 @@ public class SceneCard {
         _name = "Test Card";
         _description = "Descriptive description";
         _roles = new ArrayList<ActingRole>();
-        _roleDictionary = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
     public SceneCard(int difficulty)
@@ -31,7 +31,7 @@ public class SceneCard {
         _name = "Test Card";
         _description = "Descriptive description";
         _roles = new ArrayList<ActingRole>();
-        _roleDictionary = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
     public SceneCard(int difficulty, String name)
@@ -41,7 +41,7 @@ public class SceneCard {
         _name = name;
         _description = "Descriptive description";
         _roles = new ArrayList<ActingRole>();
-        _roleDictionary = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
     }
     public SceneCard(int difficulty, String name, String description)
     {
@@ -50,7 +50,7 @@ public class SceneCard {
         _name = name;
         _description = description;
         _roles = new ArrayList<ActingRole>();
-        _roleDictionary = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
     public SceneCard(int difficulty, String name, String description, boolean visible)
@@ -60,7 +60,7 @@ public class SceneCard {
         _name = name;
         _description = description;
         _roles = new ArrayList<ActingRole>();
-        _roleDictionary = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
     public SceneCard(int difficulty, String name, String description, boolean visible, ArrayList<ActingRole> roles)
@@ -70,11 +70,11 @@ public class SceneCard {
         _name = name;
         _description = description;
         _roles = roles;
-        _roleDictionary = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new Hashtable<ActingRole, Player>();
 
         for (ActingRole role : roles)
         {
-            _roleDictionary.put(role, null);
+            _roleCatalog.put(role, null);
         }
     }
 
@@ -103,9 +103,9 @@ public class SceneCard {
     public ArrayList<ActingRole> GetEmptyRoles()
     {
         ArrayList<ActingRole> emptyRoles = new ArrayList<ActingRole>();
-        for (ActingRole role : _roleDictionary)
+        for (ActingRole role : _roleCatalog.keySet())
         {
-            if (_roleDictionary.get(role) == null)
+            if (_roleCatalog.get(role) == null)
             {
                 emptyRoles.add(role);
             }
@@ -123,8 +123,8 @@ public class SceneCard {
         return _roles;
     }
 
-    public Dictionary<ActingRole, Player> GetRoleCatalog(){
-        return _roleDictionary;
+    public Map<ActingRole, Player> GetRoleCatalog(){
+        return _roleCatalog;
     }
 
 
@@ -135,7 +135,7 @@ public class SceneCard {
                 ", _visible=" + _visible +
                 ", _description='" + _description + '\'' +
                 ", _roles=" + _roles +
-                ", _roleDictionary=" + _roleDictionary +
+                ", _roleDictionary=" + _roleCatalog +
                 '}';
     }
 }
