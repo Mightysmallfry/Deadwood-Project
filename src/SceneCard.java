@@ -52,14 +52,14 @@ public class SceneCard {
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
 
-    public SceneCard(int difficulty, String name, int cardNumber)
+    public SceneCard(int difficulty, String name, String imageName)
     {
         _difficulty = difficulty;
-        _cardNumber = cardNumber;
-        _visible = false;
         _name = name;
+        _imageName = imageName;
+        _cardNumber = 0;
+        _visible = false;
         _description = "Descriptive description";
-        _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
     }
@@ -182,6 +182,26 @@ public class SceneCard {
     public void SetImageName(String imageName) {
         _imageName = imageName;
     }
+
+    public void SetCardNumber(int cardNumber) {
+        _cardNumber = cardNumber;
+    }
+
+    public void SetDescription(String description) {
+        _description = description;
+    }
+
+    public void AddRole(ActingRole actingRole) {
+        // Already exists, early return
+        if (_roles.contains(actingRole)) {
+            return;
+        }
+
+        _roles.add(actingRole);
+        _roleCatalog.put(actingRole, null);
+    }
+
+
 
     public String ToString() {
         return "SceneCard{" +
