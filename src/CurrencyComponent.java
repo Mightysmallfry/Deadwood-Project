@@ -45,7 +45,7 @@ public class CurrencyComponent {
 
 
 
-    //Overide???
+    @Override
     public String toString() {
         return "Coins: " + Get_Coins() + ", Credits: " + Get_Credits();
     }

@@ -83,7 +83,7 @@ public class Player {
         return _role != null && _role.equals(role);
     }
 
-    private String ToString()
+    public String ToString()
     {
         return "Player{" +
                 "_location=" + _location +
