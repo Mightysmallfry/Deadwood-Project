@@ -79,7 +79,7 @@ public class Player {
     // Methods
     public boolean HasRole(ActingRole role)
     {
-        // need to implement a equality check in ActingRole
+        // need to implement an equality check in ActingRole
         return _role != null && _role.equals(role);
     }
 
