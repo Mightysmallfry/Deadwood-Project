@@ -11,28 +11,32 @@ public class GameBoard {
 
     }
 
-    public GameBoard(GameSet[] _gameSets)
+    public GameBoard(GameSet[] gameSets)
     {
-
+        this._gameSets = gameSets;
     }
 
     //Methods
     public void Clear()
+    //This method clears the cards on the board in preparation for a day reset
     {
 
     }
 
     public void Populate()
+     //This method places the game sets including Upgrade and Casting
     {
 
     }
 
     public void AddGameSet(GameSet gameSet)
+     //This adds a GameSet to be used on the board during population
     {
 
     }
 
     public void RemoveGameSet(GameSet gameSet)
+     //Helps remove the GameSets for clearing the board
     {
 
     }
