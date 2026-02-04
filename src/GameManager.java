@@ -82,18 +82,13 @@ public class GameManager {
     //as the last day finishes this tallys the score and displays it before the Deadwood ends.
     {
         int[] scores = new int[players.length];
-        int credits;
-        int coins;
-        int rankScore;
 
         //for each player we count up their points
         for (int i = 0; i < players.length; i++)
         {
             Player p = players[i];
-            coins = p.Get_Currency().Get_Coins();
-            credits = p.Get_Currency().Get_Credits();
-            rankScore = p.Get_CurrentRank() * 5;
-            scores[i] = credits + coins + rankScore;
+            p.Set_Score(); //This recalculates the players score.
+            scores[i] = p.Get_Score();
         }
         return scores;
     }
