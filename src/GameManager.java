@@ -91,7 +91,12 @@ public class GameManager {
      */
     public void BasicPay()
     //Pays the players after they are done acting (this is NOT the Scene end pay)
+    //this should only happen if Act is false^
     {
+        Player player = Get_CurrentPlayer();
+        //How can we tell if the player succeeded on a role or failed?
+        //I would think that in the act action we need to call this function...
+        //not sure tho...
 
     }
 
