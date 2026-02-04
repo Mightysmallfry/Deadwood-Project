@@ -14,12 +14,13 @@ public class LocationComponent {
 
     public LocationComponent(GameSet startingLocation)
     {
-
+        Set_CurrentGameSet(startingLocation);
     }
 
     public LocationComponent(GameSet startingLocation, ActingRole startingRole)
     {
-
+        Set_CurrentGameSet(startingLocation);
+        Set_CurrentRole(startingRole);
     }
 
     //Getters
