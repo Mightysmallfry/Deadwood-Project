@@ -57,6 +57,15 @@ public class ActingSet extends GameSet {
         return _complete;
     }
 
+    public void ResetForNewDay() {
+        _currentProgress = 0;
+        _complete = false;
+
+        // clear local role occupancy
+        _roleCatalog.replaceAll((r, v) -> null);
+    }
+
+
     public ArrayList<ActingRole> GetLocalRoles(){
         return _localRoles;
     }
@@ -71,7 +80,7 @@ public class ActingSet extends GameSet {
         }
 
         for (ActingRole role : _roleCatalog.keySet()){
-            if(_roleCatalog.get(role) != null)
+            if(_roleCatalog.get(role) == null)
             {
                 availableRoles.add(role);
             }
