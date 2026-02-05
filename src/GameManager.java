@@ -64,7 +64,16 @@ public class GameManager {
     private void UpdateRules()
     //This is used after Deadwood asks for players to change the rules depending on the player number.
     {
-    //I dont think we need this
+        RulesPackage rules = new RulesPackage(_playerLibrary);
+
+        // store for later
+        _rules = rules;
+
+        // apply to players
+        for (Player p : _playerLibrary) {
+            p.Set_CurrentRank(rules.GetStartingRank());
+            p.Get_Currency().IncreaseCredits(rules.GetStartingCredits());
+        }
     }
 
     /**
@@ -256,19 +265,58 @@ public class GameManager {
 
     public void StartGame()
     {
-        RulesPackage rules = new RulesPackage(_playerLibrary);
+        UpdateRules();
+
+        Set_CurrentDay(1);
+
+        // Move all players to Trailer
+        GameSet trailer = _gameBoard.Get_StartingSet();
 
         for (Player p : _playerLibrary)
         {
-            p.Set_CurrentRank(rules.GetStartingRank());
-            p.Get_Currency().IncreaseCredits(rules.GetStartingCredits());
+            LocationComponent loc = p.Get_Location();
+
+            loc.Set_CurrentRole(null);
+            loc.Set_OnCard(false);
+            loc.Set_RehearseTokens(0);
+
+            loc.Set_CurrentGameSet(trailer);
+            trailer.AddPlayer(p);
         }
-        Set_CurrentDay(1);
+
+        // Populate board with scene cards
+        _gameBoard.Populate();
+
+        // Choose first player
+        _currentPlayer = _playerLibrary[0]; //Could make this a dice roll.
     }
 
     public void EndGame()
     {
+        int[] scores = TallyScore(_playerLibrary);
 
+        // Grab the highest score
+        int highest = Integer.MIN_VALUE;
+        for (int score : scores) {
+            if (score > highest) {
+                highest = score;
+            }
+        }
+
+        // Grab Winner
+        ArrayList<Player> winners = new ArrayList<>();//Could add a tiebreaker piece.
+        for (int i = 0; i < scores.length; i++) {
+            if (scores[i] == highest) {
+                winners.add(_playerLibrary[i]);
+            }
+        }
+
+        // Display
+        System.out.println("=== GAME OVER ===");
+        for (Player winner : winners)
+        {
+            System.out.println("Winner: Player " + winner.Get_PersonalId() + " with score " + winner.Get_Score());
+        }
     }
 
     @Override
