@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class GameManager {
 
     // Members
@@ -87,17 +89,54 @@ public class GameManager {
     }
 
     /**
-     * Hmmmmm TBD
+     * This looks at if the roll was a success and pays the players
+     * My problem is where is this called?
+     * If its in update then this WILL NOT WORK.
      */
-    public void BasicPay()
-    //Pays the players after they are done acting (this is NOT the Scene end pay)
-    //this should only happen if Act is false^
+    public void BasicPay(boolean success)
     {
+        //I need to make a way to exclude people who are just hanging out on the card!
         Player player = Get_CurrentPlayer();
-        //How can we tell if the player succeeded on a role or failed?
-        //I would think that in the act action we need to call this function...
-        //not sure tho...
+        if(player.Get_Location().Get_OnCard())
+        {
+                if(success) //if the roll is a success
+                {
+                    player.Get_Currency().Set_Coins(2);
+                }
+        }
+        else
+        {
+            if(success)
+            {
+                player.Get_Currency().IncreaseCredits(1);
+                player.Get_Currency().IncreaseCoins(1);
+            }
+            else
+            {
+                player.Get_Currency().IncreaseCoins(1);
+            }
+        }
+    }
 
+    public void BonusPay()
+    {
+//        Player[] players = Get_PlayerLibrary();
+//        Player currentPlayer = Get_CurrentPlayer();
+//
+//        ArrayList<Player> onSet = new ArrayList<>();
+//
+//        GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
+//
+//        for(Player player : players){
+//            if(currentSet.equals(player.Get_Location().Get_CurrentGameSet())) //watch out for null
+//            {
+//                onSet.add(player);
+//            }
+//        }
+//        for (Player player : onSet)
+//        {
+//
+//        }
     }
 
     /**
