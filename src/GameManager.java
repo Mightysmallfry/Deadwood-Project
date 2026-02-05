@@ -85,7 +85,8 @@ public class GameManager {
     }
 
     /**
-     * This makes sure that the player is rewarded after their turn and that the day is not over.
+     * This makes sure that the player is rewarded after their turn and calls the
+     * function that deals with ending the day/game.
      */
     private void UpdateGame()
     //This plays after the player is done with a turn, rewarding the player and checking if the day/game is over.
@@ -113,6 +114,10 @@ public class GameManager {
         AdvanceTurn();
     }
 
+    /**
+     * This Function is a Helper for UpdateGame that moves focus to the next player
+     * after the game is done updating.
+     */
     private void AdvanceTurn()
     {
         int index = 0;
@@ -226,6 +231,12 @@ public class GameManager {
         }
     }
 
+    /**
+     * This gets the difficulty of the scene then creates a list of d6 rolls for assigning on card money.
+     * Next it gets all the players on the scene and sorts them into on and off card.  It then it bounces between on
+     * card members assigning them the previously rolled money dice starting with the player on the highest rank
+     * and descending in order.  Next it pays off card members based on rank.
+     */
     public void BonusPay()
     {
         Player[] players = Get_PlayerLibrary();
@@ -239,16 +250,17 @@ public class GameManager {
             return; // no bonus pay here
         }
 
-        int dificulty = act.Get_CurrentSceneCard().GetDifficulty();
+        int difficulty = act.Get_CurrentSceneCard().GetDifficulty();
 
         //rolling dice
         Dice dice = Dice.GetInstance();
         ArrayList<Integer> rolls = new ArrayList<>();
-        for (int i = 0; i < dificulty; i++) {
+        for (int i = 0; i < difficulty; i++) {
             rolls.add(dice.Roll(1, 6)); // 1d6
         }
         rolls.sort((a, b) -> b - a); // descending
 
+        // Sort Players
         for(Player player : players){
             if(currentSet.equals(player.Get_Location().Get_CurrentGameSet())
                     && player.Get_Location().Get_OnCard()
@@ -307,6 +319,10 @@ public class GameManager {
         return scores;
     }
 
+    /**
+     *This starts the game using the given rules package as well as sets the day to one and moves players to the start.
+     * Next it sets up all the players default values then populates the board and chooses a starting plyer.
+     */
     public void StartGame()
     {
         UpdateRules();
@@ -335,6 +351,10 @@ public class GameManager {
         _currentPlayer = _playerLibrary[0]; //Could make this a dice roll.
     }
 
+    /**
+     * This function ends the game (:  It grabs the score of each player and gets the winners, next it displays the
+     * winners to the players.
+     */
     public void EndGame()
     {
         int[] scores = TallyScore(_playerLibrary);
@@ -354,7 +374,7 @@ public class GameManager {
                 winners.add(_playerLibrary[i]);
             }
         }
-
+        
         // Display
         System.out.println("=== GAME OVER ===");
         for (Player winner : winners)
