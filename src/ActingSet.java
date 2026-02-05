@@ -88,6 +88,8 @@ public class ActingSet extends GameSet {
         _currentSceneCard = card;
     }
 
+    public SceneCard Get_CurrentSceneCard(){return _currentSceneCard;}
+
     public void RemoveCard() {
         _currentSceneCard = null;
     }
