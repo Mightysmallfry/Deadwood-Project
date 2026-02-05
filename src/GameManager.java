@@ -64,7 +64,7 @@ public class GameManager {
     private void UpdateRules()
     //This is used after Deadwood asks for players to change the rules depending on the player number.
     {
-
+    //I dont think we need this
     }
 
     /**
@@ -82,8 +82,38 @@ public class GameManager {
      */
     private void EndDay()
     {
+        Set_CurrentDay(Get_CurrentDay() + 1);
 
+        if (IsEndGame()) {
+            EndGame();
+            return;
+        }
+
+        GameSet trailer = Get_GameBoard().Get_StartingSet();
+        for (Player p : _playerLibrary)
+        {
+            LocationComponent loc = p.Get_Location();
+
+            // remove from old set
+            GameSet oldSet = loc.Get_CurrentGameSet();
+            if (oldSet != null) {
+                oldSet.RemovePlayer(p);
+            }
+
+            // reset player state
+            loc.Set_CurrentRole(null);
+            loc.Set_OnCard(false);
+            loc.Set_RehearseTokens(0);
+
+            // move to trailer
+            loc.Set_CurrentGameSet(trailer);
+            trailer.AddPlayer(p);
+        }
+
+        Get_GameBoard().Clear();
+        Get_GameBoard().Populate();
     }
+
 
     /**
      * Checks the ammount of scene cards in play to know how many remain
@@ -92,7 +122,16 @@ public class GameManager {
      */
     public boolean IsEndDay()
     {
-        return false;
+        int activeScenes = 0;
+
+        for (GameSet set : _gameBoard.GetAllGameSets()) {
+            if (set instanceof ActingSet act) {
+                if (act.Get_CurrentSceneCard() != null) {
+                    activeScenes++;
+                }
+            }
+        }
+        return activeScenes <= 1;
     }
 
     /**
@@ -101,7 +140,7 @@ public class GameManager {
      */
     public boolean IsEndGame()
     {
-        return false;
+        return Get_Rules().GetDays() == Get_CurrentDay();
     }
 
     /**
