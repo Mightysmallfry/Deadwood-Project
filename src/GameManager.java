@@ -32,6 +32,14 @@ public class GameManager {
         this._currentPlayer = currentPlayer;
     }
 
+    public GameManager(GameBoard gameBoard, Player[] players, Player currentPlayer, RulesPackage rules)
+    {
+        this._gameBoard = gameBoard;
+        this._playerLibrary = players;
+        this._currentPlayer = currentPlayer;
+        this._rules = rules;
+    }
+
     // Getters
 
     public Player Get_CurrentPlayer() {return _currentPlayer;}
@@ -82,7 +90,43 @@ public class GameManager {
     private void UpdateGame()
     //This plays after the player is done with a turn, rewarding the player and checking if the day/game is over.
     {
+        Player current = Get_CurrentPlayer();
+        LocationComponent loc = current.Get_Location();
 
+        // Check if scene just wrapped
+        if (loc.Get_CurrentGameSet() instanceof ActingSet actSet)
+        {
+            if (actSet.IsComplete())
+            {
+                BonusPay();
+                actSet.RemoveCard();
+            }
+        }
+
+        // Check if day is over
+        if (IsEndDay())
+        {
+            EndDay();
+            return;
+        }
+        // Move to next player
+        AdvanceTurn();
+    }
+
+    private void AdvanceTurn()
+    {
+        int index = 0;
+
+        for (int i = 0; i < _playerLibrary.length; i++)
+        {
+            if (_playerLibrary[i] == _currentPlayer)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        _currentPlayer = _playerLibrary[(index + 1) % _playerLibrary.length];
     }
 
     /**
