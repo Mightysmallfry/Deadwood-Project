@@ -4,8 +4,7 @@ public class RulesPackage {
     private int startingCredits;
     private int startingRank;
 
-    public RulesPackage(Player[] players) {
-        int playerCount = players.length;
+    public RulesPackage(int playerCount) {
 
         // defaults (4 players case)
         days = 4;
