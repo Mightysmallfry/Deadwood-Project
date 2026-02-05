@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class GameBoard {
-    private final int _DEFAULT_SET_COUNT = 10;
+    private final int _DEFAULT_SET_COUNT = 10;  // Should include Casting and Trailer Sets
 
     // Members
     private GameSet[] _gameSets;

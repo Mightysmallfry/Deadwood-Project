@@ -9,6 +9,5 @@ public class Deadwood {
 
         System.out.println("Hello and welcome to Deadwood gunslinger!");
         System.out.printf("You have %d players!", playerCount);
-
     }
 }
