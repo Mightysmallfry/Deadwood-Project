@@ -13,7 +13,18 @@ public class GameBoard {
 
     public GameBoard(GameSet[] gameSets)
     {
-        this._gameSets = gameSets;
+        _gameSets = gameSets;
+    }
+    public GameBoard(GameSet[] gameSets, CastingSet upgradeSet)
+    {
+        _gameSets = gameSets;
+        _upgradeSet = upgradeSet;
+    }
+    public GameBoard(GameSet[] gameSets, CastingSet upgradeSet, GameSet startingGameSet)
+    {
+        _gameSets = gameSets;
+        _upgradeSet = upgradeSet;
+        _startingGameSet = startingGameSet;
     }
 
     //Methods

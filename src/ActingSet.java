@@ -102,7 +102,8 @@ public class ActingSet extends GameSet {
         _currentProgress = progress;
     }
 
-    public String ToString() {
+    @Override
+    public String toString() {
         return "ActingSet{" +
                 "_maximumProgress=" + _maximumProgress +
                 ", _currentProgress=" + _currentProgress +
