@@ -15,6 +15,10 @@ public class SceneCard {
     private ArrayList<ActingRole> _roles;
     private Map<ActingRole, Player> _roleCatalog;
 
+    private boolean _used;
+
+    private static ArrayList<SceneCard> _cardCatalog;
+
     // Constructors
     public SceneCard()
     {
@@ -26,6 +30,9 @@ public class SceneCard {
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+
+        _used = false;
+        RegisterCard(this);
     }
 
     public SceneCard(int difficulty)
@@ -38,6 +45,7 @@ public class SceneCard {
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+        RegisterCard(this);
     }
 
     public SceneCard(int difficulty, String name)
@@ -50,6 +58,8 @@ public class SceneCard {
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+        _used = false;
+        RegisterCard(this);
     }
 
     public SceneCard(int difficulty, String name, String imageName)
@@ -62,6 +72,8 @@ public class SceneCard {
         _description = "Descriptive description";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+        _used = false;
+        RegisterCard(this);
     }
 
 
@@ -76,6 +88,8 @@ public class SceneCard {
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+        _used = false;
+        RegisterCard(this);
     }
 
     public SceneCard(int difficulty, String name, int cardNumber,
@@ -89,6 +103,8 @@ public class SceneCard {
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+        _used = false;
+        RegisterCard(this);
     }
 
 
@@ -103,6 +119,8 @@ public class SceneCard {
         _imageName = imageName;
         _roles = new ArrayList<ActingRole>();
         _roleCatalog = new Hashtable<ActingRole, Player>();
+        _used = false;
+        RegisterCard(this);
     }
 
     public SceneCard(int difficulty, String name, int cardNumber,
@@ -122,9 +140,17 @@ public class SceneCard {
         {
             _roleCatalog.put(role, null);
         }
+
+        _used = false;
+        RegisterCard(this);
     }
 
     // Methods
+
+    /**
+     *
+     * @return difficulty aka budget of the card
+     */
     public int GetDifficulty(){
         return _difficulty;
     }
@@ -140,6 +166,19 @@ public class SceneCard {
     public boolean IsVisible(){
         return _visible;
     }
+
+    public void SetVisible(boolean isVisible){
+        _visible = isVisible;
+    }
+
+    public boolean IsUsed(){
+        return _used;
+    }
+
+    public void SetUsed(boolean isUsed) {
+        _used = isUsed;
+    }
+
 
     /**
      * Searches through the role dictionary, returning an arrayList
@@ -167,6 +206,10 @@ public class SceneCard {
         return _roles;
     }
 
+    /**
+     *
+     * @return A map of all roles and the associated player
+     */
     public Map<ActingRole, Player> GetRoleCatalog(){
         return _roleCatalog;
     }
@@ -191,6 +234,10 @@ public class SceneCard {
         _description = description;
     }
 
+    /**
+     * Adds target role to the card, ignoring duplicates
+     * @param actingRole
+     */
     public void AddRole(ActingRole actingRole) {
         // Already exists, early return
         if (_roles.contains(actingRole)) {
@@ -200,6 +247,42 @@ public class SceneCard {
         _roles.add(actingRole);
         _roleCatalog.put(actingRole, null);
     }
+
+    /**
+     * Registers card with the card catalog.
+     * Allowing it to be accessed globally
+     */
+    public void RegisterCard(SceneCard card)
+    {
+        SceneCard._cardCatalog.add(card);
+    }
+
+    /**
+     * Gets the list of all cards that have been constructed and registered.
+     * @return
+     */
+    public static ArrayList<SceneCard> GetCardCatalog()
+    {
+        return _cardCatalog;
+    }
+
+    /**
+     * iterates through the card catalog checking if the card
+     * has already been used in play
+     * @return an ArrayList containing all unused cards, ready for play
+     */
+    public static ArrayList<SceneCard> GetAvailableCards()
+    {
+        ArrayList<SceneCard> availableCards = new ArrayList<SceneCard>();
+
+        for (int i = 0; i < SceneCard._cardCatalog.size(); i++) {
+            if (SceneCard._cardCatalog.get(i) != null && !SceneCard._cardCatalog.get(i).IsUsed()) {
+                availableCards.add(SceneCard._cardCatalog.get(i));
+            }
+        }
+        return availableCards;
+    }
+
 
 
     @Override
