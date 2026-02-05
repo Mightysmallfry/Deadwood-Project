@@ -42,6 +42,16 @@ public class CurrencyComponent {
     }
 
     // Methods
+
+    public void IncreaseCoins(int coins)
+    {
+        Set_Coins(Get_Coins() + coins);
+    }
+
+    public void IncreaseCredits(int credits)
+    {
+        Set_Credits(Get_Credits() + credits);
+    }
     
     @Override
     public String toString() {
