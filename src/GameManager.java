@@ -6,6 +6,8 @@ public class GameManager {
     private GameBoard _gameBoard;
     private Player[] _playerLibrary;
     private Player _currentPlayer;
+    private int _currentDay;
+    private RulesPackage _rules;
 
     // Constructors
     public GameManager(){
@@ -38,7 +40,11 @@ public class GameManager {
 
     public Player[] Get_PlayerLibrary() {return _playerLibrary;}
 
-    public int getPlayerCount() {
+    public int Get_CurrentDay(){return _currentDay;}
+
+    public RulesPackage Get_Rules(){return _rules;}
+
+    public int Get_PlayerCount() {
         return _playerLibrary == null ? 0 : _playerLibrary.length;
     }
 
@@ -49,6 +55,10 @@ public class GameManager {
     public void Set_GameBoard(GameBoard _gameBoard) {this._gameBoard = _gameBoard;}
 
     public void Set_PlayerLibrary(Player[] _playerLibrary) {this._playerLibrary = _playerLibrary;}
+
+    public void Set_CurrentDay(int day){this._currentDay = day;}
+
+    public void Set_Rules(RulesPackage rules){this._rules = rules;}
 
     // Methods
     private void UpdateRules()
@@ -207,7 +217,14 @@ public class GameManager {
 
     public void StartGame()
     {
+        RulesPackage rules = new RulesPackage(_playerLibrary);
 
+        for (Player p : _playerLibrary)
+        {
+            p.Set_CurrentRank(rules.GetStartingRank());
+            p.Get_Currency().IncreaseCredits(rules.GetStartingCredits());
+        }
+        Set_CurrentDay(1);
     }
 
     public void EndGame()
