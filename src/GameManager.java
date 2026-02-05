@@ -14,12 +14,20 @@ public class GameManager {
 
     public GameManager(GameBoard gameBoard)
     {
-
+        this._gameBoard = gameBoard;
     }
 
     public GameManager(GameBoard gameBoard, Player[] players)
     {
+        this._gameBoard = gameBoard;
+        this._playerLibrary = players;
+    }
 
+    public GameManager(GameBoard gameBoard, Player[] players, Player currentPlayer)
+    {
+        this._gameBoard = gameBoard;
+        this._playerLibrary = players;
+        this._currentPlayer = currentPlayer;
     }
 
     // Getters
@@ -29,6 +37,10 @@ public class GameManager {
     public GameBoard Get_GameBoard() {return _gameBoard;}
 
     public Player[] Get_PlayerLibrary() {return _playerLibrary;}
+
+    public int getPlayerCount() {
+        return _playerLibrary == null ? 0 : _playerLibrary.length;
+    }
 
     // Setters
 
@@ -63,11 +75,6 @@ public class GameManager {
 
     }
 
-    public int GetPlayerCount()
-    {
-        return(Get_PlayerLibrary().length);
-    }
-
     /**
      * Checks the ammount of scene cards in play to know how many remain
      * If there is one left returns True
@@ -79,8 +86,7 @@ public class GameManager {
     }
 
     /**
-     * If there is only one card left from IsEndDay()
-     * compair day limit to current day, if they  are the same return true
+     * compares day limit to current day, if they  are the same return true
      * @return boolean
      */
     public boolean IsEndGame()
@@ -101,7 +107,7 @@ public class GameManager {
         {
                 if(success) //if the roll is a success
                 {
-                    player.Get_Currency().Set_Coins(2);
+                    player.Get_Currency().IncreaseCoins(2);
                 }
         }
         else
@@ -120,23 +126,63 @@ public class GameManager {
 
     public void BonusPay()
     {
-//        Player[] players = Get_PlayerLibrary();
-//        Player currentPlayer = Get_CurrentPlayer();
-//
-//        ArrayList<Player> onSet = new ArrayList<>();
-//
-//        GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
-//
-//        for(Player player : players){
-//            if(currentSet.equals(player.Get_Location().Get_CurrentGameSet())) //watch out for null
-//            {
-//                onSet.add(player);
-//            }
-//        }
-//        for (Player player : onSet)
-//        {
-//
-//        }
+        Player[] players = Get_PlayerLibrary();
+        Player currentPlayer = Get_CurrentPlayer();
+        ArrayList<Player> onCard = new ArrayList<>();
+        ArrayList<Player> offCard = new ArrayList<>();
+        GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
+
+        //grabling dificulty
+        if (!(currentSet instanceof ActingSet act)) {
+            return; // no bonus pay here
+        }
+
+        int dificulty = act.Get_CurrentSceneCard().GetDifficulty();
+
+        //rolling dice
+        Dice dice = Dice.GetInstance();
+        ArrayList<Integer> rolls = new ArrayList<>();
+        for (int i = 0; i < dificulty; i++) {
+            rolls.add(dice.Roll(1, 6)); // 1d6
+        }
+        rolls.sort((a, b) -> b - a); // descending
+
+        for(Player player : players){
+            if(currentSet.equals(player.Get_Location().Get_CurrentGameSet())
+                    && player.Get_Location().Get_OnCard()
+                    && player.Get_Location().Get_CurrentRole() != null)  //if it's the correct scene and on card add to a list, double check logic!!!
+            {
+                onCard.add(player);
+            }
+            else if(currentSet.equals(player.Get_Location().Get_CurrentGameSet()) && !player.Get_Location().Get_OnCard())
+            {
+                offCard.add(player);
+            }
+        }
+
+        //onCard cant be empty if this is called but just in case
+        if (onCard.isEmpty()) {
+            return; // no one to pay
+        }
+        onCard.sort((p1, p2) -> Integer.compare(p2.Get_Location().Get_CurrentRole().GetRank(), p1.Get_Location().Get_CurrentRole().GetRank()));
+
+        int playerCount = onCard.size();
+
+        for (int i = 0; i < rolls.size(); i++) {
+            Player p = onCard.get(i % playerCount);
+            int payout = rolls.get(i);
+            p.Get_Currency().IncreaseCoins(payout);
+        }
+
+        //for the elements in off card pay based on the rank
+        for (Player player : offCard)
+        {
+            ActingRole role = player.Get_Location().Get_CurrentRole();
+            if (role != null) {
+                player.Get_Currency().IncreaseCoins(role.GetRank());
+            }
+        }
+
     }
 
     /**
@@ -145,7 +191,7 @@ public class GameManager {
      * @return int[] of player scores
      */
     public int[] TallyScore(Player[] players)
-    //as the last day finishes this tally's the score and displays it before the Deadwood ends.
+    //as the last day finishes this tallies the score and displays it before the Deadwood ends.
     {
         int[] scores = new int[players.length];
 
