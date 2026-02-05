@@ -44,7 +44,8 @@ public class Area {
         return _height;
     }
 
-    public String ToString() {
+    @Override
+    public String toString() {
         return "Area{" +
                 "_x=" + _x +
                 ", _y=" + _y +

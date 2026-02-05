@@ -107,7 +107,8 @@ public class GameSet {
         return _area;
     }
 
-    public String ToString() {
+    @Override
+    public String toString() {
         return "GameSet{" +
                 "_name='" + _name + '\'' +
                 ", _neighbors=" + _neighbors +

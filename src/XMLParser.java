@@ -101,42 +101,9 @@ public class XMLParser {
                 // If the cardDetail is an acting role,
                 // create and add it to the foundCard def
                 if ("part".equals(detail.getNodeName())) {
+                    ActingRole role = FetchActingRole(detail);
 
-                    // Get Basic role - Name, Level
-                    String roleName = detail.getAttributes().getNamedItem("role").getNodeValue();
-                    int roleRank = Integer.parseInt(detail.getAttributes().getNamedItem("level").getNodeValue());
-
-                    // Create for use in constructor
-                    String roleQuote  = "";
-                    Area roleArea = new Area();
-
-                    // Dive into the role, getting - Area, Line
-                    NodeList partDetails = detail.getChildNodes();
-                    for (int k = 0; k < partDetails.getLength(); k++)
-                    {
-                        Node partDetail = partDetails.item(k);
-
-                        if ("area".equals(partDetail.getNodeName())){
-                            roleArea = new Area(
-                                    Integer.parseInt(partDetail.getAttributes().getNamedItem("x").getNodeValue()),
-                                    Integer.parseInt(partDetail.getAttributes().getNamedItem("y").getNodeValue()),
-                                    Integer.parseInt(partDetail.getAttributes().getNamedItem("w").getNodeValue()),
-                                    Integer.parseInt(partDetail.getAttributes().getNamedItem("h").getNodeValue())
-                            );
-                        }
-                        if ("line".equals(partDetail.getNodeName())){
-                            roleQuote = partDetail.getTextContent();
-                        }
-                    }
-
-                    // Combine, construct and add
-                    // Our new Role to the card
-                    foundCard.AddRole(new ActingRole(
-                            roleRank,
-                            roleName,
-                            roleQuote,
-                            roleArea
-                    ));
+                    foundCard.AddRole(role);
                 }
             }
 
@@ -147,6 +114,43 @@ public class XMLParser {
         return foundCards;
     }
 
+    private ActingRole FetchActingRole(Node detail)
+    {
+        // Get Basic role - Name, Level
+        String roleName = detail.getAttributes().getNamedItem("role").getNodeValue();
+        int roleRank = Integer.parseInt(detail.getAttributes().getNamedItem("level").getNodeValue());
+
+        // Create for use in constructor
+        String roleQuote  = "";
+        Area roleArea = new Area();
+
+        // Dive into the role, getting - Area, Line
+        NodeList partDetails = detail.getChildNodes();
+        for (int k = 0; k < partDetails.getLength(); k++)
+        {
+            Node partDetail = partDetails.item(k);
+
+            if ("area".equals(partDetail.getNodeName())){
+                roleArea = new Area(
+                        Integer.parseInt(partDetail.getAttributes().getNamedItem("x").getNodeValue()),
+                        Integer.parseInt(partDetail.getAttributes().getNamedItem("y").getNodeValue()),
+                        Integer.parseInt(partDetail.getAttributes().getNamedItem("w").getNodeValue()),
+                        Integer.parseInt(partDetail.getAttributes().getNamedItem("h").getNodeValue())
+                );
+            }
+            if ("line".equals(partDetail.getNodeName())){
+                roleQuote = partDetail.getTextContent();
+            }
+        }
+
+        // Combine, construct and add
+        // Our new Role to the card
+        return new ActingRole(
+            roleRank,
+            roleName,
+            roleQuote,
+            roleArea);
+    }
 
 
 
