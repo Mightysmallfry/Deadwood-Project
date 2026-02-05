@@ -32,10 +32,13 @@ public class GameBoard {
         _startingGameSet = startingGameSet;
     }
 
+    public GameSet Get_StartingSet(){return _startingGameSet;}
+
     //Methods
     public void Clear()
     //This method clears the cards on the board in preparation for a day reset
     {
+        //This could just be act.ResetForNewDay
         for (GameSet gameSet : _gameSets) {
             if (gameSet instanceof ActingSet)
             {
