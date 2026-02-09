@@ -62,11 +62,17 @@ public class ActingRole {
         _area = area;
     }
 
-    public String ToString() {
-        return "ActingRole{" +
-                "name='" + _name + '\'' +
-                ", line='" + _line + '\'' +
-                ", rank=" + _rank +
-                '}';
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("ActingRole {");
+        sb.append("<Name> ").append(_name).append(", ");
+        sb.append("<Rank> ").append(_rank).append(", ");
+        sb.append("<Area> ").append(_area != null ? _area.toString() : "null").append(", ");
+        sb.append("<Line> ").append(_line != null ? _line : "null");
+        sb.append("}");
+
+
+        return sb.toString();
     }
 }

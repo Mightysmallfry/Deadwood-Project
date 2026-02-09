@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SceneCard {
@@ -17,7 +17,7 @@ public class SceneCard {
 
     private boolean _used;
 
-    private static ArrayList<SceneCard> _cardCatalog;
+    private static ArrayList<SceneCard> _cardCatalog = new ArrayList<SceneCard>();
 
     // Constructors
     public SceneCard()
@@ -29,7 +29,7 @@ public class SceneCard {
         _description = "Descriptive description";
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
 
         _used = false;
         RegisterCard(this);
@@ -44,7 +44,7 @@ public class SceneCard {
         _description = "Descriptive description";
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
         RegisterCard(this);
     }
 
@@ -57,7 +57,7 @@ public class SceneCard {
         _description = "Descriptive description";
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
         _used = false;
         RegisterCard(this);
     }
@@ -71,7 +71,7 @@ public class SceneCard {
         _visible = false;
         _description = "Descriptive description";
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
         _used = false;
         RegisterCard(this);
     }
@@ -87,7 +87,7 @@ public class SceneCard {
         _description = description;
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
         _used = false;
         RegisterCard(this);
     }
@@ -102,7 +102,7 @@ public class SceneCard {
         _description = description;
         _imageName = "";
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
         _used = false;
         RegisterCard(this);
     }
@@ -118,7 +118,7 @@ public class SceneCard {
         _visible = visible;
         _imageName = imageName;
         _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
         _used = false;
         RegisterCard(this);
     }
@@ -134,7 +134,7 @@ public class SceneCard {
         _visible = visible;
         _imageName = imageName;
         _roles = roles;
-        _roleCatalog = new Hashtable<ActingRole, Player>();
+        _roleCatalog = new HashMap<ActingRole, Player>();
 
         for (ActingRole role : roles)
         {
@@ -287,13 +287,51 @@ public class SceneCard {
 
     @Override
     public String toString() {
-        return "SceneCard{" +
-                "_name='" + _name +
-                ", _difficulty=" + _difficulty + '\'' +
-                ", _visible=" + _visible +
-                ", _description='" + _description + '\'' +
-                ", _roles=" + _roles +
-                ", _roleDictionary=" + _roleCatalog +
-                '}';
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("==== Scene Card ====\n");
+
+        sb.append("name : ");
+        sb.append(_name != null ? _name : null).append("\n");
+
+        sb.append("difficulty : ");
+        sb.append(_difficulty).append("\n");
+
+        sb.append("cardNumber : ");
+        sb.append(_cardNumber).append("\n");
+
+        sb.append("description : \n");
+        sb.append(_description != null ? _description : null).append("\n");
+
+        sb.append("visible : ");
+        sb.append(_visible).append("\n");
+
+        sb.append("imageName : ");
+        sb.append(_imageName != null ? _imageName : null).append("\n");
+
+        sb.append("roles : ");
+
+        if (_roles != null) {
+            sb.append("\n");
+            for (ActingRole role : _roles) {
+                sb.append("- ");
+                sb.append(role.toString());
+                sb.append("\n");
+            }
+        }
+
+        sb.append("roleCatalog : (Role, Player)");
+        if (_roleCatalog != null){
+            sb.append("\n");
+            for (Map.Entry<ActingRole, Player> entry : _roleCatalog.entrySet()) {
+                sb.append("- {");
+                sb.append(entry.getKey().GetName()).append(", ");
+                Player entryValue = entry.getValue();
+                sb.append(entryValue != null ? entryValue : "null");
+                sb.append("}\n");
+            }
+        }
+
+        return sb.toString();
     }
 }

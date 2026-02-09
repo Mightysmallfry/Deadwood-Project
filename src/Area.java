@@ -46,11 +46,6 @@ public class Area {
 
     @Override
     public String toString() {
-        return "Area{" +
-                "_x=" + _x +
-                ", _y=" + _y +
-                ", _width=" + _width +
-                ", _height=" + _height +
-                '}';
+        return "[" + _x + ", " + _y + ", " + _width + ", " + _height + "]";
     }
 }

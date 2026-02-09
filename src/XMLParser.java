@@ -62,7 +62,6 @@ public class XMLParser {
         }
 
         ArrayList<SceneCard> foundCards = new ArrayList<SceneCard>(sceneCards.getLength());
-
         String cardName;
         String imageName;
         int cardDifficulty;
@@ -79,7 +78,6 @@ public class XMLParser {
             cardDifficulty = Integer.parseInt(card.getAttributes().getNamedItem("budget").getNodeValue());
 
             SceneCard foundCard = new SceneCard(cardDifficulty, cardName, imageName);
-
 
             // Get Card Details - scene details, roles
             NodeList cardDetails = card.getChildNodes();
@@ -109,7 +107,7 @@ public class XMLParser {
 
 
             // Add the card into the array of possible cards
-            foundCards.set(i, foundCard);
+            foundCards.add(foundCard);
         }
         return foundCards;
     }
@@ -117,7 +115,7 @@ public class XMLParser {
     private ActingRole FetchActingRole(Node detail)
     {
         // Get Basic role - Name, Level
-        String roleName = detail.getAttributes().getNamedItem("role").getNodeValue();
+        String roleName = detail.getAttributes().getNamedItem("name").getNodeValue();
         int roleRank = Integer.parseInt(detail.getAttributes().getNamedItem("level").getNodeValue());
 
         // Create for use in constructor

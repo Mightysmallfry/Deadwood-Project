@@ -1,5 +1,7 @@
 import org.w3c.dom.Document;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Deadwood {
@@ -11,7 +13,7 @@ public class Deadwood {
         int playerCount = Integer.parseInt(args[0]);
 
         System.out.println("Hello and welcome to Deadwood gunslinger!");
-        System.out.printf("You have %d players!", playerCount);
+        System.out.printf("You have %d players!\n", playerCount);
 
         // Create and alter the rules based on num of players
         RulesPackage rulesPackage = new RulesPackage(playerCount);
@@ -22,16 +24,34 @@ public class Deadwood {
         Document cardDocument = null;
         Document setDocument = null;
         try{
-            cardDocument = parser.GetDocumentFromFile("cards.xml");
-            setDocument = parser.GetDocumentFromFile("board.xml");
+            Path cardPath = Paths.get("xml", "cards.xml");
+            cardDocument = parser.GetDocumentFromFile(cardPath.toString());
+//            setDocument = parser.GetDocumentFromFile("board.xml");
         } catch (Exception e) {
             System.out.println("Something went wrong parsing : " + e);
         }
 
-        if (cardDocument == null || setDocument == null){
-            System.out.println("Something went wrong initializing docs after parsing");
+        if (cardDocument == null){
+            System.out.println("Something went wrong initializing cardDocuments after parsing");
         }
+        if (setDocument == null) {
+            System.out.println("Something went wrong initializing setDocuments after parsing");
+        }
+
+
         parser.FindSceneCardData(cardDocument);
+
+        // Testing The Cards sets
+        for (SceneCard sceneCard : SceneCard.GetCardCatalog())
+        {
+            System.out.println(sceneCard.toString());
+        }
+
+        if (setDocument == null)
+        {
+            return;
+        }
+
         ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
 
         CastingSet castingSet = parser.FindCastingSetData(setDocument);
@@ -39,6 +59,8 @@ public class Deadwood {
 
         // Be careful of size of acting sets
         ActingSet[] formatedActedSets = actingSets.toArray(new ActingSet[actingSets.size()]);
+
+
 
         // Create an empty Game Board to play the game with the made sets
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
