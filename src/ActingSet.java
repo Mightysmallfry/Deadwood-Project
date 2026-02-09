@@ -113,17 +113,32 @@ public class ActingSet extends GameSet {
 
     @Override
     public String toString() {
-        return "ActingSet{" +
-                "_maximumProgress=" + _maximumProgress +
-                ", _currentProgress=" + _currentProgress +
-                ", _complete=" + _complete +
-                ", _currentSceneCard=" + _currentSceneCard +
-                ", _localRoles=" + _localRoles +
-                ", _roleCatalog=" + _roleCatalog +
-                ", _name='" + _name + '\'' +
-                ", _neighbors=" + _neighbors +
-                ", _players=" + _players +
-                ", _area=" + _area +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("|| Acting Set ||\n");
+        sb.append("Name : ");
+        sb.append(_name).append("\n");
+
+        sb.append("Scene Card : ");
+        sb.append(_currentSceneCard != null ? _currentSceneCard.GetName() : "null").append("\n");
+
+        sb.append("Progress : ");
+        sb.append(_currentProgress).append("/").append(_maximumProgress).append("\n");
+
+        sb.append("Area : ");
+        sb.append(_area != null? _area.toString() : "null").append("\n");
+
+        sb.append("Neighbors : ");
+        sb.append(_neighbors != null ? _neighbors.toString() : "null").append("\n");
+
+        sb.append("LocalRoles : ");
+        sb.append(_localRoles != null ? _localRoles.toString() : "null").append("\n");
+
+        sb.append("RoleCatalog : ");
+        sb.append(_roleCatalog != null ? _roleCatalog.toString() : "null").append("\n");
+
+        sb.append("Players : ");
+        sb.append(_players != null ? _players.toString() : "null").append("\n");
+
+        return sb.toString();
     }
 }

@@ -33,24 +33,20 @@ public class Deadwood {
 
         if (cardDocument == null){
             System.out.println("Something went wrong initializing cardDocuments after parsing");
+            System.exit(0);
         }
         if (setDocument == null) {
             System.out.println("Something went wrong initializing setDocuments after parsing");
+            System.exit(0);
         }
-
 
         parser.FindSceneCardData(cardDocument);
 
-        // Testing The Cards sets
-        for (SceneCard sceneCard : SceneCard.GetCardCatalog())
-        {
-            System.out.println(sceneCard.toString());
-        }
+        // If you want to test if we parsed the cards right
+        // Simply add
+        // TestSceneCards();
+        // After you execute FindSceneCardData()
 
-        if (setDocument == null)
-        {
-            return;
-        }
 
         ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
 
@@ -59,8 +55,6 @@ public class Deadwood {
 
         // Be careful of size of acting sets
         ActingSet[] formatedActedSets = actingSets.toArray(new ActingSet[actingSets.size()]);
-
-
 
         // Create an empty Game Board to play the game with the made sets
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
@@ -85,4 +79,16 @@ public class Deadwood {
         // Quit Program
 
     }
+
+
+    public static void TestSceneCards() {
+        // Testing The Cards sets
+        for (SceneCard sceneCard : SceneCard.GetCardCatalog())
+        {
+            System.out.println(sceneCard.toString());
+        }
+    }
+
+
+
 }
