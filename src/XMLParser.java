@@ -44,15 +44,61 @@ public class XMLParser {
         return new ArrayList<ActingSet>();
     }
 
-    public CastingSet FindCastingSetData(Document document) {
-        return new CastingSet();
-    }
-
     public GameSet FindTrailerSetData(Document document){
+        // Get all elements from the document
+        Element root = document.getDocumentElement();
+
+        // Get all scene Sets
+        NodeList Sets = root.getElementsByTagName("set");
+
+
         return new GameSet();
     }
 
-    public ArrayList<SceneCard> FindSceneCardData (Document document){
+    public CastingSet FindCastingSetData(Document document) {
+        // Get all sets from the document
+        Element root = document.getDocumentElement();
+        NodeList sets = root.getElementsByTagName("office");
+
+        if (sets.getLength() != 1) {
+            System.out.println("Could not find just one Casting Set");
+            return null;
+        }
+        CastingSet castingSet = new CastingSet();
+        Node set = sets.item(0);
+
+        NodeList setDetails = set.getChildNodes();
+
+        for (int i = 0; i < setDetails.getLength(); i++) {
+
+            // Parse neighbors
+//            if ("neighbors".equals(setDetails.item(i).getNodeName())) {
+//                castingSet.SetNeighbors(ParseNeighbors());
+//            }
+
+            // Parse Area
+            if ("area".equals(setDetails.item(i).getNodeName()))
+            {
+                Node areaTag = setDetails.item(i);
+                Area area = ParseArea(areaTag);
+
+                castingSet.SetArea(area);
+            }
+
+            // Parse Upgrades
+            if ("upgrades".equals(setDetails.item(i).getNodeName())) {
+                Node upgradesTag = setDetails.item(i);
+                ArrayList<UpgradeData> upgradeData = ParseUpgrades(upgradesTag);
+                castingSet.SetUpgrades(upgradeData);
+            }
+        }
+
+        return castingSet;
+    }
+
+
+    public ArrayList<SceneCard> FindSceneCardData (Document document)
+    {
         Element root = document.getDocumentElement();
         NodeList sceneCards = root.getElementsByTagName("card");
 
@@ -129,12 +175,7 @@ public class XMLParser {
             Node partDetail = partDetails.item(k);
 
             if ("area".equals(partDetail.getNodeName())){
-                roleArea = new Area(
-                        Integer.parseInt(partDetail.getAttributes().getNamedItem("x").getNodeValue()),
-                        Integer.parseInt(partDetail.getAttributes().getNamedItem("y").getNodeValue()),
-                        Integer.parseInt(partDetail.getAttributes().getNamedItem("w").getNodeValue()),
-                        Integer.parseInt(partDetail.getAttributes().getNamedItem("h").getNodeValue())
-                );
+                roleArea = ParseArea(partDetail);
             }
             if ("line".equals(partDetail.getNodeName())){
                 roleQuote = partDetail.getTextContent();
@@ -150,6 +191,61 @@ public class XMLParser {
             roleArea);
     }
 
+    // Still Needs to be implemented
+    // I'm Thinking we do a double pass
+    // Once to register every set
+    // Second time to fill in the neighbors
+    private ArrayList<GameSet> ParseNeighbors() {
 
+        return new ArrayList<GameSet>();
+    }
+
+    private Area ParseArea(Node areaTag)
+    {
+        if (areaTag == null) {
+            return null;
+        }
+
+        return new Area(
+                Integer.parseInt(areaTag.getAttributes().getNamedItem("x").getNodeValue()),
+                Integer.parseInt(areaTag.getAttributes().getNamedItem("y").getNodeValue()),
+                Integer.parseInt(areaTag.getAttributes().getNamedItem("w").getNodeValue()),
+                Integer.parseInt(areaTag.getAttributes().getNamedItem("h").getNodeValue())
+        );
+    }
+
+    private ArrayList<UpgradeData> ParseUpgrades(Node upgradesTag)
+    {
+        if (upgradesTag == null){
+            return null;
+        }
+        ArrayList<UpgradeData> upgradeList = new ArrayList<>();
+
+        int level = 0;
+        int amount = 0;
+        String currencyType = "";
+        Area area = null;
+
+        for (int i = 0; i < upgradesTag.getChildNodes().getLength(); i++){
+            Node upgradeTag = upgradesTag.getChildNodes().item(i);
+
+            if ("upgrade".equals(upgradeTag.getNodeName())) {
+                level = Integer.parseInt(upgradeTag.getAttributes().getNamedItem("level").getNodeValue());
+                amount = Integer.parseInt(upgradeTag.getAttributes().getNamedItem("amt").getNodeValue());
+                currencyType = upgradeTag.getAttributes().getNamedItem("currency").getNodeValue();
+
+                NodeList subUpgradeTags = upgradeTag.getChildNodes();
+                for (int j = 0; j < subUpgradeTags.getLength(); j++) {
+                    Node subUpgradeTag = subUpgradeTags.item(j);
+                    if ("area".equals(subUpgradeTag.getNodeName())) {
+                        area = ParseArea(subUpgradeTag);
+                    }
+                }
+                upgradeList.add(new UpgradeData(level, amount, currencyType, area));
+            }
+        }
+
+        return upgradeList;
+    }
 
 }

@@ -25,8 +25,9 @@ public class Deadwood {
         Document setDocument = null;
         try{
             Path cardPath = Paths.get("xml", "cards.xml");
+            Path setPath = Paths.get("xml", "board.xml");
             cardDocument = parser.GetDocumentFromFile(cardPath.toString());
-//            setDocument = parser.GetDocumentFromFile("board.xml");
+            setDocument = parser.GetDocumentFromFile(setPath.toString());
         } catch (Exception e) {
             System.out.println("Something went wrong parsing : " + e);
         }
@@ -47,10 +48,18 @@ public class Deadwood {
         // TestSceneCards();
         // After you execute FindSceneCardData()
 
+        CastingSet castingSet = parser.FindCastingSetData(setDocument);
+
+        TestSceneCards();
+
+        System.out.println(castingSet.toString());
+
+
+
+        System.exit(0);
+
 
         ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
-
-        CastingSet castingSet = parser.FindCastingSetData(setDocument);
         GameSet trailerSet = parser.FindTrailerSetData(setDocument);
 
         // Be careful of size of acting sets

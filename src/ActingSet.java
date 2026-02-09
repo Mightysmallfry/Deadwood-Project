@@ -50,7 +50,6 @@ public class ActingSet extends GameSet {
         }
     }
 
-
     // Methods
     public boolean IsComplete(){
         _complete = _maximumProgress == _currentProgress;

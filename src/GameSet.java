@@ -109,10 +109,20 @@ public class GameSet {
 
     @Override
     public String toString() {
-        return "GameSet{" +
-                "_name='" + _name + '\'' +
-                ", _neighbors=" + _neighbors +
-                ", _players=" + _players +
-                '}';
+        StringBuilder sb = new StringBuilder();
+        sb.append("|| Game Set ||\n");
+        sb.append("Name : ");
+        sb.append(_name).append("\n");
+
+        sb.append("Area : ");
+        sb.append(_area != null? _area.toString() : "null").append("\n");
+
+        sb.append("Neighbors : ");
+        sb.append(_neighbors != null ? _neighbors.toString() : "null").append("\n");
+
+        sb.append("Players : ");
+        sb.append(_players != null ? _players.toString() : "null").append("\n");
+
+        return sb.toString();
     }
 }
