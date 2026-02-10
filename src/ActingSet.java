@@ -44,6 +44,7 @@ public class ActingSet extends GameSet {
         _complete = false;
         _currentSceneCard = null;
         _localRoles = localRoles;
+        _roleCatalog = new HashMap<>(localRoles.size());
 
         for (ActingRole role : localRoles){
             _roleCatalog.put(role, null);

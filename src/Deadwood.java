@@ -41,26 +41,21 @@ public class Deadwood {
             System.exit(0);
         }
 
-        parser.FindSceneCardData(cardDocument);
+        // All of our cards are already
+        // Added to the static library of cards
+        parser.ParseSceneCardData(cardDocument);
 
-        // If you want to test if we parsed the cards right
-        // Simply add
-        // TestSceneCards();
-        // After you execute FindSceneCardData()
-
-        CastingSet castingSet = parser.FindCastingSetData(setDocument);
+        CastingSet castingSet = parser.ParseCastingSet(setDocument);
+        GameSet trailerSet = parser.FindTrailerSetData(setDocument);
+        ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
 
         TestSceneCards();
-
         System.out.println(castingSet.toString());
-
-
+        System.out.println(trailerSet.toString());
+        // TestActingSets(actingSets);
 
         System.exit(0);
 
-
-        ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
-        GameSet trailerSet = parser.FindTrailerSetData(setDocument);
 
         // Be careful of size of acting sets
         ActingSet[] formatedActedSets = actingSets.toArray(new ActingSet[actingSets.size()]);
@@ -98,6 +93,11 @@ public class Deadwood {
         }
     }
 
-
+    public static void TestActingSets(ArrayList<ActingSet> actingSets) {
+        for (ActingSet set : actingSets)
+        {
+            System.out.println(actingSets.toString());
+        }
+    }
 
 }

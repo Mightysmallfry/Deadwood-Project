@@ -38,28 +38,7 @@ public class XMLParser {
         }
     }
 
-//    public ArrayList<ActingSet> FindActingSetData (Document document) {
-//        // Get all elements from the document
-//        Element root = document.getDocumentElement();
-//
-//        // Get all scene Sets
-//        NodeList Sets = root.getElementsByTagName("set");
-//
-//        return new ArrayList<ActingSet>();
-//    }
-//
-//    public GameSet FindTrailerSetData(Document document){
-//        // Get all elements from the document
-//        Element root = document.getDocumentElement();
-//
-//        // Get all scene Sets
-//        NodeList Sets = root.getElementsByTagName("set");
-//
-//
-//        return new GameSet();
-//    }
-
-    public CastingSet FindCastingSetData(Document document) {
+    public CastingSet ParseCastingSet(Document document) {
         // Get all sets from the document
         Element root = document.getDocumentElement();
         NodeList sets = root.getElementsByTagName("office");
@@ -101,7 +80,7 @@ public class XMLParser {
     }
 
 
-    public ArrayList<SceneCard> FindSceneCardData (Document document)
+    public ArrayList<SceneCard> ParseSceneCardData(Document document)
     {
         Element root = document.getDocumentElement();
         NodeList sceneCards = root.getElementsByTagName("card");
@@ -118,8 +97,6 @@ public class XMLParser {
 
         // Loop through each card creating it at the end
         for (int i = 0; i < sceneCards.getLength(); i++){
-
-
             // Get Card Framework - name, img, budget
             Node card = sceneCards.item(i);
 
@@ -136,26 +113,24 @@ public class XMLParser {
             for (int j = 0; j < cardDetails.getLength(); j++){
                 Node detail = cardDetails.item(j);
 
-                // If the cardDetail is a scene, get number and description
-                // Then set it for the found card
-                if ("scene".equals(detail.getNodeName())) {
-                    int sceneNumber = Integer.parseInt(detail.getAttributes().getNamedItem("number").getNodeValue());
-                    String sceneDescription = detail.getTextContent();
+                switch (detail.getNodeName())
+                {
+                    // Get Scene metadata
+                    case "scene":
+                        int sceneNumber = Integer.parseInt(detail.getAttributes().getNamedItem("number").getNodeValue());
+                        String sceneDescription = detail.getTextContent();
 
-                    foundCard.SetCardNumber(sceneNumber);
-                    foundCard.SetDescription(sceneDescription);
-                }
+                        foundCard.SetCardNumber(sceneNumber);
+                        foundCard.SetDescription(sceneDescription);
+                        break;
 
-                // If the cardDetail is an acting role,
-                // create and add it to the foundCard def
-                if ("part".equals(detail.getNodeName())) {
-                    ActingRole role = FetchActingRole(detail);
-
-                    foundCard.AddRole(role);
+                    // Get Role metadata
+                    case "part":
+                        ActingRole role = FetchActingRole(detail);
+                        foundCard.AddRole(role);
+                        break;
                 }
             }
-
-
             // Add the card into the array of possible cards
             foundCards.add(foundCard);
         }
