@@ -8,6 +8,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 
+import java.util.HashMap;
+import java.util.Map;
+
+
 public class XMLParser {
 
     /**
@@ -34,26 +38,26 @@ public class XMLParser {
         }
     }
 
-    public ArrayList<ActingSet> FindActingSetData (Document document) {
-        // Get all elements from the document
-        Element root = document.getDocumentElement();
-
-        // Get all scene Sets
-        NodeList Sets = root.getElementsByTagName("set");
-
-        return new ArrayList<ActingSet>();
-    }
-
-    public GameSet FindTrailerSetData(Document document){
-        // Get all elements from the document
-        Element root = document.getDocumentElement();
-
-        // Get all scene Sets
-        NodeList Sets = root.getElementsByTagName("set");
-
-
-        return new GameSet();
-    }
+//    public ArrayList<ActingSet> FindActingSetData (Document document) {
+//        // Get all elements from the document
+//        Element root = document.getDocumentElement();
+//
+//        // Get all scene Sets
+//        NodeList Sets = root.getElementsByTagName("set");
+//
+//        return new ArrayList<ActingSet>();
+//    }
+//
+//    public GameSet FindTrailerSetData(Document document){
+//        // Get all elements from the document
+//        Element root = document.getDocumentElement();
+//
+//        // Get all scene Sets
+//        NodeList Sets = root.getElementsByTagName("set");
+//
+//
+//        return new GameSet();
+//    }
 
     public CastingSet FindCastingSetData(Document document) {
         // Get all sets from the document
@@ -246,6 +250,225 @@ public class XMLParser {
         }
 
         return upgradeList;
+    }
+
+    //Gus Start
+
+    public ArrayList<ActingSet> FindActingSetData(Document document) {
+
+        Element root = document.getDocumentElement();
+        NodeList setNodes = root.getElementsByTagName("set");
+
+        ArrayList<ActingSet> actingSets = new ArrayList<>();
+        Map<String, ActingSet> setMap = new HashMap<>();
+        Map<ActingSet, ArrayList<String>> neighborNameMap = new HashMap<>();
+
+        // Loop through each set
+        for (int i = 0; i < setNodes.getLength(); i++) {
+
+            Node setNode = setNodes.item(i);
+
+            String name = setNode.getAttributes().getNamedItem("name").getNodeValue(); //This acquires the name
+
+            // Here we initialize variables for later
+            Area area = null;
+            ArrayList<String> neighborNames = new ArrayList<>();
+            ArrayList<ActingRole> roles = new ArrayList<>();
+            int maximumProgress = 0;
+
+            NodeList children = setNode.getChildNodes();
+
+            //for every element of the child nodes
+            for (int j = 0; j < children.getLength(); j++) {
+
+                Node child = children.item(j);
+
+                //we use cases to determine the value type
+                switch (child.getNodeName()) {
+
+                    case "area":
+                        area = ParseArea(child);
+                        break;
+
+                    case "neighbors":
+                        neighborNames = ParseNeighborNames(child);
+                        break;
+
+                    case "takes":
+                        maximumProgress = ParseMaxTakes(child);
+                        break;
+
+                    case "parts":
+                        roles = ParseParts(child);
+                        break;
+                }
+            }
+            // We add all the elements to the acting set then add it to the Acting set array.
+            ActingSet actingSet = new ActingSet(name, area, new ArrayList<>(), maximumProgress, roles);
+            actingSets.add(actingSet);
+            setMap.put(name, actingSet); // We also add it to the neighbor map!
+            neighborNameMap.put(actingSet, neighborNames);
+        }
+
+        // Here we resolve the neighbors (may need to be fixed with trailer and casting office in mind)
+        /**
+         * Ok so I figure we can have a function like public ArrayList<gameset> LoadBoard(Document document)
+         * that grabs all sets and adds the ActingSets Trailer and CastingSets to a hashmap.
+         * Next we would loop through and resolve all neighbors.
+         */
+        for (ActingSet set : actingSets)
+        {
+            ArrayList<GameSet> resolvedNeighbors = new ArrayList<>();
+
+            for (String neighborName : neighborNameMap.get(set))
+            {
+
+                if (setMap.containsKey(neighborName))
+                {
+                    resolvedNeighbors.add(setMap.get(neighborName));
+                }
+            }
+
+            set.SetNeighbors(resolvedNeighbors);
+        }
+
+        return actingSets;
+    }
+
+    private ArrayList<String> ParseNeighborNames(Node neighborsNode)
+    {
+
+        ArrayList<String> neighborNames = new ArrayList<>();
+        NodeList neighborList = neighborsNode.getChildNodes();
+        //loop through the children and get the neighbors
+        for (int i = 0; i < neighborList.getLength(); i++)
+        {
+
+            Node neighbor = neighborList.item(i);
+
+            if ("neighbor".equals(neighbor.getNodeName()))
+            {
+                String name = neighbor.getAttributes().getNamedItem("name").getNodeValue();
+                neighborNames.add(name);
+            }
+        }
+
+        return neighborNames;
+    }
+
+    private int ParseMaxTakes(Node takesNode)
+    {
+        int max = 0;
+        NodeList takeNodes = takesNode.getChildNodes();
+
+        for (int i = 0; i < takeNodes.getLength(); i++)
+        {
+            Node take = takeNodes.item(i);
+
+            if ("take".equals(take.getNodeName()))
+            {
+                int number = Integer.parseInt(take.getAttributes().getNamedItem("number").getNodeValue());
+
+                if (number > max) {
+                    max = number;
+                }
+            }
+        }
+
+        return max;
+    }
+
+    public GameSet FindTrailerSetData(Document document)
+    {
+
+        Element root = document.getDocumentElement();
+        NodeList trailerList = root.getElementsByTagName("trailer");
+
+        if (trailerList.getLength() != 1)
+        {
+            System.out.println("Could not find trailer");
+            return null;
+        }
+
+        Node trailerNode = trailerList.item(0);
+
+        Area area = null;
+        ArrayList<String> neighborNames = new ArrayList<>();
+
+        NodeList children = trailerNode.getChildNodes();
+
+        for (int i = 0; i < children.getLength(); i++)
+        {
+
+            Node child = children.item(i);
+
+            switch (child.getNodeName()) {
+
+                case "area":
+                    area = ParseArea(child);
+                    break;
+
+                case "neighbors":
+                    neighborNames = ParseNeighborNames(child);
+                    break;
+            }
+        }
+
+        GameSet trailer = new GameSet("Trailer", new ArrayList<GameSet>(), area);
+
+        return trailer;
+    }
+
+    private ArrayList<ActingRole> ParseParts(Node partsNode)
+    {
+
+        ArrayList<ActingRole> roles = new ArrayList<>();
+
+        if (partsNode == null)
+        {
+            return roles;
+        }
+
+        NodeList partNodes = partsNode.getChildNodes();
+
+        //loops through parts
+        for (int i = 0; i < partNodes.getLength(); i++)
+        {
+            Node partNode = partNodes.item(i);
+
+            if ("part".equals(partNode.getNodeName()))
+            {
+                String roleName = partNode.getAttributes().getNamedItem("name").getNodeValue();
+
+                int roleLevel = Integer.parseInt(partNode.getAttributes().getNamedItem("level").getNodeValue());
+
+                String roleLine = "";
+                Area roleArea = null;
+
+
+                NodeList partDetails = partNode.getChildNodes();
+
+                for (int j = 0; j < partDetails.getLength(); j++)
+                {
+                    Node detail = partDetails.item(j);
+
+                    if ("area".equals(detail.getNodeName()))
+                    {
+                        roleArea = ParseArea(detail);
+                    }
+
+                    if ("line".equals(detail.getNodeName()))
+                    {
+                        roleLine = detail.getTextContent().trim();
+                    }
+                }
+
+                ActingRole role = new ActingRole(roleLevel, roleName, roleLine, roleArea);
+
+                roles.add(role);
+            }
+        }
+        return roles;
     }
 
 }
