@@ -20,7 +20,7 @@ public class Deadwood {
 
         // Parse the data needed for our game board
         // - Sets - Cards - Roles
-        XMLParser parser = new XMLParser();
+        SetParser parser = new SetParser();
         Document cardDocument = null;
         Document setDocument = null;
         try{

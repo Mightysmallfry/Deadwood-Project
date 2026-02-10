@@ -94,6 +94,10 @@ public class ActingSet extends GameSet {
     }
 
     public void AddCard(SceneCard card){
+        if (_currentSceneCard != null) {
+            return;
+        }
+
         _currentSceneCard = card;
     }
 
