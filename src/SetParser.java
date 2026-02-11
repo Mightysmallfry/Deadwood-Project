@@ -14,9 +14,8 @@ import java.util.Map;
 
 public class SetParser extends ParseDaddy{
 
-    //TODO: Add Arraylist of Sets and Hashmap
-    // of sets as local variables so we can access them
-    // That or add them as statics for the GameSet Class
+    // Methods
+    private HashMap<String, GameSet> _allSets;
 
     //TODO: Implement Second Neighbor pass once all
     // GameSet objects have been created
@@ -38,51 +37,41 @@ public class SetParser extends ParseDaddy{
             try {
                 document = documentBuilder.parse(fileName);
             } catch (Exception ex) {
-                System.out.println("XML parse failure");
-                ex.printStackTrace();
+                throw new RuntimeException("Failed to parse XML:" + fileName, ex);
             }
             return document;
         }
     }
 
-    public CastingSet ParseCastingSet(Document document) {
-        // Get all sets from the document
-        Element root = document.getDocumentElement();
-        NodeList sets = root.getElementsByTagName("office");
+    private void Set_AllSets(HashMap<String,GameSet> sets){this._allSets = sets;}
 
-        if (sets.getLength() != 1) {
-            System.out.println("Could not find just one Casting Set");
-            return null;
-        }
+    private HashMap<String,GameSet> Get_AllSets(){return this._allSets;}
+
+    private GameSet ParseCastingSet(Node set) {
+
         CastingSet castingSet = new CastingSet();
-        Node set = sets.item(0);
 
         NodeList setDetails = set.getChildNodes();
 
         for (int i = 0; i < setDetails.getLength(); i++) {
+            Node currentNode = setDetails.item(i);
 
-            // Parse neighbors
-//            if ("neighbors".equals(setDetails.item(i).getNodeName())) {
-//                castingSet.SetNeighbors(ParseNeighbors());
-//            }
+            if(currentNode.getNodeType() != Node.ELEMENT_NODE)
+                continue;
 
-            // Parse Area
-            if ("area".equals(setDetails.item(i).getNodeName()))
-            {
-                Node areaTag = setDetails.item(i);
-                Area area = ParseArea(areaTag);
+            switch (currentNode.getNodeName()) {
 
-                castingSet.SetArea(area);
-            }
+                case "area":
+                    Area area = ParseArea(currentNode);
+                    castingSet.SetArea(area);
+                    break;
 
-            // Parse Upgrades
-            if ("upgrades".equals(setDetails.item(i).getNodeName())) {
-                Node upgradesTag = setDetails.item(i);
-                ArrayList<UpgradeData> upgradeData = ParseUpgrades(upgradesTag);
-                castingSet.SetUpgrades(upgradeData);
+                case "upgrades":
+                    ArrayList<UpgradeData> upgradeData = ParseUpgrades(currentNode);
+                    castingSet.SetUpgrades(upgradeData);
+                    break;
             }
         }
-
         return castingSet;
     }
 
@@ -93,29 +82,158 @@ public class SetParser extends ParseDaddy{
     // Second time to fill in the neighbors
 
     // TODO: Implement this
-    private ArrayList<GameSet> ParseNeighbors() {
+    //I understand that this is ment to give the list of neighbors but!
+    //What if we make a hash map with all the gamestes form the parser then we can have a resolve neighbors function that
+    //gives each one a neighbor. Then we can have a casting set function a trailer function and an acting set function
+    // that grab those elements from the completed hashmap.
 
-        return new ArrayList<GameSet>();
+    //This will be my parse as much as I can function
+    private void ParseBoard(Document document) {
+        Element root = document.getDocumentElement();
+        NodeList children = root.getChildNodes();
+        HashMap<String,GameSet> setHolder = new HashMap<>(children.getLength());
+        HashMap<String,ArrayList<String>> neighborHolder = new HashMap<>(children.getLength());//this will be where we store the neighbors in string form for actual attachment later.
+        for(int i = 0; i < children.getLength(); i++) //go through all the sets
+        {
+            Node currentNode = children.item(i); //set current node
+
+            if (currentNode.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+
+            String nodeType = currentNode.getNodeName();
+            String name;
+
+            switch (nodeType)
+            {
+                case "set":
+                    name = currentNode.getAttributes().getNamedItem("name").getNodeValue();
+                    setHolder.put(name,FindActingSetData(currentNode,name));
+                    break;
+
+                case "trailer":
+                    name = "trailer";
+                    setHolder.put(name,FindTrailerSetData(currentNode));
+                    break;
+
+                case "office":
+                    name = "office";
+                    setHolder.put(name,ParseCastingSet(currentNode));
+                    break;
+
+                default:
+                    continue;
+            }
+
+            if(name != null)
+            {
+                Node neighborsNode = getNeighborsNode(currentNode);
+                neighborHolder.put(name, neighborsNode != null ? ParseNeighborNames(neighborsNode) : new ArrayList<>());
+            }
+
+        }   //everything should be in the hashmap now! so we need to go back through and parse neighbors.
+
+        for(Map.Entry<String,GameSet> entry : setHolder.entrySet())
+        {
+            String key = entry.getKey();
+            GameSet value = entry.getValue();
+            ArrayList<GameSet> newNeighbors = new ArrayList<>();
+            ArrayList<String> stringNeighbors = neighborHolder.get(key);
+
+            for (String stringNeighbor : stringNeighbors) {
+                GameSet neighbor = setHolder.get(stringNeighbor);
+                if(neighbor == null)
+                {
+                    throw new IllegalArgumentException("Unknown neighbor:  " + stringNeighbor);
+                }
+                newNeighbors.add(neighbor);//this should set the new list for neighbors to be the GameSet object
+            }
+            value.SetNeighbors(newNeighbors);
+        }
+
+        Set_AllSets(setHolder);
+
+    }
+
+    public CastingSet FindCastingSet()
+    {
+        if (_allSets == null)
+        {
+            throw new IllegalStateException("Board not parsed yet.");
+        }
+            GameSet set = Get_AllSets().get("office");
+        return (set instanceof CastingSet) ? (CastingSet) set : null;
+    }
+
+    public GameSet FindTrailer()
+    {
+        if (_allSets == null)
+        {
+            throw new IllegalStateException("Board not parsed yet.");
+        }
+        return Get_AllSets().get("trailer");
+    }
+
+    public ArrayList<ActingSet> FindActingSets()
+    {
+        ArrayList<ActingSet> actingSets = new ArrayList<>();
+
+        if (_allSets == null)
+        {
+            throw new IllegalStateException("Board not parsed yet.");
+        }
+        for(GameSet set : Get_AllSets().values())
+        {
+            if (set instanceof ActingSet)
+            {
+                actingSets.add(((ActingSet) set));
+            }
+
+        }
+        return actingSets;
     }
 
 
+    //Helper to get the neighbor node name.
+    private Node getNeighborsNode(Node daddy)
+    {
+        NodeList nodes = daddy.getChildNodes();
+        for(int i = 0; i < nodes.getLength(); i++)
+        {
+            Node child = nodes.item(i);
 
+            if(child.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+
+            if(child.getNodeName().equals("neighbors"))
+            {
+                return child;
+            }
+        }
+        return null;
+    }
+
+
+    //Upgrades moment
     private ArrayList<UpgradeData> ParseUpgrades(Node upgradesTag)
     {
         if (upgradesTag == null){
-            return null;
+            return new ArrayList<>();
         }
         ArrayList<UpgradeData> upgradeList = new ArrayList<>();
 
         int level = 0;
         int amount = 0;
         String currencyType = "";
-        Area area = null;
+
 
         for (int i = 0; i < upgradesTag.getChildNodes().getLength(); i++){
             Node upgradeTag = upgradesTag.getChildNodes().item(i);
 
+            if (upgradeTag.getNodeType() != Node.ELEMENT_NODE)
+                continue;
+
             if ("upgrade".equals(upgradeTag.getNodeName())) {
+                Area area = null;
                 level = Integer.parseInt(upgradeTag.getAttributes().getNamedItem("level").getNodeValue());
                 amount = Integer.parseInt(upgradeTag.getAttributes().getNamedItem("amt").getNodeValue());
                 currencyType = upgradeTag.getAttributes().getNamedItem("currency").getNodeValue();
@@ -134,88 +252,42 @@ public class SetParser extends ParseDaddy{
         return upgradeList;
     }
 
-    //Gus Start
 
-    public ArrayList<ActingSet> FindActingSetData(Document document) {
+    private GameSet FindActingSetData(Node setNode,String name) {
 
-        Element root = document.getDocumentElement();
-        NodeList setNodes = root.getElementsByTagName("set");
+        Area area = null;
+        ArrayList<ActingRole> roles = new ArrayList<>();
+        int maximumProgress = 0;
 
-        ArrayList<ActingSet> actingSets = new ArrayList<>();
-        Map<String, ActingSet> setMap = new HashMap<>();
-        Map<ActingSet, ArrayList<String>> neighborNameMap = new HashMap<>();
+        NodeList children = setNode.getChildNodes();
 
-        // Loop through each set
-        for (int i = 0; i < setNodes.getLength(); i++) {
+        //for every element of the child nodes
+        for (int j = 0; j < children.getLength(); j++) {
+            Node child = children.item(j);
 
-            Node setNode = setNodes.item(i);
+            if(child.getNodeType() != Node.ELEMENT_NODE)
+                continue;
 
-            String name = setNode.getAttributes().getNamedItem("name").getNodeValue(); //This acquires the name
+            //we use cases to determine the value type
+            switch (child.getNodeName()) {
 
-            // Here we initialize variables for later
-            Area area = null;
-            ArrayList<String> neighborNames = new ArrayList<>();
-            ArrayList<ActingRole> roles = new ArrayList<>();
-            int maximumProgress = 0;
+                case "area":
+                    area = ParseArea(child);
+                    break;
 
-            NodeList children = setNode.getChildNodes();
+                case "takes":
+                    maximumProgress = ParseMaxTakes(child);
+                    break;
 
-            //for every element of the child nodes
-            for (int j = 0; j < children.getLength(); j++) {
-
-                Node child = children.item(j);
-
-                //we use cases to determine the value type
-                switch (child.getNodeName()) {
-
-                    case "area":
-                        area = ParseArea(child);
-                        break;
-
-                    case "neighbors":
-                        neighborNames = ParseNeighborNames(child);
-                        break;
-
-                    case "takes":
-                        maximumProgress = ParseMaxTakes(child);
-                        break;
-
-                    case "parts":
-                        roles = ParseRoleList(child);
-                        break;
+                case "parts":
+                    roles = ParseRoleList(child);
+                    break;
                 }
             }
-            // We add all the elements to the acting set then add it to the Acting set array.
-            ActingSet actingSet = new ActingSet(name, area, new ArrayList<>(), maximumProgress, roles);
-            actingSets.add(actingSet);
-            setMap.put(name, actingSet); // We also add it to the neighbor map!
-            neighborNameMap.put(actingSet, neighborNames);
-        }
-
-        // Here we resolve the neighbors (may need to be fixed with trailer and casting office in mind)
-        /**
-         * Ok so I figure we can have a function like public ArrayList<gameset> LoadBoard(Document document)
-         * that grabs all sets and adds the ActingSets Trailer and CastingSets to a hashmap.
-         * Next we would loop through and resolve all neighbors.
-         */
-        for (ActingSet set : actingSets)
-        {
-            ArrayList<GameSet> resolvedNeighbors = new ArrayList<>();
-
-            for (String neighborName : neighborNameMap.get(set))
-            {
-
-                if (setMap.containsKey(neighborName))
-                {
-                    resolvedNeighbors.add(setMap.get(neighborName));
-                }
-            }
-
-            set.SetNeighbors(resolvedNeighbors);
-        }
-
-        return actingSets;
+        return new ActingSet(name, area, new ArrayList<>(), maximumProgress, roles);
     }
+
+
 
     private ArrayList<String> ParseNeighborNames(Node neighborsNode)
     {
@@ -225,8 +297,10 @@ public class SetParser extends ParseDaddy{
         //loop through the children and get the neighbors
         for (int i = 0; i < neighborList.getLength(); i++)
         {
-
             Node neighbor = neighborList.item(i);
+
+            if(neighbor.getNodeType() != Node.ELEMENT_NODE)
+                continue;
 
             if ("neighbor".equals(neighbor.getNodeName()))
             {
@@ -247,7 +321,7 @@ public class SetParser extends ParseDaddy{
         {
             Node take = takeNodes.item(i);
 
-            if ("take".equals(take.getNodeName()))
+            if (take.getNodeType() == Node.ELEMENT_NODE && "take".equals(take.getNodeName()))
             {
                 int number = Integer.parseInt(take.getAttributes().getNamedItem("number").getNodeValue());
 
@@ -260,49 +334,30 @@ public class SetParser extends ParseDaddy{
         return max;
     }
 
-    public GameSet FindTrailerSetData(Document document)
+    private GameSet FindTrailerSetData(Node trailerNode)
     {
 
-        Element root = document.getDocumentElement();
-        NodeList trailerList = root.getElementsByTagName("trailer");
-
-        if (trailerList.getLength() != 1)
-        {
-            System.out.println("Could not find trailer");
-            return null;
-        }
-
-        Node trailerNode = trailerList.item(0);
-
         Area area = null;
-        ArrayList<String> neighborNames = new ArrayList<>();
 
         NodeList children = trailerNode.getChildNodes();
 
         for (int i = 0; i < children.getLength(); i++)
         {
-
             Node child = children.item(i);
 
-            switch (child.getNodeName()) {
+            if(child.getNodeType() != Node.ELEMENT_NODE)
+                continue;
 
-                case "area":
-                    area = ParseArea(child);
-                    break;
-
-                case "neighbors":
-                    neighborNames = ParseNeighborNames(child);
-                    break;
+            if (child.getNodeName().equals("area"))
+            {
+                area = ParseArea(child);
             }
         }
 
-        GameSet trailer = new GameSet("Trailer", new ArrayList<GameSet>(), area);
+        GameSet trailer = new GameSet("trailer", new ArrayList<GameSet>(), area);
 
         return trailer;
     }
-
-
-
 
 
 
