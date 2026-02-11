@@ -1,30 +1,41 @@
 public class Player {
     // Statics
-    private static int _ID = 1;
 
     // Members
     private LocationComponent _location;
     private CurrencyComponent _currency;
-    private ActingRole _role;
-    private int _personalId = 0;
+//    private ActingRole _role;
+    private String _personalId; //name
     private int _score = 0;
-    private int _currentRank = 1;
+    private int _currentRank;
 
-    //TODO: Consider that we have _role and _location.currentRole.
-    // A bit redundant and currently not in a good way
+    //Role now only lives in location component.
+    //Static ID currently does basically nothing so I figure we remove it because we now have a better method in the player manager
+    //I think we should just hve it be its index in the array at least.
 
     // Constructors
     public Player()
     {
-        _personalId = _ID;
-        _ID++;
+        SetPersonalId("");
     }
 
-    public Player(int startingRank)
+    public Player(String personalId)
     {
-        SetPersonalId(GetId());
-        _ID++;
-        SetCurrentRank(startingRank);
+        SetPersonalId(personalId);
+        SetCurrentRank(1);
+    }
+
+    public Player(String personalId, int startingRank)
+    {
+        SetPersonalId(personalId);
+        SetCurrentRank(_currentRank);
+    }
+
+    public Player(String personalId, int startingRank, LocationComponent location)
+    {
+        SetPersonalId(personalId);
+        SetCurrentRank(_currentRank);
+        SetLocation(location);
     }
 
     // Setter start
@@ -32,11 +43,11 @@ public class Player {
         _currency = currencyComponent;
     }
 
-    public void SetRole(ActingRole role) {
-        _role = role;
-    }
+//    public void SetRole(ActingRole role) {
+//        _role = role;
+//    }
 
-    public void SetPersonalId(int personalId) {
+    public void SetPersonalId(String personalId) {
         _personalId = personalId;
     }
 
@@ -62,11 +73,11 @@ public class Player {
         return _currency;
     }
 
-    public ActingRole GetRole() {
-        return _role;
-    }
+//    public ActingRole GetRole() {
+//        return _role;
+//    }
 
-    public int GetPersonalId() {
+    public String GetPersonalId() {
         return _personalId;
     }
 
@@ -82,17 +93,16 @@ public class Player {
         return _location;
     }
 
-    public int GetId() { return _ID; }
-
     // Methods
     public boolean HasRole(ActingRole role)
     {
-        // need to implement an equality check in ActingRole
-        return _role != null && _role.equals(role);
+
+        ActingRole currentRole = GetLocation().GetCurrentRole();
+        return currentRole != null && currentRole.equals(role);
     }
 
     public boolean HasRole() {
-        return _role != null;
+        return GetLocation().GetCurrentRole() != null;
     }
 
     @Override
@@ -101,11 +111,9 @@ public class Player {
         return "Player{" +
                 "_location=" + _location +
                 ", _currency=" + _currency +
-                ", _id=" + _ID +
                 ", _personalId='" + _personalId + '\'' +
                 ", _score=" + _score +
                 ", _currentRank=" + _currentRank +
-                ", _role=" + _role +
                 '}';
     }
 }
