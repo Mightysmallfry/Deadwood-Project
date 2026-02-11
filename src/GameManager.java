@@ -68,7 +68,7 @@ public class GameManager {
     private void UpdateGame()
     //This processes the current player's turn
     {
-        PlayerManager manager = PlayerManager.GetInstance();
+        PlayerManager manager = new PlayerManager();
         Player current = GetCurrentPlayer();
         LocationComponent loc = current.GetLocation();
 
@@ -142,7 +142,7 @@ public class GameManager {
      */
     private void EndDay() //may be off by 1
     {
-        PlayerManager manager = PlayerManager.GetInstance();
+        PlayerManager manager = new PlayerManager();
         SetCurrentDay(GetCurrentDay() + 1);
 
         if (IsEndGame()) {
@@ -180,12 +180,14 @@ public class GameManager {
      * This Function is a Helper for UpdateGame that moves focus to the next player
      * after the game is done updating.
      */
+
+    //This could be moved to player manager, but it works in both classes.
     private void AdvanceTurn()
     {
         // Reset Action Tokens for the next player
         _actionTokens = DEFAULT_ACTION_TOKENS;
 
-        PlayerManager manager = PlayerManager.GetInstance();
+        PlayerManager manager = new PlayerManager();
         int index = 0;
 
         for (int i = 0; i < manager.GetPlayerLibrary().length; i++)
@@ -231,8 +233,8 @@ public class GameManager {
      */
     public void EndGame()
     {
-        PlayerManager manager = PlayerManager.GetInstance();
-        int[] scores = manager.TallyScore();
+        PlayerManager manager = new PlayerManager(); //WE ONLY PASS IN THE RULES IN START GAME //Otherwise we pass in nothing
+        int[] scores = manager.TallyScore(); //This will be its own thing eventually REMEMBER TO CHANGE
 
         // Grab the highest score
         int highest = Integer.MIN_VALUE;
@@ -264,48 +266,31 @@ public class GameManager {
      */
     public void StartGame()
     {
-        PlayerManager manager = PlayerManager.GetInstance();
-        UpdateRules();
-
-        SetCurrentDay(1);
-
-        // Move all players to Trailer
+        // Populate board
+        _gameBoard.Populate();
         GameSet trailer = _gameBoard.GetStartingSet();
 
-        for (Player p : manager.GetPlayerLibrary())
-        {
-            LocationComponent loc = p.GetLocation();
+        //Here we need to as the player how many players they have, then we create the rules package.
+        System.out.println("How many players will you be playing with?");
+        System.out.println("Please type a number between 2 and 8");
+        Scanner sc = new Scanner(System.in);
+        int playerCount = sc.nextInt();
+        sc.close();
 
-            loc.SetCurrentRole(null);
-            loc.SetOnCard(false);
-            loc.SetRehearseTokens(0);
+        // Get rule set based on player input
+        RulesPackage rules = new RulesPackage(playerCount);
+        //Create all players
+        PlayerManager manager = new PlayerManager(rules,playerCount,trailer);
+        //set rules to GameManager
+        SetRules(rules);
+        SetCurrentDay(1);
 
-            loc.SetCurrentGameSet(trailer);
-            trailer.AddPlayer(p);
-        }
-
-        // Populate board with scene cards
-        _gameBoard.Populate();
-
-        // Choose first player
-        _currentPlayer = manager.GetPlayerLibrary()[0]; //Could make this a dice roll.
+        // Use die to choose a first player
+        Dice dice = Dice.GetInstance();
+        int startingPlayer = dice.Roll(1,playerCount) -1; //-1 because indexing starts at 0 and dice will allways give is 1-8 instead of 0-7
+        SetCurrentPlayer( manager.GetPlayerLibrary()[startingPlayer]); //Could make this a die roll.
     }
 
-    private void UpdateRules()
-    //This is used after Deadwood asks for players to change the rules depending on the player number.
-    {
-        PlayerManager manager = PlayerManager.GetInstance();
-        RulesPackage rules = new RulesPackage(manager.GetPlayerLibrary());
-
-        // store for later
-        _rules = rules;
-
-        // apply to players
-        for (Player p : manager.GetPlayerLibrary()) {
-            p.SetCurrentRank(rules.GetStartingRank());
-            p.GetCurrency().IncreaseCredits(rules.GetStartingCredits());
-        }
-    }
 
     /**
      * Checks what actions are available to the player and returns
