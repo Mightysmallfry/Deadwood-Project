@@ -1,24 +1,28 @@
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class PlayerManager {
 
     // Members
-    private static PlayerManager _instance;
-    private Player[] _playerLibrary;
+    private static Player[] _playerLibrary;
+
 
     // Constructors
-    //TODO: We probably need a static player count variable, so we can set it while the instance is null
-    // Then when we initialize with the constructor we can construct that many player objects
-    private PlayerManager() {}
-
-    public static PlayerManager GetInstance() { //How does this work with setting the players and all that
-        if (_instance == null)
+    public PlayerManager(RulesPackage rules, int playerCount, GameSet startLocation)
+    {
+        _playerLibrary = new Player[playerCount];
+        for(int i = 0; i < playerCount; i++)
         {
-            _instance = new PlayerManager();
+            Player p = AddPlayer(rules, startLocation);
+            _playerLibrary[i] = p;
         }
-        return _instance;
     }
+    public PlayerManager()
+    {
+
+    }
+
 
     // Getters
     public Player[] GetPlayerLibrary() {return _playerLibrary;}
@@ -32,10 +36,37 @@ public class PlayerManager {
 
 
     // Methods
+
+    /**
+     * This is called at the start of the game and creates a player based on the rules.
+     * @param rules
+     * @param startingLocation
+     * @return
+     */
+
+    private Player AddPlayer(RulesPackage rules, GameSet startingLocation)
+    {
+        //I will have to add limits for the name
+        System.out.println("Please input your name:");
+        Scanner sc = new Scanner(System.in);
+        String name = sc.nextLine();
+        sc.close();
+        System.out.println("Thank you!");
+        Player p = new Player(name,rules.GetStartingRank());
+        p.GetCurrency().IncreaseCredits(rules.GetStartingCredits());
+        LocationComponent loc = p.GetLocation();
+        loc.SetCurrentGameSet(startingLocation);
+        loc.SetCurrentRole(null);
+        loc.SetOnCard(false);
+        loc.SetRehearseTokens(0);
+        startingLocation.AddPlayer(p);
+        return p;
+    }
+
+
+
     /**
      * This looks at if the roll was a success and pays the players
-     * My problem is where is this called?
-     * If its in update then this WILL NOT WORK.
      */
     public void BasicPay(Player player, boolean success)
     {
