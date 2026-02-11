@@ -70,7 +70,7 @@ public class Deadwood {
         // Create a Game Manager, passing in the rulesPackage
         // When creating players, maybe add playerName?
         // We keep track via id anyway. Not necessary but would make sense
-        GameManager gameManager = new GameManager();
+        PlayerManager playerManager = new PlayerManager();
 
 
 
