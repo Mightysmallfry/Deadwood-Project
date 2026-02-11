@@ -2,6 +2,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class Move implements TurnAction{
+    //TODO: Can the player acquire a role after and before moving?
+    // If so change the action cost to 0;
     private final int ACTION_COST = 1;
 
     private Scanner _input = new Scanner(System.in);
@@ -9,6 +11,11 @@ public class Move implements TurnAction{
 
     @Override
     public void Execute() {
+        // If you move once you are done.
+        if (GameManager.GetInstance().HasMoved()) {
+            return;
+        }
+
         // Get the player's current location
 
         Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
@@ -53,8 +60,12 @@ public class Move implements TurnAction{
         currentSet.GetPlayers().remove(currentPlayer);
         currentPlayer.GetLocation().SetCurrentGameSet(targetLocation);
 
+        // Update the action economy.
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         actionTokens -= ACTION_COST;
         GameManager.GetInstance().SetActionTokens(actionTokens);
+
+        // Make it so we can't move after this
+        GameManager.GetInstance().HasMoved(true);
     }
 }

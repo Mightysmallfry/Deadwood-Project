@@ -5,17 +5,19 @@ public class GameManager {
     // Constants
     private final int DEFAULT_ACTION_TOKENS = 1;
 
-    // Members
+    // Statics
     private static GameManager _instance;
+    private static RulesPackage _rules;
 
+    // Members
     private Player _currentPlayer;
     private int _currentDay;
     private GameBoard _gameBoard;
     private TurnAction _playerAction = new Upgrade();
-    private RulesPackage _rules;
     private Scanner _input = new Scanner(System.in);
 
     private int _actionTokens = DEFAULT_ACTION_TOKENS;
+    private boolean _hasMoved = false;
 
     // Constructors
     private GameManager() {}
@@ -40,14 +42,16 @@ public class GameManager {
     public int GetCurrentDay(){return _currentDay;}
 
     // Setters
-
-    public void SetRules(RulesPackage rules){_rules = rules;}
+    public static void SetRules(RulesPackage rules) {_rules = rules;}
 
     public void SetGameBoard(GameBoard gameBoard) {_gameBoard = gameBoard;}
 
     public void SetCurrentPlayer(Player currentPlayer) {_currentPlayer = currentPlayer;}
 
     public void SetCurrentDay(int day){_currentDay = day;}
+
+    public boolean HasMoved() { return _hasMoved; }
+    public void HasMoved(boolean hasMoved) {_hasMoved = hasMoved;}
 
     /**
      * @param playerAction any player action that implements the TurnAction interface
@@ -68,9 +72,49 @@ public class GameManager {
         Player current = GetCurrentPlayer();
         LocationComponent loc = current.GetLocation();
 
-        // Get What actions the player can take
-        ArrayList<String> possibleActions = GetActionList();
+        // While taking turn
+        boolean takingTurn = true;
+        while (takingTurn)
+        {
+            ArrayList<String> possibleActions = GetActionList();
+            DisplayActionList(possibleActions);
 
+            System.out.print("Choice: ");
+            String playerChoice = _input.nextLine().toLowerCase().strip();
+
+            if (!possibleActions.contains(playerChoice))
+            {
+                System.out.println("Invalid Choice");
+                continue;
+            }
+
+            // TODO: How do we want to quit?
+            switch (playerChoice)
+            {
+                case "quit":
+                    System.exit(1);
+                    break;
+                case "pass":
+                    takingTurn = false;
+                    break;
+                case "acquire":
+                    SetPlayerAction(new Acquire());
+                    break;
+                case "act":
+                    SetPlayerAction(new Act());
+                    break;
+                case "rehearse":
+                    SetPlayerAction(new Rehearse());
+                    break;
+                case "move":
+                    SetPlayerAction(new Move());
+                    break;
+                case "upgrade":
+                    SetPlayerAction(new Upgrade());
+                    break;
+            }
+            _playerAction.Execute();
+        }
 
         // Check if scene just wrapped
         if (loc.GetCurrentGameSet() instanceof ActingSet actSet)
@@ -216,7 +260,7 @@ public class GameManager {
 
     /**
      *This starts the game using the given rules package as well as sets the day to one and moves players to the start.
-     * Next it sets up all the players default values then populates the board and chooses a starting plyer.
+     * Next it sets up all the players default values then populates the board and chooses a starting player.
      */
     public void StartGame()
     {
@@ -279,27 +323,21 @@ public class GameManager {
         possibleActions.add("pass");
 
         // The player has a role
-        if (_currentPlayer.HasRole() && _actionTokens > 0)
-        {
+        if (_currentPlayer.HasRole() && _actionTokens > 0) {
             // Acquire
             possibleActions.add("acquire");
-
             // Act
             possibleActions.add("act");
-
             // Rehearse
             possibleActions.add("rehearse");
 
         } else {
-            if (_actionTokens > 0)
-            {
+            if (_actionTokens > 0) {
                 // Move
                 possibleActions.add("move");
             }
-
             // Upgrade
-            if (_currentPlayer.GetLocation().GetCurrentGameSet() instanceof CastingSet)
-            {
+            if (_currentPlayer.GetLocation().GetCurrentGameSet() instanceof CastingSet) {
                 possibleActions.add("upgrade");
             }
         }

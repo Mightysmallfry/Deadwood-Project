@@ -115,6 +115,12 @@ public class ActingSet extends GameSet {
         _currentProgress = progress;
     }
 
+    public Map<ActingRole, Player> GetRoleCatalog()
+    {
+        return _roleCatalog;
+    }
+
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

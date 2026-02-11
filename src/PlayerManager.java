@@ -5,10 +5,11 @@ public class PlayerManager {
 
     // Members
     private static PlayerManager _instance;
-    private GameBoard _gameBoard;
     private Player[] _playerLibrary;
 
     // Constructors
+    //TODO: We probably need a static player count variable, so we can set it while the instance is null
+    // Then when we initialize with the constructor we can construct that many player objects
     private PlayerManager() {}
 
     public static PlayerManager GetInstance() { //How does this work with setting the players and all that
@@ -20,8 +21,6 @@ public class PlayerManager {
     }
 
     // Getters
-    public GameBoard GetGameBoard() {return _gameBoard;}
-
     public Player[] GetPlayerLibrary() {return _playerLibrary;}
 
     public int GetPlayerCount() {
@@ -29,8 +28,6 @@ public class PlayerManager {
     }
 
     // Setters
-    public void SetGameBoard(GameBoard gameBoard) {_gameBoard = gameBoard;}
-
     public void SetPlayerLibrary(Player[] playerLibrary) {_playerLibrary = playerLibrary;}
 
 
@@ -132,6 +129,7 @@ public class PlayerManager {
 
     }
 
+
     /**
      * Runs through the list of players and Tallys their Score
      * @return int[] of player scores
@@ -161,13 +159,6 @@ public class PlayerManager {
         StringBuilder sb = new StringBuilder();
 
         sb.append("PlayerManager {\n");
-
-        sb.append("  GameBoard: ");
-        sb.append(_gameBoard != null ? _gameBoard.toString() : "null");
-        sb.append("\n");
-
-        sb.append("  Current Player: ");
-        sb.append("\n");
 
         sb.append("  Player Count: ");
         sb.append(_playerLibrary != null ? _playerLibrary.length : 0);
