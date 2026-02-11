@@ -66,12 +66,14 @@ public class Deadwood {
         gameBoard.Populate();
 
         // Create a Game Manager, passing in the rulesPackage
-        // When creating players, maybe add playerName?
+        //When start Game Is called it asks for the player count and sets the Rules for Game manager!
+
+        // When creating players, maybe add playerName? //We do that in AddPlayer in PlayerManager the first time its called.
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager playerManager = PlayerManager.GetInstance();
+        PlayerManager playerManager = new PlayerManager(); //Calling StartGame in GameManager creates all players and
 
 
-        // Begin game with player 0/1
+        // Begin game with player 0/1 //First player is chosen in start game.
 
         // When it is time end the game
 

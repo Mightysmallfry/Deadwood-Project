@@ -26,20 +26,24 @@ public class Act implements TurnAction{
 
         boolean success = attempt >= currentCard.GetDifficulty();
         // On success increment both
+
+        //added creation of PlayerManager to pay the players
+        PlayerManager manager = new PlayerManager();
+
         if (success)
         {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
             for (Player player : currentSet.GetPlayers())
             {
-                PlayerManager.GetInstance().BasicPay(player, true);
+                manager.BasicPay(player, true);
             }
             if (currentSet.IsComplete()) {
-                PlayerManager.GetInstance().BonusPay(currentPlayer);
+                manager.BonusPay(currentPlayer);
             }
         } else {
             for (Player player : currentSet.GetPlayers())
             {
-                PlayerManager.GetInstance().BasicPay(player, false);
+                manager.BasicPay(player, false);
             }
         }
 
