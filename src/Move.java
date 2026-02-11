@@ -15,12 +15,13 @@ public class Move implements TurnAction{
 
         // Get the neighbors of current location
         HashMap<String, GameSet> neighbors = currentSet.GetNeighbors();
+        String playerInput = "";
 
         // Get the player's input
         while (!_valid)
         {
             // Check validity
-            String playerInput = Input.nextLine().toLowerCase().strip();
+            playerInput = Input.nextLine().toLowerCase().strip();
             if (playerInput.equals(currentSet.GetName())){
                 System.out.println("You're already there!");
                 return;
