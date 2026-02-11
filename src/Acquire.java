@@ -59,8 +59,6 @@ public class Acquire implements TurnAction {
         // Change Player location role
         currentPlayer.GetLocation().SetCurrentRole(chosenRole);
 
-        //TODO: I don't think we should have this method's existence
-        currentPlayer.SetRole(chosenRole);
 
         // Check if the role is on a card
         if (actingSet.GetLocalRoles().contains(chosenRole)) {
