@@ -10,7 +10,8 @@ public class Player {
     private int _currentRank;
 
     //Role now only lives in location component.
-    //Static ID currently does basically nothing so I figure we remove it because we now have a better method in the player manager
+    //Static ID currently does basically nothing so I figure we remove
+    // it because we now have a better method in the player manager
     //I think we should just hve it be its index in the array at least.
 
     // Constructors
