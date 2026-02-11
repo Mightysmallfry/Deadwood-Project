@@ -41,13 +41,13 @@ public class GameManager {
 
     // Setters
 
-    public void Set_Rules(RulesPackage rules){this._rules = rules;}
+    public void SetRules(RulesPackage rules){_rules = rules;}
 
-    public void Set_GameBoard(GameBoard _gameBoard) {this._gameBoard = _gameBoard;}
+    public void SetGameBoard(GameBoard gameBoard) {_gameBoard = gameBoard;}
 
-    public void Set_CurrentPlayer(Player _currentPlayer) {this._currentPlayer = _currentPlayer;}
+    public void SetCurrentPlayer(Player currentPlayer) {_currentPlayer = currentPlayer;}
 
-    public void Set_CurrentDay(int day){this._currentDay = day;}
+    public void SetCurrentDay(int day){_currentDay = day;}
 
     /**
      * @param playerAction any player action that implements the TurnAction interface
@@ -66,14 +66,14 @@ public class GameManager {
     {
         PlayerManager manager = PlayerManager.GetInstance();
         Player current = GetCurrentPlayer();
-        LocationComponent loc = current.Get_Location();
+        LocationComponent loc = current.GetLocation();
 
         // Get What actions the player can take
         ArrayList<String> possibleActions = GetActionList();
 
 
         // Check if scene just wrapped
-        if (loc.Get_CurrentGameSet() instanceof ActingSet actSet)
+        if (loc.GetCurrentGameSet() instanceof ActingSet actSet)
         {
             if (actSet.IsComplete())
             {
@@ -99,31 +99,31 @@ public class GameManager {
     private void EndDay() //may be off by 1
     {
         PlayerManager manager = PlayerManager.GetInstance();
-        Set_CurrentDay(GetCurrentDay() + 1);
+        SetCurrentDay(GetCurrentDay() + 1);
 
         if (IsEndGame()) {
             EndGame();
             return;
         }
 
-        GameSet trailer = GetGameBoard().Get_StartingSet();
-        for (Player p : manager.Get_PlayerLibrary())
+        GameSet trailer = GetGameBoard().GetStartingSet();
+        for (Player p : manager.GetPlayerLibrary())
         {
-            LocationComponent loc = p.Get_Location();
+            LocationComponent loc = p.GetLocation();
 
             // remove from old set
-            GameSet oldSet = loc.Get_CurrentGameSet();
+            GameSet oldSet = loc.GetCurrentGameSet();
             if (oldSet != null) {
                 oldSet.RemovePlayer(p);
             }
 
             // reset player state
-            loc.Set_CurrentRole(null);
-            loc.Set_OnCard(false);
-            loc.Set_RehearseTokens(0);
+            loc.SetCurrentRole(null);
+            loc.SetOnCard(false);
+            loc.SetRehearseTokens(0);
 
             // move to trailer
-            loc.Set_CurrentGameSet(trailer);
+            loc.SetCurrentGameSet(trailer);
             trailer.AddPlayer(p);
         }
 
@@ -144,15 +144,15 @@ public class GameManager {
         PlayerManager manager = PlayerManager.GetInstance();
         int index = 0;
 
-        for (int i = 0; i < manager.Get_PlayerLibrary().length; i++)
+        for (int i = 0; i < manager.GetPlayerLibrary().length; i++)
         {
-            if (manager.Get_PlayerLibrary()[i] == _currentPlayer)
+            if (manager.GetPlayerLibrary()[i] == _currentPlayer)
             {
                 index = i;
                 break;
             }
         }
-        _currentPlayer = manager.Get_PlayerLibrary()[(index + 1) % manager.Get_PlayerLibrary().length];
+        _currentPlayer = manager.GetPlayerLibrary()[(index + 1) % manager.GetPlayerLibrary().length];
     }
 
     /**
@@ -166,7 +166,7 @@ public class GameManager {
 
         for (GameSet set : _gameBoard.GetAllGameSets()) {
             if (set instanceof ActingSet act) {
-                if (act.Get_CurrentSceneCard() != null) {
+                if (act.GetCurrentSceneCard() != null) {
                     activeScenes++;
                 }
             }
@@ -202,7 +202,7 @@ public class GameManager {
         ArrayList<Player> winners = new ArrayList<>();//Could add a tiebreaker piece.
         for (int i = 0; i < scores.length; i++) {
             if (scores[i] == highest) {
-                winners.add(manager.Get_PlayerLibrary()[i]);
+                winners.add(manager.GetPlayerLibrary()[i]);
             }
         }
 
@@ -210,7 +210,7 @@ public class GameManager {
         System.out.println("=== GAME OVER ===");
         for (Player winner : winners)
         {
-            System.out.println("Winner: Player " + winner.Get_PersonalId() + " with score " + winner.Get_Score());
+            System.out.println("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
         }
     }
 
@@ -223,20 +223,20 @@ public class GameManager {
         PlayerManager manager = PlayerManager.GetInstance();
         UpdateRules();
 
-        Set_CurrentDay(1);
+        SetCurrentDay(1);
 
         // Move all players to Trailer
-        GameSet trailer = _gameBoard.Get_StartingSet();
+        GameSet trailer = _gameBoard.GetStartingSet();
 
-        for (Player p : manager.Get_PlayerLibrary())
+        for (Player p : manager.GetPlayerLibrary())
         {
-            LocationComponent loc = p.Get_Location();
+            LocationComponent loc = p.GetLocation();
 
-            loc.Set_CurrentRole(null);
-            loc.Set_OnCard(false);
-            loc.Set_RehearseTokens(0);
+            loc.SetCurrentRole(null);
+            loc.SetOnCard(false);
+            loc.SetRehearseTokens(0);
 
-            loc.Set_CurrentGameSet(trailer);
+            loc.SetCurrentGameSet(trailer);
             trailer.AddPlayer(p);
         }
 
@@ -244,22 +244,22 @@ public class GameManager {
         _gameBoard.Populate();
 
         // Choose first player
-        _currentPlayer = manager.Get_PlayerLibrary()[0]; //Could make this a dice roll.
+        _currentPlayer = manager.GetPlayerLibrary()[0]; //Could make this a dice roll.
     }
 
     private void UpdateRules()
     //This is used after Deadwood asks for players to change the rules depending on the player number.
     {
         PlayerManager manager = PlayerManager.GetInstance();
-        RulesPackage rules = new RulesPackage(manager.Get_PlayerLibrary());
+        RulesPackage rules = new RulesPackage(manager.GetPlayerLibrary());
 
         // store for later
         _rules = rules;
 
         // apply to players
-        for (Player p : manager.Get_PlayerLibrary()) {
-            p.Set_CurrentRank(rules.GetStartingRank());
-            p.Get_Currency().IncreaseCredits(rules.GetStartingCredits());
+        for (Player p : manager.GetPlayerLibrary()) {
+            p.SetCurrentRank(rules.GetStartingRank());
+            p.GetCurrency().IncreaseCredits(rules.GetStartingCredits());
         }
     }
 
@@ -298,7 +298,7 @@ public class GameManager {
             }
 
             // Upgrade
-            if (_currentPlayer.Get_Location().Get_CurrentGameSet() instanceof CastingSet)
+            if (_currentPlayer.GetLocation().GetCurrentGameSet() instanceof CastingSet)
             {
                 possibleActions.add("upgrade");
             }

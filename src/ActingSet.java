@@ -4,10 +4,10 @@ import java.util.Map;
 
 public class ActingSet extends GameSet {
     // Members
-    private int _maximumProgress;   // At this progress the card should be complete
-    private int _currentProgress;   // Current Progress via running Game
+    private int _maximumProgress = 3;   // At this progress the card should be complete
+    private int _currentProgress = 0;   // Current Progress via running Game
 
-    private boolean _complete;
+    private boolean _complete = false;
 
     private SceneCard _currentSceneCard;
     private ArrayList<ActingRole> _localRoles;
@@ -101,7 +101,7 @@ public class ActingSet extends GameSet {
         _currentSceneCard = card;
     }
 
-    public SceneCard Get_CurrentSceneCard(){return _currentSceneCard;}
+    public SceneCard GetCurrentSceneCard(){return _currentSceneCard;}
 
     public void RemoveCard() {
         _currentSceneCard = null;

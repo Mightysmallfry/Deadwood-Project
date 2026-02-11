@@ -3,6 +3,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SceneCard {
+    // Statics
+    private static ArrayList<SceneCard> _cardCatalog = new ArrayList<SceneCard>();
+
     // Members
     private boolean _visible;
     private int _difficulty;
@@ -17,7 +20,6 @@ public class SceneCard {
 
     private boolean _used;
 
-    private static ArrayList<SceneCard> _cardCatalog = new ArrayList<SceneCard>();
 
     // Constructors
     public SceneCard()
@@ -35,32 +37,6 @@ public class SceneCard {
         RegisterCard(this);
     }
 
-    public SceneCard(int difficulty)
-    {
-        _difficulty = difficulty;
-        _cardNumber = 0;
-        _visible = false;
-        _name = "Test Card";
-        _description = "Descriptive description";
-        _imageName = "";
-        _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new HashMap<ActingRole, Player>();
-        RegisterCard(this);
-    }
-
-    public SceneCard(int difficulty, String name)
-    {
-        _difficulty = difficulty;
-        _cardNumber = 0;
-        _visible = false;
-        _name = name;
-        _description = "Descriptive description";
-        _imageName = "";
-        _roles = new ArrayList<ActingRole>();
-        _roleCatalog = new HashMap<ActingRole, Player>();
-        _used = false;
-        RegisterCard(this);
-    }
 
     public SceneCard(int difficulty, String name, String imageName)
     {

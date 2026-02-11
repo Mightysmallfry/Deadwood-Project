@@ -1,18 +1,12 @@
 public class Area {
     // Members
-    private int _x;
-    private int _y;
-    private int _width;
-    private int _height;
+    private int _x = 0;
+    private int _y = 0;
+    private int _width = 16;
+    private int _height = 16;
 
     // Constructors
-    public Area()
-    {
-        _x = 0;
-        _y = 0;
-        _width = 16;
-        _height = 16;
-    }
+    public Area() {}
 
     public Area(int x, int y) {
         _x = x;

@@ -1,26 +1,14 @@
 public class ActingRole {
 
     // Members
-    private String _name;    // Name of Role
-    private String _line;    // Speaking Line
-    private int _rank;       // Also called level
+    private String _name = "";    // Name of Role
+    private String _line = "";    // Speaking Line
+    private int _rank = 1;        // Also called level
 
-    private Area _area;
+    private Area _area = new Area();
 
     // Constructors
-    public ActingRole(int rank, String name) {
-        _rank = rank;
-        _name = name;
-        _line = "";
-        _area = new Area();
-    }
-
-    public ActingRole(int rank, String name, String line) {
-        _rank = rank;
-        _name = name;
-        _line = line;
-        _area = new Area();
-    }
+    public ActingRole() {}
 
     public ActingRole(int rank, String name, String line, Area area) {
         _rank = rank;

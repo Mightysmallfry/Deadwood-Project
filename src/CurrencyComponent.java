@@ -1,43 +1,39 @@
 public class CurrencyComponent {
 
     //members
-    private int _coins;
-    private int _credits;
+    private int _coins = 0;
+    private int _credits = 0;
 
     //constructors
-    public CurrencyComponent()
-    {
-        Set_Coins(0);
-        Set_Credits(0);
-    }
+    public CurrencyComponent() {}
 
     public CurrencyComponent(int startingcoins)
     {
-        Set_Coins(startingcoins);
-        Set_Credits(0);
+        _coins = startingcoins;
+        _credits = 0;
     }
 
     public CurrencyComponent(int startingCoins, int startingCredits)
     {
-        Set_Coins(startingCoins);
-        Set_Credits(startingCredits);
+        _coins = startingCoins;
+        _credits = startingCredits;
     }
 
     // Setters
-    public void Set_Coins(int _coins) {
+    public void SetCoins(int _coins) {
         this._coins = _coins;
     }
 
-    public void Set_Credits(int _credits) {
+    public void SetCredits(int _credits) {
         this._credits = _credits;
     }
 
     // Getters
-    public int Get_Coins() {
+    public int GetCoins() {
         return _coins;
     }
 
-    public int Get_Credits() {
+    public int GetCredits() {
         return _credits;
     }
 
@@ -45,16 +41,16 @@ public class CurrencyComponent {
 
     public void IncreaseCoins(int coins)
     {
-        Set_Coins(Get_Coins() + coins);
+        _coins += coins;
     }
 
     public void IncreaseCredits(int credits)
     {
-        Set_Credits(Get_Credits() + credits);
+        _credits += credits;
     }
     
     @Override
     public String toString() {
-        return "Coins: " + Get_Coins() + ", Credits: " + Get_Credits();
+        return "Coins: " + _coins + ", Credits: " + _credits;
     }
 }

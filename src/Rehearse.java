@@ -2,7 +2,7 @@ public class Rehearse implements TurnAction{
     private final int ACTION_COST = 1;
 
     @Override
-    public void execute() {
+    public void Execute() {
 
         Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
 
@@ -11,9 +11,9 @@ public class Rehearse implements TurnAction{
             return;
         }
 
-        int rehearseToken = currentPlayer.Get_Location().Get_RehearseTokens();
+        int rehearseToken = currentPlayer.GetLocation().GetRehearseTokens();
         rehearseToken++;
-        currentPlayer.Get_Location().Set_RehearseTokens(rehearseToken);
+        currentPlayer.GetLocation().SetRehearseTokens(rehearseToken);
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         actionTokens -= ACTION_COST;

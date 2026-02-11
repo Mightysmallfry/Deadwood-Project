@@ -6,11 +6,11 @@ public class Upgrade implements TurnAction {
     private final int MAX_RANK = 6;
 
     @Override
-    public void execute()
+    public void Execute()
     {
         // Get Player's current location
         Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
-        GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
+        GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         // Ensure that it is the casting Set
         if (!(currentSet instanceof CastingSet))
@@ -23,10 +23,10 @@ public class Upgrade implements TurnAction {
         CastingSet castingSet = (CastingSet) currentSet;
 
         ArrayList<UpgradeData> upgrades = castingSet.GetUpgrades();
-        CurrencyComponent playerCurrency = currentPlayer.Get_Currency();
+        CurrencyComponent playerCurrency = currentPlayer.GetCurrency();
 
-        int playerCoin = playerCurrency.Get_Coins();
-        int playerCredit = playerCurrency.Get_Credits();
+        int playerCoin = playerCurrency.GetCoins();
+        int playerCredit = playerCurrency.GetCredits();
 
         // We'll assume players typically only want to upgrade within 3 levels of their current.
         ArrayList<UpgradeData> possibleCoinUpgrades = new ArrayList<>(3);
@@ -34,7 +34,7 @@ public class Upgrade implements TurnAction {
 
         for (UpgradeData upgrade : upgrades)
         {
-            if (upgrade.GetRank() <= currentPlayer.Get_CurrentRank()) {
+            if (upgrade.GetRank() <= currentPlayer.GetCurrentRank()) {
                 continue;
             }
 
@@ -77,7 +77,7 @@ public class Upgrade implements TurnAction {
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number between: " +
-                        currentPlayer.Get_CurrentRank() + " - " + MAX_RANK);
+                        currentPlayer.GetCurrentRank() + " - " + MAX_RANK);
             }
         }
 
@@ -86,8 +86,8 @@ public class Upgrade implements TurnAction {
                 for (UpgradeData upgrade : possibleCoinUpgrades)
                 {
                     if (1 < rankRequest && rankRequest < MAX_RANK && rankRequest == upgrade.GetRank()) {
-                        int newBalance = playerCurrency.Get_Coins() - upgrade.GetCostAmount();
-                        playerCurrency.Set_Coins(newBalance);
+                        int newBalance = playerCurrency.GetCoins() - upgrade.GetCostAmount();
+                        playerCurrency.SetCoins(newBalance);
                     }
                 }
                 break;
@@ -96,14 +96,15 @@ public class Upgrade implements TurnAction {
                 for (UpgradeData upgrade : possibleCreditUpgrades)
                 {
                     if (1 < rankRequest && rankRequest < MAX_RANK && rankRequest == upgrade.GetRank()) {
-                        int newBalance = playerCurrency.Get_Credits() - upgrade.GetCostAmount();
-                        playerCurrency.Set_Credits(newBalance);
+                        int newBalance = playerCurrency.GetCredits() - upgrade.GetCostAmount();
+                        playerCurrency.SetCredits(newBalance);
                     }
                 }
                 break;
         }
 
         // return to action select
+        // Upgrading costs no action points
     }
 
 }

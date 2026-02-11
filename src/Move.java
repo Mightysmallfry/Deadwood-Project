@@ -8,11 +8,11 @@ public class Move implements TurnAction{
     private boolean _valid = false;
 
     @Override
-    public void execute() {
+    public void Execute() {
         // Get the player's current location
 
         Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
-        GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
+        GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         // Get the neighbors of current location
         //TODO: Update upon hashmap neighbors
@@ -51,7 +51,7 @@ public class Move implements TurnAction{
 
         // Update old Location and Player
         currentSet.GetPlayers().remove(currentPlayer);
-        currentPlayer.Get_Location().Set_CurrentGameSet(targetLocation);
+        currentPlayer.GetLocation().SetCurrentGameSet(targetLocation);
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         actionTokens -= ACTION_COST;

@@ -1,85 +1,88 @@
 public class Player {
+    // Statics
+    private static int _ID = 1;
 
     // Members
     private LocationComponent _location;
     private CurrencyComponent _currency;
     private ActingRole _role;
-    private static int _ID = 1;
-    private int _personalId;
-    private int _score;
-    private int _currentRank;
+    private int _personalId = 0;
+    private int _score = 0;
+    private int _currentRank = 1;
+
+    //TODO: Consider that we have _role and _location.currentRole.
+    // A bit redundant and currently not in a good way
 
     // Constructors
     public Player()
     {
-        Set_PersonalId(Get_Id());
+        _personalId = _ID;
         _ID++;
-        Set_CurrentRank(1);
     }
 
     public Player(int startingRank)
     {
-        Set_PersonalId(Get_Id());
+        SetPersonalId(GetId());
         _ID++;
-        Set_CurrentRank(startingRank);
+        SetCurrentRank(startingRank);
     }
 
     // Setter start
-    public void Set_Currency(CurrencyComponent _currency) {
-        this._currency = _currency;
+    public void SetCurrency(CurrencyComponent currencyComponent) {
+        _currency = currencyComponent;
     }
 
-    public void Set_Role(ActingRole _role) {
-        this._role = _role;
+    public void SetRole(ActingRole role) {
+        _role = role;
     }
 
-    public void Set_PersonalId(int _personalId) {
-        this._personalId = _personalId;
+    public void SetPersonalId(int personalId) {
+        _personalId = personalId;
     }
 
-    public void Set_Location(LocationComponent _location) {
-        this._location = _location;
+    public void SetLocation(LocationComponent locationComponent) {
+        _location = locationComponent;
     }
 
-    public void Set_CurrentRank(int _currentRank) {
-        this._currentRank = _currentRank;
+    public void SetCurrentRank(int rank) {
+        _currentRank = rank;
     }
 
-    public void Set_Score()
+    public void SetScore()
     {
-        CurrencyComponent currency = Get_Currency();
-        this._score = ((Get_CurrentRank() * 5) + currency.Get_Coins() + currency.Get_Credits());
+        CurrencyComponent currency = GetCurrency();
+        this._score = ((GetCurrentRank() * 5) + currency.GetCoins() + currency.GetCredits());
     }
 
-    public void Set_Score(int _score){this._score = _score;}
+    public void SetScore(int _score){this._score = _score;}
 
 
     // Getter start
-    public CurrencyComponent Get_Currency() {
+    public CurrencyComponent GetCurrency() {
         return _currency;
     }
 
-    public ActingRole Get_Role() {
+    public ActingRole GetRole() {
         return _role;
     }
 
-    public int Get_PersonalId() {
+    public int GetPersonalId() {
         return _personalId;
     }
 
-    public int Get_CurrentRank() {
+    public int GetCurrentRank() {
         return _currentRank;
     }
 
-    public int Get_Score() {
+    public int GetScore() {
         return _score;
     }
 
-    public LocationComponent Get_Location() {
+    public LocationComponent GetLocation() {
         return _location;
     }
 
-    public int Get_Id() { return _ID; }
+    public int GetId() { return _ID; }
 
     // Methods
     public boolean HasRole(ActingRole role)

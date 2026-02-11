@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class GameBoard {
-    private final int _DEFAULT_SET_COUNT = 10;  // Should include Casting and Trailer Sets
+    private final int DEFAULT_SET_COUNT = 10;  // Should include Casting and Trailer Sets
 
     // Members
     private GameSet[] _gameSets;
@@ -13,7 +13,7 @@ public class GameBoard {
     // This includes the trailer and casting office.
     public GameBoard()
     {
-        _gameSets = new GameSet[_DEFAULT_SET_COUNT];
+        _gameSets = new GameSet[DEFAULT_SET_COUNT];
     }
 
     public GameBoard(GameSet[] gameSets)
@@ -32,7 +32,7 @@ public class GameBoard {
         _startingGameSet = startingGameSet;
     }
 
-    public GameSet Get_StartingSet(){return _startingGameSet;}
+    public GameSet GetStartingSet(){return _startingGameSet;}
 
     //Methods
     public void Clear()

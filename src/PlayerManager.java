@@ -20,18 +20,18 @@ public class PlayerManager {
     }
 
     // Getters
-    public GameBoard Get_GameBoard() {return _gameBoard;}
+    public GameBoard GetGameBoard() {return _gameBoard;}
 
-    public Player[] Get_PlayerLibrary() {return _playerLibrary;}
+    public Player[] GetPlayerLibrary() {return _playerLibrary;}
 
-    public int Get_PlayerCount() {
+    public int GetPlayerCount() {
         return _playerLibrary == null ? 0 : _playerLibrary.length;
     }
 
     // Setters
-    public void Set_GameBoard(GameBoard _gameBoard) {this._gameBoard = _gameBoard;}
+    public void SetGameBoard(GameBoard gameBoard) {_gameBoard = gameBoard;}
 
-    public void Set_PlayerLibrary(Player[] _playerLibrary) {this._playerLibrary = _playerLibrary;}
+    public void SetPlayerLibrary(Player[] playerLibrary) {_playerLibrary = playerLibrary;}
 
 
     // Methods
@@ -43,23 +43,23 @@ public class PlayerManager {
     public void BasicPay(Player player, boolean success)
     {
         //I need to make a way to exclude people who are just hanging out on the card!
-        if(player.Get_Location().Get_OnCard())
+        if(player.GetLocation().GetOnCard())
         {
             if(success) //if the roll is a success
             {
-                player.Get_Currency().IncreaseCoins(2);
+                player.GetCurrency().IncreaseCoins(2);
             }
         }
         else
         {
             if(success)
             {
-                player.Get_Currency().IncreaseCredits(1);
-                player.Get_Currency().IncreaseCoins(1);
+                player.GetCurrency().IncreaseCredits(1);
+                player.GetCurrency().IncreaseCoins(1);
             }
             else
             {
-                player.Get_Currency().IncreaseCoins(1);
+                player.GetCurrency().IncreaseCoins(1);
             }
         }
     }
@@ -72,18 +72,18 @@ public class PlayerManager {
      */
     public void BonusPay(Player currentPlayer)
     {
-        Player[] players = Get_PlayerLibrary();
+        Player[] players = GetPlayerLibrary();
         if (players == null || players.length == 0) return;
         ArrayList<Player> onCard = new ArrayList<>();
         ArrayList<Player> offCard = new ArrayList<>();
-        GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
+        GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         //grabling dificulty
         if (!(currentSet instanceof ActingSet act)) {
             return; // no bonus pay here
         }
 
-        int difficulty = act.Get_CurrentSceneCard().GetDifficulty();
+        int difficulty = act.GetCurrentSceneCard().GetDifficulty();
 
         //rolling dice
         Dice dice = Dice.GetInstance();
@@ -95,13 +95,13 @@ public class PlayerManager {
 
         // Sort Players
         for(Player player : players){
-            if(currentSet.equals(player.Get_Location().Get_CurrentGameSet())
-                    && player.Get_Location().Get_OnCard()
-                    && player.Get_Location().Get_CurrentRole() != null)  //if it's the correct scene and on card add to a list, double check logic!!!
+            if(currentSet.equals(player.GetLocation().GetCurrentGameSet())
+                    && player.GetLocation().GetOnCard()
+                    && player.GetLocation().GetCurrentRole() != null)  //if it's the correct scene and on card add to a list, double check logic!!!
             {
                 onCard.add(player);
             }
-            else if(currentSet.equals(player.Get_Location().Get_CurrentGameSet()) && !player.Get_Location().Get_OnCard())
+            else if(currentSet.equals(player.GetLocation().GetCurrentGameSet()) && !player.GetLocation().GetOnCard())
             {
                 offCard.add(player);
             }
@@ -111,22 +111,22 @@ public class PlayerManager {
         if (onCard.isEmpty()) {
             return; // no one to pay
         }
-        onCard.sort((p1, p2) -> Integer.compare(p2.Get_Location().Get_CurrentRole().GetRank(), p1.Get_Location().Get_CurrentRole().GetRank()));
+        onCard.sort((p1, p2) -> Integer.compare(p2.GetLocation().GetCurrentRole().GetRank(), p1.GetLocation().GetCurrentRole().GetRank()));
 
         int playerCount = onCard.size();
 
         for (int i = 0; i < rolls.size(); i++) {
             Player p = onCard.get(i % playerCount);
             int payout = rolls.get(i);
-            p.Get_Currency().IncreaseCoins(payout);
+            p.GetCurrency().IncreaseCoins(payout);
         }
 
         //for the elements in off card pay based on the rank
         for (Player player : offCard)
         {
-            ActingRole role = player.Get_Location().Get_CurrentRole();
+            ActingRole role = player.GetLocation().GetCurrentRole();
             if (role != null) {
-                player.Get_Currency().IncreaseCoins(role.GetRank());
+                player.GetCurrency().IncreaseCoins(role.GetRank());
             }
         }
 
@@ -139,19 +139,18 @@ public class PlayerManager {
     public int[] TallyScore()
     //as the last day finishes this tallies the score and displays it before the Deadwood ends.
     {
-        Player[] players = Get_PlayerLibrary();
-        if (players == null || players.length == 0)
-            {
-                return new int[0];
-            }
+        Player[] players = GetPlayerLibrary();
+        if (players == null || players.length == 0) {
+            return new int[0];
+        }
         int[] scores = new int[players.length];
 
         //for each player calculate their score then retrieve it.
         for (int i = 0; i < players.length; i++)
         {
             Player p = players[i];
-            p.Set_Score(); //This recalculates the players score.
-            scores[i] = p.Get_Score();
+            p.SetScore(); //This recalculates the players score.
+            scores[i] = p.GetScore();
         }
         return scores;
     }

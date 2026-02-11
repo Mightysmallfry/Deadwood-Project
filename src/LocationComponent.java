@@ -1,45 +1,42 @@
 public class LocationComponent {
 
     //Members
-    private int _rehearseTokens;
+    private int _rehearseTokens = 0;
     private GameSet _currentGameSet;
     private ActingRole _currentRole;
-    private boolean _onCard;
+    private boolean _onCard = false;
 
     // Constructors
-    public LocationComponent()
-    {
-
-    }
+    public LocationComponent() {}
 
     public LocationComponent(GameSet startingLocation)
     {
-        Set_CurrentGameSet(startingLocation);
+        SetCurrentGameSet(startingLocation);
     }
 
     public LocationComponent(GameSet startingLocation, ActingRole startingRole)
     {
-        Set_CurrentGameSet(startingLocation);
-        Set_CurrentRole(startingRole);
+        SetCurrentGameSet(startingLocation);
+        SetCurrentRole(startingRole);
     }
 
     //Getters
-    public ActingRole Get_CurrentRole() {return _currentRole;}
+    public ActingRole GetCurrentRole() {return _currentRole;}
 
-    public int Get_RehearseTokens() {return _rehearseTokens;}
+    public int GetRehearseTokens() {return _rehearseTokens;}
 
-    public GameSet Get_CurrentGameSet() {return _currentGameSet;}
+    public GameSet GetCurrentGameSet() {return _currentGameSet;}
 
-    public boolean Get_OnCard(){return _onCard;}
+    public boolean GetOnCard(){return _onCard;}
 
     // Setters
-    public void Set_CurrentGameSet(GameSet _currentGameSet) {this._currentGameSet = _currentGameSet;}
+    public void SetCurrentGameSet(GameSet currentGameSet) {_currentGameSet = currentGameSet;}
 
-    public void Set_CurrentRole(ActingRole _currentRole) {this._currentRole = _currentRole;}
+    public void SetCurrentRole(ActingRole currentRole) {_currentRole = currentRole;}
 
-    public void Set_OnCard(boolean _onCard) {this._onCard = _onCard;}
+    public void SetOnCard(boolean onCard) {_onCard = onCard;}
 
-    public void Set_RehearseTokens(int _rehearseTokens) {this._rehearseTokens = _rehearseTokens;}
+    public void SetRehearseTokens(int rehearseTokens) {_rehearseTokens = rehearseTokens;}
 
     // Methods
     @Override

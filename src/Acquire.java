@@ -2,9 +2,9 @@ public class Acquire implements TurnAction {
     private final int ACTION_COST = 1;
 
     @Override
-    public void execute() {
+    public void Execute() {
         // Already has a role
-        if (GameManager.GetInstance().GetCurrentPlayer().Get_Location().Get_CurrentRole() != null)
+        if (GameManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole() != null)
         {
             return;
         }

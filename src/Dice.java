@@ -4,8 +4,8 @@ public class Dice {
 
     // Members
     public static Dice instance;
-    private static final int _DEFAULT_SIDES = 6;
-    private static final int _DEFAULT_COUNT = 1;
+    private static final int DEFAULT_SIDES = 6;
+    private static final int DEFAULT_COUNT = 1;
 
     private Random randomNumberGenerator;
 
@@ -26,8 +26,8 @@ public class Dice {
     public int Roll()
     {
         int sum = 0;
-        for (int i = 0; i < _DEFAULT_COUNT; i++) {
-            sum += randomNumberGenerator.nextInt(_DEFAULT_SIDES);
+        for (int i = 0; i < DEFAULT_COUNT; i++) {
+            sum += randomNumberGenerator.nextInt(DEFAULT_SIDES);
         }
         return sum;
     }
@@ -35,7 +35,7 @@ public class Dice {
     public int Roll(int numberOfDice){
         int sum = 0;
         for (int i = 0; i < numberOfDice; i++) {
-            sum += randomNumberGenerator.nextInt(_DEFAULT_SIDES);
+            sum += randomNumberGenerator.nextInt(DEFAULT_SIDES);
         }
         return sum;
     }
@@ -55,15 +55,15 @@ public class Dice {
     }
 
     public int[] RollAsArray(){
-        int[] array = new int[_DEFAULT_COUNT];
-        array[0] = randomNumberGenerator.nextInt(_DEFAULT_SIDES);
+        int[] array = new int[DEFAULT_COUNT];
+        array[0] = randomNumberGenerator.nextInt(DEFAULT_SIDES);
         return array;
     }
 
     public int[] RollAsArray(int numberOfDice){
         int[] array = new int[numberOfDice];
         for (int i = 0; i < numberOfDice; i++) {
-            array[i] = randomNumberGenerator.nextInt(_DEFAULT_SIDES);
+            array[i] = randomNumberGenerator.nextInt(DEFAULT_SIDES);
         }
         return array;
     }
