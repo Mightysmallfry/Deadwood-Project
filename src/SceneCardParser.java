@@ -8,7 +8,25 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 
-public class CardParser extends ParseDaddy{
+public class SceneCardParser extends ParseDaddy{
+    private ArrayList<SceneCard> _parsedCards = new ArrayList<SceneCard>();
+
+    public SceneCardParser() {}
+    public SceneCardParser(String fileName)
+    {
+        try {
+            Document document = GetDocumentFromFile(fileName);
+            _parsedCards = ParseSceneCardData(document);
+        } catch (Exception e) {
+            System.out.println("Something went wrong parsing : [" + fileName + "] : " + e);
+        }
+    }
+
+    public ArrayList<SceneCard> GetParsedList() {
+        return _parsedCards;
+    }
+
+
 
     /**
      * Attempts to open xml file by the given fileName
@@ -34,8 +52,6 @@ public class CardParser extends ParseDaddy{
         }
     }
 
-    //TODO: Build a constructor that auto gets the document and stores the
-    // Array list locally.
 
     public ArrayList<SceneCard> ParseSceneCardData(Document document)
     {
@@ -83,7 +99,7 @@ public class CardParser extends ParseDaddy{
 
                     // Get Role metadata
                     case "part":
-                        ActingRole role = FetchActingRole(detail);
+                        ActingRole role = ParseRole(detail);
                         foundCard.AddRole(role);
                         break;
                 }
@@ -91,41 +107,11 @@ public class CardParser extends ParseDaddy{
             // Add the card into the array of possible cards
             foundCards.add(foundCard);
         }
+        _parsedCards = foundCards;
         return foundCards;
     }
 
-    private ActingRole FetchActingRole(Node detail)
-    {
-        // Get Basic role - Name, Level
-        String roleName = detail.getAttributes().getNamedItem("name").getNodeValue();
-        int roleRank = Integer.parseInt(detail.getAttributes().getNamedItem("level").getNodeValue());
 
-        // Create for use in constructor
-        String roleQuote  = "";
-        Area roleArea = new Area();
-
-        // Dive into the role, getting - Area, Line
-        NodeList partDetails = detail.getChildNodes();
-        for (int k = 0; k < partDetails.getLength(); k++)
-        {
-            Node partDetail = partDetails.item(k);
-
-            if ("area".equals(partDetail.getNodeName())){
-                roleArea = ParseArea(partDetail);
-            }
-            if ("line".equals(partDetail.getNodeName())){
-                roleQuote = partDetail.getTextContent();
-            }
-        }
-
-        // Combine, construct and add
-        // Our new Role to the card
-        return new ActingRole(
-                roleRank,
-                roleName,
-                roleQuote,
-                roleArea);
-    }
 
 
 

@@ -21,38 +21,36 @@ public class Deadwood {
         // Parse the data needed for our game board
         // - Sets - Cards - Roles
         SetParser parser = new SetParser();
-        Document cardDocument = null;
         Document setDocument = null;
         try{
-            Path cardPath = Paths.get("xml", "cards.xml");
             Path setPath = Paths.get("xml", "board.xml");
-            cardDocument = parser.GetDocumentFromFile(cardPath.toString());
             setDocument = parser.GetDocumentFromFile(setPath.toString());
         } catch (Exception e) {
             System.out.println("Something went wrong parsing : " + e);
         }
 
-        if (cardDocument == null){
-            System.out.println("Something went wrong initializing cardDocuments after parsing");
-            System.exit(0);
-        }
         if (setDocument == null) {
             System.out.println("Something went wrong initializing setDocuments after parsing");
             System.exit(0);
         }
 
         // All of our cards are already
-        // Added to the static library of cards
-        parser.ParseSceneCardData(cardDocument);
+        // Added to the static library of cards as we parse
+        // But we can still access and test them as such
+        Path cardPath = Paths.get("xml", "cards.xml");
+        SceneCardParser cardParser = new SceneCardParser(cardPath.toString());
+        ArrayList<SceneCard> cardList = cardParser.GetParsedList();
 
+        // TODO: Fix Parsing the Sets
         CastingSet castingSet = parser.ParseCastingSet(setDocument);
         GameSet trailerSet = parser.FindTrailerSetData(setDocument);
         ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
 
-        TestSceneCards();
+        TestCardList(cardList);
+        TestSetList(actingSets);
+
         System.out.println(castingSet.toString());
         System.out.println(trailerSet.toString());
-        // TestActingSets(actingSets);
 
         System.exit(0);
 
@@ -70,8 +68,7 @@ public class Deadwood {
         // Create a Game Manager, passing in the rulesPackage
         // When creating players, maybe add playerName?
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager playerManager = new PlayerManager();
-
+        PlayerManager playerManager = PlayerManager.GetInstance();
 
 
         // Begin game with player 0/1
@@ -85,18 +82,18 @@ public class Deadwood {
     }
 
 
-    public static void TestSceneCards() {
+    public static void TestCardList(ArrayList<SceneCard> list) {
         // Testing The Cards sets
-        for (SceneCard sceneCard : SceneCard.GetCardCatalog())
+        for (SceneCard sceneCard : list)
         {
             System.out.println(sceneCard.toString());
         }
     }
 
-    public static void TestActingSets(ArrayList<ActingSet> actingSets) {
-        for (ActingSet set : actingSets)
+    public static void TestSetList(ArrayList<ActingSet> list) {
+        for (ActingSet set : list)
         {
-            System.out.println(actingSets.toString());
+            System.out.println(set.toString());
         }
     }
 

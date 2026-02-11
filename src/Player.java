@@ -88,6 +88,10 @@ public class Player {
         return _role != null && _role.equals(role);
     }
 
+    public boolean HasRole() {
+        return _role != null;
+    }
+
     @Override
     public String toString()
     {

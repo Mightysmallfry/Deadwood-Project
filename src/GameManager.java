@@ -1,17 +1,21 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GameManager {
-
+    // Constants
+    private final int DEFAULT_ACTION_TOKENS = 1;
 
     // Members
     private static GameManager _instance;
+
     private Player _currentPlayer;
     private int _currentDay;
     private GameBoard _gameBoard;
     private TurnAction _playerAction = new Upgrade();
     private RulesPackage _rules;
+    private Scanner _input = new Scanner(System.in);
 
-
+    private int _actionTokens = DEFAULT_ACTION_TOKENS;
 
     // Constructors
     private GameManager() {}
@@ -27,13 +31,13 @@ public class GameManager {
     // Methods
 
     // Getters
-    public RulesPackage Get_Rules(){return _rules;}
+    public RulesPackage GetRules(){return _rules;}
 
-    public GameBoard Get_GameBoard() {return _gameBoard;}
+    public GameBoard GetGameBoard() {return _gameBoard;}
 
-    public Player Get_CurrentPlayer() {return _currentPlayer;}
+    public Player GetCurrentPlayer() {return _currentPlayer;}
 
-    public int Get_CurrentDay(){return _currentDay;}
+    public int GetCurrentDay(){return _currentDay;}
 
     // Setters
 
@@ -58,17 +62,22 @@ public class GameManager {
      * function that deals with ending the day/game.
      */
     private void UpdateGame()
-    //This plays after the player is done with a turn, rewarding the player and checking if the day/game is over.
+    //This processes the current player's turn
     {
         PlayerManager manager = PlayerManager.GetInstance();
-        Player current = Get_CurrentPlayer();
+        Player current = GetCurrentPlayer();
         LocationComponent loc = current.Get_Location();
+
+        // Get What actions the player can take
+        ArrayList<String> possibleActions = GetActionList();
+
+
         // Check if scene just wrapped
         if (loc.Get_CurrentGameSet() instanceof ActingSet actSet)
         {
             if (actSet.IsComplete())
             {
-                manager.BonusPay(Get_CurrentPlayer());
+                manager.BonusPay(GetCurrentPlayer());
                 actSet.RemoveCard();
             }
         }
@@ -90,14 +99,14 @@ public class GameManager {
     private void EndDay() //may be off by 1
     {
         PlayerManager manager = PlayerManager.GetInstance();
-        Set_CurrentDay(Get_CurrentDay() + 1);
+        Set_CurrentDay(GetCurrentDay() + 1);
 
         if (IsEndGame()) {
             EndGame();
             return;
         }
 
-        GameSet trailer = Get_GameBoard().Get_StartingSet();
+        GameSet trailer = GetGameBoard().Get_StartingSet();
         for (Player p : manager.Get_PlayerLibrary())
         {
             LocationComponent loc = p.Get_Location();
@@ -118,8 +127,8 @@ public class GameManager {
             trailer.AddPlayer(p);
         }
 
-        Get_GameBoard().Clear();
-        Get_GameBoard().Populate();
+        GetGameBoard().Clear();
+        GetGameBoard().Populate();
     }
 
 
@@ -129,6 +138,9 @@ public class GameManager {
      */
     private void AdvanceTurn()
     {
+        // Reset Action Tokens for the next player
+        _actionTokens = DEFAULT_ACTION_TOKENS;
+
         PlayerManager manager = PlayerManager.GetInstance();
         int index = 0;
 
@@ -166,7 +178,7 @@ public class GameManager {
      * compares day limit to current day, if they  are the same return true
      * @return boolean
      */
-    public boolean IsEndGame() {return Get_Rules().GetDays() == Get_CurrentDay();}
+    public boolean IsEndGame() {return GetRules().GetDays() == GetCurrentDay();}
 
 
     /**
@@ -250,6 +262,73 @@ public class GameManager {
             p.Get_Currency().IncreaseCredits(rules.GetStartingCredits());
         }
     }
+
+    /**
+     * Checks what actions are available to the player and returns
+     * them as a list of strings
+     * @return
+     */
+    private ArrayList<String> GetActionList()
+    {
+        ArrayList<String> possibleActions = new ArrayList<>();
+
+        // The player is always allowed to:
+        // - quit
+        // - pass turn to next
+        possibleActions.add("quit");
+        possibleActions.add("pass");
+
+        // The player has a role
+        if (_currentPlayer.HasRole() && _actionTokens > 0)
+        {
+            // Acquire
+            possibleActions.add("acquire");
+
+            // Act
+            possibleActions.add("act");
+
+            // Rehearse
+            possibleActions.add("rehearse");
+
+        } else {
+            if (_actionTokens > 0)
+            {
+                // Move
+                possibleActions.add("move");
+            }
+
+            // Upgrade
+            if (_currentPlayer.Get_Location().Get_CurrentGameSet() instanceof CastingSet)
+            {
+                possibleActions.add("upgrade");
+            }
+        }
+
+        return possibleActions;
+    }
+
+    private void DisplayActionList(ArrayList<String> actionList)
+    {
+        System.out.print("Available actions : ");
+        for (int i = 0; i < actionList.size(); i++) {
+            System.out.print("[" + actionList.get(i) + "]");
+
+            if (i != actionList.size() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println();
+    }
+
+
+    public int GetActionTokens() {
+        return _actionTokens;
+    }
+
+    public void SetActionTokens(int tokenCount) {
+        _actionTokens = tokenCount;
+    }
+
 
 
 }

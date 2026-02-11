@@ -14,6 +14,13 @@ import java.util.Map;
 
 public class SetParser extends ParseDaddy{
 
+    //TODO: Add Arraylist of Sets and Hashmap
+    // of sets as local variables so we can access them
+    // That or add them as statics for the GameSet Class
+
+    //TODO: Implement Second Neighbor pass once all
+    // GameSet objects have been created
+
     /**
      * Attempts to open xml file by the given fileName
      * Throws an error if not possible
@@ -172,7 +179,7 @@ public class SetParser extends ParseDaddy{
                         break;
 
                     case "parts":
-                        roles = ParseParts(child);
+                        roles = ParseRoleList(child);
                         break;
                 }
             }
@@ -292,57 +299,7 @@ public class SetParser extends ParseDaddy{
         return trailer;
     }
 
-    private ArrayList<ActingRole> ParseParts(Node partsNode)
-    {
 
-        ArrayList<ActingRole> roles = new ArrayList<>();
-
-        if (partsNode == null)
-        {
-            return roles;
-        }
-
-        NodeList partNodes = partsNode.getChildNodes();
-
-        //loops through parts
-        for (int i = 0; i < partNodes.getLength(); i++)
-        {
-            Node partNode = partNodes.item(i);
-
-            if ("part".equals(partNode.getNodeName()))
-            {
-                String roleName = partNode.getAttributes().getNamedItem("name").getNodeValue();
-
-                int roleLevel = Integer.parseInt(partNode.getAttributes().getNamedItem("level").getNodeValue());
-
-                String roleLine = "";
-                Area roleArea = null;
-
-
-                NodeList partDetails = partNode.getChildNodes();
-
-                for (int j = 0; j < partDetails.getLength(); j++)
-                {
-                    Node detail = partDetails.item(j);
-
-                    if ("area".equals(detail.getNodeName()))
-                    {
-                        roleArea = ParseArea(detail);
-                    }
-
-                    if ("line".equals(detail.getNodeName()))
-                    {
-                        roleLine = detail.getTextContent().trim();
-                    }
-                }
-
-                ActingRole role = new ActingRole(roleLevel, roleName, roleLine, roleArea);
-
-                roles.add(role);
-            }
-        }
-        return roles;
-    }
 
 
 

@@ -72,7 +72,7 @@ public class PlayerManager {
      */
     public void BonusPay(Player currentPlayer)
     {
-        Player[] players = Get_PlayerLibrary();;
+        Player[] players = Get_PlayerLibrary();
         if (players == null || players.length == 0) return;
         ArrayList<Player> onCard = new ArrayList<>();
         ArrayList<Player> offCard = new ArrayList<>();
@@ -189,9 +189,6 @@ public class PlayerManager {
         }
 
         sb.append("}");
-
         return sb.toString();
     }
-
-
 }

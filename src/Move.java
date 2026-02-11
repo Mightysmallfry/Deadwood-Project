@@ -1,9 +1,10 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class Move implements TurnAction{
-    private Scanner Input = new Scanner(System.in);
+    private final int ACTION_COST = 1;
+
+    private Scanner _input = new Scanner(System.in);
     private boolean _valid = false;
 
     @Override
@@ -14,14 +15,17 @@ public class Move implements TurnAction{
         GameSet currentSet = currentPlayer.Get_Location().Get_CurrentGameSet();
 
         // Get the neighbors of current location
-        HashMap<String, GameSet> neighbors = currentSet.GetNeighbors();
-        String playerInput = "";
+        //TODO: Update upon hashmap neighbors
+        //HashMap<String, GameSet> neighbors = currentSet.GetNeighbors();
+        HashMap<String, GameSet> neighbors = new HashMap<>();
+        System.out.println("Check move, not good neighbors");
 
+        String playerInput = "";
         // Get the player's input
         while (!_valid)
         {
             // Check validity
-            playerInput = Input.nextLine().toLowerCase().strip();
+            playerInput = _input.nextLine().toLowerCase().strip();
             if (playerInput.equals(currentSet.GetName())){
                 System.out.println("You're already there!");
                 return;
@@ -49,7 +53,8 @@ public class Move implements TurnAction{
         currentSet.GetPlayers().remove(currentPlayer);
         currentPlayer.Get_Location().Set_CurrentGameSet(targetLocation);
 
-        // return to action select
-        // aka just finish executing
+        int actionTokens = GameManager.GetInstance().GetActionTokens();
+        actionTokens -= ACTION_COST;
+        GameManager.GetInstance().SetActionTokens(actionTokens);
     }
 }

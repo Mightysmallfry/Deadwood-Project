@@ -47,11 +47,6 @@ public class GameBoard {
         }
     }
 
-
-    //This method places the game sets including Upgrade and Casting
-    //My understanding is that this just populates the sets and decides if they are Acting,
-    // the SceneCard will come into existence if a player steps on an acting scene.
-
     /**
      * Populates each scene that can have a card with a scene card if
      * it does not already have one. The scene cards are chosen at random.
