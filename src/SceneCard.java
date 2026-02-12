@@ -284,7 +284,6 @@ public class SceneCard {
         sb.append(_imageName != null ? _imageName : null).append("\n");
 
         sb.append("roles : ");
-
         if (_roles != null) {
             sb.append("\n");
             for (ActingRole role : _roles) {

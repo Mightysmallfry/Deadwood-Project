@@ -110,10 +110,4 @@ public class SceneCardParser extends ParseDaddy{
         _parsedCards = foundCards;
         return foundCards;
     }
-
-
-
-
-
-
 }

@@ -119,7 +119,7 @@ public class GameSet {
         sb.append(_area != null? _area.toString() : "null").append("\n");
 
         sb.append("Neighbors : ");
-        sb.append(_neighbors != null ? _neighbors.toString() : "null").append("\n");
+        sb.append(_neighbors != null ? _neighbors.keySet() : "null").append("\n");
 
         sb.append("Players : ");
         sb.append(_players != null ? _players.toString() : "null").append("\n");

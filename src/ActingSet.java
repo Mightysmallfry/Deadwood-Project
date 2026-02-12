@@ -138,16 +138,32 @@ public class ActingSet extends GameSet {
         sb.append(_area != null? _area.toString() : "null").append("\n");
 
         sb.append("Neighbors : ");
-        sb.append(_neighbors != null ? _neighbors.toString() : "null").append("\n");
+        sb.append(_neighbors != null ? _neighbors.keySet() : "null").append("\n");
 
         sb.append("LocalRoles : ");
-        sb.append(_localRoles != null ? _localRoles.toString() : "null").append("\n");
+        if (_localRoles != null) {
+            sb.append("\n");
+            for (ActingRole role : _localRoles) {
+                sb.append("- ");
+                sb.append(role.toString());
+                sb.append("\n");
+            }
+        }
 
-        sb.append("RoleCatalog : ");
-        sb.append(_roleCatalog != null ? _roleCatalog.toString() : "null").append("\n");
+        sb.append("roleCatalog : (Role, Player)");
+        if (_roleCatalog != null){
+            sb.append("\n");
+            for (Map.Entry<ActingRole, Player> entry : _roleCatalog.entrySet()) {
+                sb.append("- {");
+                sb.append(entry.getKey().GetName()).append(", ");
+                Player entryValue = entry.getValue();
+                sb.append(entryValue != null ? entryValue : "null");
+                sb.append("}\n");
+            }
+        }
 
         sb.append("Players : ");
-        sb.append(_players != null ? _players.toString() : "null").append("\n");
+        sb.append(_players != null ? _players : "null").append("\n");
 
         return sb.toString();
     }
