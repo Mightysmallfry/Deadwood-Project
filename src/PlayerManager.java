@@ -7,20 +7,17 @@ public class PlayerManager {
     // Members
     private static Player[] _playerLibrary;
 
-
     // Constructors
-    public PlayerManager(RulesPackage rules, int playerCount, GameSet startLocation)
+    public PlayerManager() {}
+
+    public PlayerManager(RulesPackage rules, GameSet startLocation)
     {
-        _playerLibrary = new Player[playerCount];
-        for(int i = 0; i < playerCount; i++)
+        _playerLibrary = new Player[rules.GetPlayerCount()];
+        for(int i = 0; i < rules.GetPlayerCount(); i++)
         {
             Player p = AddPlayer(rules, startLocation);
             _playerLibrary[i] = p;
         }
-    }
-    public PlayerManager()
-    {
-
     }
 
 

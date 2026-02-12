@@ -1,12 +1,17 @@
 public class RulesPackage {
+    // constants
+    private int _days = 4;
+    private int _startingCredits = 0;
+    private int _startingRank = 1;
+    private int _playerCount = 4;
 
-    private int _days;
-    private int _startingCredits;
-    private int _startingRank;
+    // Basic constructor, returns new with default 4 player case
+    public RulesPackage() {}
 
     public RulesPackage(int playerCount) {
 
         // defaults (4 players case)
+        _playerCount = playerCount;
         _days = 4;
         _startingCredits = 0;
         _startingRank = 1;
@@ -59,4 +64,6 @@ public class RulesPackage {
     public int GetStartingRank() {
         return _startingRank;
     }
+
+    public int GetPlayerCount() { return _playerCount; }
 }

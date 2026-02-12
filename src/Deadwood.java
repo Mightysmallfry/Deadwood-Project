@@ -18,68 +18,76 @@ public class Deadwood {
         // Create and alter the rules based on num of players
         RulesPackage rulesPackage = new RulesPackage(playerCount);
 
-        // Parse the data needed for our game board
+        // =========    =========   =========   =========
+        // CHECKPOINT 0: PROGRAM RUNS WITH CORRECT ARGS
+        // =========    =========   =========   =========
+
+        // ========= Parse All Data =========
         // - Sets - Cards - Roles
-        SetParser parser = new SetParser();
-        Document setDocument = null;
-        try{
-            Path setPath = Paths.get("xml", "board.xml");
-            setDocument = parser.GetDocumentFromFile(setPath.toString());
-        } catch (Exception e) {
-            System.out.println("Something went wrong parsing : " + e);
-        }
-
-        if (setDocument == null) {
-            System.out.println("Something went wrong initializing setDocuments after parsing");
-            System.exit(0);
-        }
-
-        // All of our cards are already
-        // Added to the static library of cards as we parse
-        // But we can still access and test them as such
         Path cardPath = Paths.get("xml", "cards.xml");
         SceneCardParser cardParser = new SceneCardParser(cardPath.toString());
         ArrayList<SceneCard> cardList = cardParser.GetParsedList();
 
-        // TODO: Fix Parsing the Sets
-        CastingSet castingSet = parser.ParseCastingSet(setDocument);
-        GameSet trailerSet = parser.FindTrailerSetData(setDocument);
-        ArrayList<ActingSet> actingSets = parser.FindActingSetData(setDocument);
+        // TODO: Pass in the fileName to constructor
+        Path setPath = Paths.get("xml", "board.xml");
+        SetParser boardParser = new SetParser(setPath.toString());
 
+        CastingSet castingSet = boardParser.GetParsedCastingSet();
+        GameSet trailerSet = boardParser.GetParsedTrailerSet();
+        ArrayList<ActingSet> actingSets = boardParser.GetParsedActingSets();
+
+        // =========    =========   =========   =========
+        // CHECKPOINT 1: ALL FILES PARSED AND DATA RECEIVED
+        // =========    =========   =========   =========
         TestCardList(cardList);
         TestSetList(actingSets);
 
         System.out.println(castingSet.toString());
         System.out.println(trailerSet.toString());
 
+
+        /// ========= EARLY EXIT HELPER =========
         System.exit(0);
+        /// =====================================
 
 
+        // ========= Set Up GameBoard =========
         // Be careful of size of acting sets
         ActingSet[] formatedActedSets = actingSets.toArray(new ActingSet[actingSets.size()]);
 
         // Create an empty Game Board to play the game with the made sets
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
             // How do we limit the game sets to 10 in total?
+            // Good Question
 
-        // Populate the Game Board with cards
-        gameBoard.Populate();
-
-        // Create a Game Manager, passing in the rulesPackage
-        //When start Game Is called it asks for the player count and sets the Rules for Game manager!
-
-        // When creating players, maybe add playerName? //We do that in AddPlayer in PlayerManager the first time its called.
+        // ========= Set Up PlayerManager =========
+        // When creating players, maybe add playerName?
+        // We do that in AddPlayer in PlayerManager the first time its called.
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager playerManager = new PlayerManager(); //Calling StartGame in GameManager creates all players and
+        PlayerManager playerManager = new PlayerManager();
+        //Calling StartGame in GameManager creates all players
+        // But should it?
+
+        // playerManager.CreatePlayers()?
+
+        // ========= Set Up GameManager =========
+        // Create a Game Manager, passing in the rulesPackage
+        // When start Game Is called it asks for the player count and sets the Rules for Game manager!
+        GameManager gameManager = GameManager.GetInstance();
+        gameManager.SetRules(rulesPackage);
+        gameManager.SetGameBoard(gameBoard);
+
+        // =========    =========   =========   =========
+        // CHECKPOINT 2: GAME HAS BEEN INSTANTIATED AND READY TO START
+        // =========    =========   =========   =========
+
+        // Now the game runs in its entirety or until someone quits.
+        gameManager.StartGame();
 
 
-        // Begin game with player 0/1 //First player is chosen in start game.
-
-        // When it is time end the game
-
-        // Display winner/leaderboard
-
-        // Quit Program
+        // =========    =========   =========   =========
+        // CHECKPOINT 3: QUIT PROGRAM
+        // =========    =========   =========   =========
 
     }
 

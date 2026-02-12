@@ -7,7 +7,7 @@ public class GameManager {
 
     // Statics
     private static GameManager _instance;
-    private static RulesPackage _rules;
+    private static RulesPackage _rules = new RulesPackage();
 
     // Members
     private Player _currentPlayer;
@@ -18,6 +18,7 @@ public class GameManager {
 
     private int _actionTokens = DEFAULT_ACTION_TOKENS;
     private boolean _hasMoved = false;
+    private boolean _hasEnded = false;
 
     // Constructors
     private GameManager() {}
@@ -42,7 +43,7 @@ public class GameManager {
     public int GetCurrentDay(){return _currentDay;}
 
     // Setters
-    public static void SetRules(RulesPackage rules) {_rules = rules;}
+    public void SetRules(RulesPackage rules) {_rules = rules;}
 
     public void SetGameBoard(GameBoard gameBoard) {_gameBoard = gameBoard;}
 
@@ -62,8 +63,8 @@ public class GameManager {
 
 
     /**
-     * This makes sure that the player is rewarded after their turn and calls the
-     * function that deals with ending the day/game.
+     * This is the primary game loop. We get the current player, let them choose their turn action
+     * Execute said action, check for any end conditions and then advance to the next player
      */
     private void UpdateGame()
     //This processes the current player's turn
@@ -92,9 +93,11 @@ public class GameManager {
             switch (playerChoice)
             {
                 case "quit":
+                    System.out.println("Quiting Game!");
                     System.exit(1);
                     break;
                 case "pass":
+                    System.out.println("Turn Ended");
                     takingTurn = false;
                     break;
                 case "acquire":
@@ -180,8 +183,6 @@ public class GameManager {
      * This Function is a Helper for UpdateGame that moves focus to the next player
      * after the game is done updating.
      */
-
-    //This could be moved to player manager, but it works in both classes.
     private void AdvanceTurn()
     {
         // Reset Action Tokens for the next player
@@ -233,6 +234,7 @@ public class GameManager {
      */
     public void EndGame()
     {
+        _hasEnded = true;
         PlayerManager manager = new PlayerManager(); //WE ONLY PASS IN THE RULES IN START GAME //Otherwise we pass in nothing
         int[] scores = manager.TallyScore(); //This will be its own thing eventually REMEMBER TO CHANGE
 
@@ -245,6 +247,7 @@ public class GameManager {
         }
 
         // Grab Winner
+        //TODO: As tiebreaker might I recommend name?
         ArrayList<Player> winners = new ArrayList<>();//Could add a tiebreaker piece.
         for (int i = 0; i < scores.length; i++) {
             if (scores[i] == highest) {
@@ -270,25 +273,29 @@ public class GameManager {
         _gameBoard.Populate();
         GameSet trailer = _gameBoard.GetStartingSet();
 
-        //Here we need to as the player how many players they have, then we create the rules package.
-        System.out.println("How many players will you be playing with?");
-        System.out.println("Please type a number between 2 and 8");
-        Scanner sc = new Scanner(System.in);
-        int playerCount = sc.nextInt();
-        sc.close();
+        //TODO: Right now all player managers only share the same roster.
+        // The player count is given by the console args and is stored in
+        // a rulePackage from then on.
+        // I would prefer player manager to be outside of this method.
 
-        // Get rule set based on player input
-        RulesPackage rules = new RulesPackage(playerCount);
         //Create all players
-        PlayerManager manager = new PlayerManager(rules,playerCount,trailer);
-        //set rules to GameManager
-        SetRules(rules);
+        // Should it?
+        PlayerManager manager = new PlayerManager(_rules, trailer);
         SetCurrentDay(1);
 
         // Use die to choose a first player
+        //-1 because indexing starts at 0 and dice will allways give is 1-8 instead of 0-7
         Dice dice = Dice.GetInstance();
-        int startingPlayer = dice.Roll(1,playerCount) -1; //-1 because indexing starts at 0 and dice will allways give is 1-8 instead of 0-7
-        SetCurrentPlayer( manager.GetPlayerLibrary()[startingPlayer]); //Could make this a die roll.
+        int startingPlayer = dice.Roll(1, _rules.GetPlayerCount()) - 1;
+        SetCurrentPlayer( manager.GetPlayerLibrary()[startingPlayer]);
+
+
+        // Start updating the game until it ends.
+        _hasEnded = false;
+        while (!_hasEnded)
+        {
+            UpdateGame();
+        }
     }
 
 
@@ -344,6 +351,7 @@ public class GameManager {
     }
 
 
+    public boolean HasGameEnded() {return _hasEnded;}
     public int GetActionTokens() {
         return _actionTokens;
     }

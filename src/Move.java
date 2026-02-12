@@ -7,7 +7,7 @@ public class Move implements TurnAction{
     private final int ACTION_COST = 1;
 
     private Scanner _input = new Scanner(System.in);
-    private boolean _valid = false;
+    private boolean _validInput = false;
 
     @Override
     public void Execute() {
@@ -17,7 +17,6 @@ public class Move implements TurnAction{
         }
 
         // Get the player's current location
-
         Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
@@ -29,7 +28,7 @@ public class Move implements TurnAction{
 
         String playerInput = "";
         // Get the player's input
-        while (!_valid)
+        while (!_validInput)
         {
             // Check validity
             playerInput = _input.nextLine().toLowerCase().strip();
@@ -43,10 +42,10 @@ public class Move implements TurnAction{
                 System.out.println("Target location out of reach, please try again!");
             }
 
-            // Good Input
+            // Got Good Input
             if (neighbors.containsKey(playerInput))
             {
-                _valid = !_valid;
+                _validInput = !_validInput;
             }
         }
 

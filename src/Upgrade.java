@@ -3,7 +3,6 @@ import java.util.Scanner;
 
 public class Upgrade implements TurnAction {
     private Scanner Input = new Scanner(System.in);
-    private final int MAX_RANK = 6;
 
     @Override
     public void Execute()
@@ -29,6 +28,7 @@ public class Upgrade implements TurnAction {
         int playerCredit = playerCurrency.GetCredits();
 
         // We'll assume players typically only want to upgrade within 3 levels of their current.
+        // that way we're not too greedy or frugal with resources
         ArrayList<UpgradeData> possibleCoinUpgrades = new ArrayList<>(3);
         ArrayList<UpgradeData> possibleCreditUpgrades = new ArrayList<>(3);
 
@@ -65,6 +65,7 @@ public class Upgrade implements TurnAction {
 
         // Get Player requested level
             // What currency do they want to pay
+            // Assume minimum level
         String currencyChoice = Input.nextLine().strip();
         int rankRequest = 1;
 
@@ -76,16 +77,17 @@ public class Upgrade implements TurnAction {
                 rankRequest = Integer.parseInt(playerInput);
                 break;
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number between: " +
-                        currentPlayer.GetCurrentRank() + " - " + MAX_RANK);
+                System.out.println("Please enter a valid number");
             }
         }
+
+        int maxRank = castingSet.GetMaxRank();
 
         switch (currencyChoice){
             case "dollar":
                 for (UpgradeData upgrade : possibleCoinUpgrades)
                 {
-                    if (1 < rankRequest && rankRequest < MAX_RANK && rankRequest == upgrade.GetRank()) {
+                    if (1 < rankRequest && rankRequest < maxRank && rankRequest == upgrade.GetRank()) {
                         int newBalance = playerCurrency.GetCoins() - upgrade.GetCostAmount();
                         playerCurrency.SetCoins(newBalance);
                     }
@@ -95,7 +97,7 @@ public class Upgrade implements TurnAction {
             case "credit":
                 for (UpgradeData upgrade : possibleCreditUpgrades)
                 {
-                    if (1 < rankRequest && rankRequest < MAX_RANK && rankRequest == upgrade.GetRank()) {
+                    if (1 < rankRequest && rankRequest < maxRank && rankRequest == upgrade.GetRank()) {
                         int newBalance = playerCurrency.GetCredits() - upgrade.GetCostAmount();
                         playerCurrency.SetCredits(newBalance);
                     }
