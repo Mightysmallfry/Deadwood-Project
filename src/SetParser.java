@@ -17,8 +17,6 @@ public class SetParser extends ParseDaddy{
     // Methods
     private HashMap<String, GameSet> _allSets;
 
-    //TODO: Implement Second Neighbor pass once all
-    // GameSet objects have been created
 
     /**
      * Attempts to open xml file by the given fileName
@@ -37,6 +35,8 @@ public class SetParser extends ParseDaddy{
             try {
                 document = documentBuilder.parse(fileName);
             } catch (Exception ex) {
+                System.out.println("XML parse failure");
+                ex.printStackTrace();
                 throw new RuntimeException("Failed to parse XML:" + fileName, ex);
             }
             return document;
@@ -75,27 +75,14 @@ public class SetParser extends ParseDaddy{
         return castingSet;
     }
 
-
-    // Still Needs to be implemented
-    // I'm Thinking we do a double pass
-    // Once to register every set
-    // Second time to fill in the neighbors
-
-    // TODO: Implement this
-    //I understand that this is ment to give the list of neighbors but!
-    //What if we make a hash map with all the gamestes form the parser then we can have a resolve neighbors function that
-    //gives each one a neighbor. Then we can have a casting set function a trailer function and an acting set function
-    // that grab those elements from the completed hashmap.
-
-    //This will be my parse as much as I can function
     private void ParseBoard(Document document) {
         Element root = document.getDocumentElement();
         NodeList children = root.getChildNodes();
         HashMap<String,GameSet> setHolder = new HashMap<>(children.getLength());
-        HashMap<String,ArrayList<String>> neighborHolder = new HashMap<>(children.getLength());//this will be where we store the neighbors in string form for actual attachment later.
-        for(int i = 0; i < children.getLength(); i++) //go through all the sets
+        HashMap<String,ArrayList<String>> neighborHolder = new HashMap<>(children.getLength());
+        for(int i = 0; i < children.getLength(); i++)
         {
-            Node currentNode = children.item(i); //set current node
+            Node currentNode = children.item(i);
 
             if (currentNode.getNodeType() != Node.ELEMENT_NODE)
                 continue;
@@ -355,6 +342,6 @@ public class SetParser extends ParseDaddy{
 
         return new GameSet("trailer", new HashMap<>(), area);
     }
-    
+
 
 }
