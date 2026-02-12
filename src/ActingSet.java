@@ -18,7 +18,7 @@ public class ActingSet extends GameSet {
         // Inherited
         _name = "Basic Acting Set";
         _area = new Area();
-        _neighbors = new ArrayList<>();
+        _neighbors = new HashMap<>();
         _players = new ArrayList<>();
 
         // Owned
@@ -30,7 +30,7 @@ public class ActingSet extends GameSet {
         _roleCatalog = new HashMap<>();
     }
 
-    public ActingSet(String name, Area area, ArrayList<GameSet> neighbors,
+    public ActingSet(String name, Area area, HashMap<String,GameSet> neighbors,
                      int maximumProgress, ArrayList<ActingRole> localRoles){
         // Inherited
         _name = name;

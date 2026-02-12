@@ -136,8 +136,8 @@ public class SetParser extends ParseDaddy{
         {
             String key = entry.getKey();
             GameSet value = entry.getValue();
-            ArrayList<GameSet> newNeighbors = new ArrayList<>();
             ArrayList<String> stringNeighbors = neighborHolder.get(key);
+            HashMap<String,GameSet> newNeighbors = new HashMap<>(stringNeighbors.size());
 
             for (String stringNeighbor : stringNeighbors) {
                 GameSet neighbor = setHolder.get(stringNeighbor);
@@ -145,13 +145,12 @@ public class SetParser extends ParseDaddy{
                 {
                     throw new IllegalArgumentException("Unknown neighbor:  " + stringNeighbor);
                 }
-                newNeighbors.add(neighbor);//this should set the new list for neighbors to be the GameSet object
+                newNeighbors.put(stringNeighbor,neighbor);
             }
             value.SetNeighbors(newNeighbors);
         }
 
         Set_AllSets(setHolder);
-
     }
 
     public CastingSet FindCastingSet()
@@ -284,7 +283,7 @@ public class SetParser extends ParseDaddy{
                     break;
                 }
             }
-        return new ActingSet(name, area, new ArrayList<>(), maximumProgress, roles);
+        return new ActingSet(name, area, new HashMap<>(), maximumProgress, roles);
     }
 
 
@@ -354,11 +353,8 @@ public class SetParser extends ParseDaddy{
             }
         }
 
-        GameSet trailer = new GameSet("trailer", new ArrayList<GameSet>(), area);
-
-        return trailer;
+        return new GameSet("trailer", new HashMap<>(), area);
     }
-
-
+    
 
 }
