@@ -1,12 +1,9 @@
-import org.w3c.dom.Document;
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Deadwood {
-    public static void main(String[] args) throws ParserConfigurationException {
+    public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: java Deadwood [PlayerCount]");
             System.exit(0);
@@ -31,7 +28,7 @@ public class Deadwood {
 
         // TODO: Pass in the fileName to constructor
         Path setPath = Paths.get("xml", "board.xml");
-        SetParser boardParser = new SetParser(setPath.toString());
+        GameSetParser boardParser = new GameSetParser(setPath.toString());
 
         CastingSet castingSet = boardParser.FindCastingSet();
         GameSet trailerSet = boardParser.FindTrailer();

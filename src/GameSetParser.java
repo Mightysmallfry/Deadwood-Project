@@ -12,16 +12,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class SetParser extends ParseDaddy{
+public class GameSetParser extends ParseDaddy{
 
     // Methods
     private HashMap<String, GameSet> _allSets;
 
 
     //Constructor
-    public SetParser(String fileName) throws ParserConfigurationException {
-        Document doc = GetDocumentFromFile(fileName);
-        ParseBoard(doc);
+    public GameSetParser(String fileName) {
+        try {
+            Document doc = GetDocumentFromFile(fileName);
+            ParseBoard(doc);
+        } catch (Exception e) {
+            System.out.println("Something went wrong parsing : [" + fileName + "] : " + e);
+        }
     }
 
 
