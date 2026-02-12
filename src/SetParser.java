@@ -18,6 +18,13 @@ public class SetParser extends ParseDaddy{
     private HashMap<String, GameSet> _allSets;
 
 
+    //Constructor
+    public SetParser(String fileName) throws ParserConfigurationException {
+        Document doc = GetDocumentFromFile(fileName);
+        ParseBoard(doc);
+    }
+
+
     /**
      * Attempts to open xml file by the given fileName
      * Throws an error if not possible
@@ -25,7 +32,7 @@ public class SetParser extends ParseDaddy{
      * @return
      * @throws ParserConfigurationException
      */
-    public Document GetDocumentFromFile(String fileName)
+    private Document GetDocumentFromFile(String fileName)
             throws ParserConfigurationException {
         {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();

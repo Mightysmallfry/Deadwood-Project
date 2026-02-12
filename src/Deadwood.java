@@ -1,11 +1,12 @@
 import org.w3c.dom.Document;
 
+import javax.xml.parsers.ParserConfigurationException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Deadwood {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParserConfigurationException {
         if (args.length != 1) {
             System.out.println("Usage: java Deadwood [PlayerCount]");
             System.exit(0);
@@ -32,9 +33,9 @@ public class Deadwood {
         Path setPath = Paths.get("xml", "board.xml");
         SetParser boardParser = new SetParser(setPath.toString());
 
-        CastingSet castingSet = boardParser.GetParsedCastingSet();
-        GameSet trailerSet = boardParser.GetParsedTrailerSet();
-        ArrayList<ActingSet> actingSets = boardParser.GetParsedActingSets();
+        CastingSet castingSet = boardParser.FindCastingSet();
+        GameSet trailerSet = boardParser.FindTrailer();
+        ArrayList<ActingSet> actingSets = boardParser.FindActingSets();
 
         // =========    =========   =========   =========
         // CHECKPOINT 1: ALL FILES PARSED AND DATA RECEIVED
