@@ -13,12 +13,12 @@ public class GameManager {
     private Player _currentPlayer;
     private int _currentDay;
     private GameBoard _gameBoard;
-    private TurnAction _playerAction = new Upgrade();
+    private TurnAction _playerAction = new Idle();
     private Scanner _input = new Scanner(System.in);
 
     private int _actionTokens = DEFAULT_ACTION_TOKENS;
-    private boolean _hasMoved = false;
-    private boolean _hasEnded = false;
+    private boolean _hasMoved = false;  // Has Player moved this turn
+    private boolean _hasEnded = false;  // Has Game ended
 
     // Constructors
     private GameManager() {}
@@ -69,14 +69,20 @@ public class GameManager {
     private void UpdateGame()
     //This processes the current player's turn
     {
-        PlayerManager manager = new PlayerManager();
-        Player current = GetCurrentPlayer();
-        LocationComponent loc = current.GetLocation();
-
         // While taking turn
         boolean takingTurn = true;
         while (takingTurn)
         {
+            // Make sure we keep track of these actively
+            LocationComponent loc = _currentPlayer.GetLocation();
+            GameSet currentSet = loc.GetCurrentGameSet();
+
+            // Print who's turn it is
+            System.out.println("||" + _currentPlayer.GetPersonalId() + "'s Turn||");
+            System.out.println("||Location : " + currentSet.GetName() + "||");
+            System.out.println("Action Points Available: " + _actionTokens);
+
+            // Print Available Options
             ArrayList<String> possibleActions = GetActionList();
             DisplayActionList(possibleActions);
 
@@ -89,7 +95,6 @@ public class GameManager {
                 continue;
             }
 
-            // TODO: How do we want to quit?
             switch (playerChoice)
             {
                 case "quit":
@@ -99,6 +104,19 @@ public class GameManager {
                 case "pass":
                     System.out.println("Turn Ended");
                     takingTurn = false;
+                    break;
+                case "location":
+                    System.out.println("You are located at the: " + currentSet.GetName() + " set");
+                    if (currentSet instanceof ActingSet)
+                    {
+                        SceneCard card = ((ActingSet) currentSet).GetCurrentSceneCard();
+                        if (card.IsVisible()){
+                            System.out.println("Shooting: " + card.GetName() + " Scene " + card.GetCardNumber());
+                        }
+                    }
+                    break;
+                case "who":
+                    System.out.println("Current Player: " + _currentPlayer.GetPersonalId());
                     break;
                 case "acquire":
                     SetPlayerAction(new Acquire());
@@ -116,15 +134,23 @@ public class GameManager {
                     SetPlayerAction(new Upgrade());
                     break;
             }
+
+            // Execute Selection and return to idle
+            // System.out.println("Player Action: " + _playerAction.getClass());
             _playerAction.Execute();
+            _playerAction = new Idle();
         }
 
         // Check if scene just wrapped
-        if (loc.GetCurrentGameSet() instanceof ActingSet actSet)
+        if (_currentPlayer.GetLocation().GetCurrentGameSet() instanceof ActingSet actSet)
         {
             if (actSet.IsComplete())
             {
-                manager.BonusPay(GetCurrentPlayer());
+                //TODO: I commented the playerManager because
+                // We only use it once in this entire method, here
+                // We need to talk about how we work with playerManager
+
+                // manager.BonusPay(GetCurrentPlayer());
                 actSet.RemoveCard();
             }
         }
@@ -185,8 +211,11 @@ public class GameManager {
      */
     private void AdvanceTurn()
     {
-        // Reset Action Tokens for the next player
+        // Reset Action Tokens and action for the next player
         _actionTokens = DEFAULT_ACTION_TOKENS;
+        _playerAction = new Idle();
+        _hasMoved = false;
+
 
         PlayerManager manager = new PlayerManager();
         int index = 0;
@@ -267,34 +296,42 @@ public class GameManager {
      *This starts the game using the given rules package as well as sets the day to one and moves players to the start.
      * Next it sets up all the players default values then populates the board and chooses a starting player.
      */
-    public void StartGame()
+    public void StartGame(PlayerManager playerManager)
     {
         // Populate board
         _gameBoard.Populate();
         GameSet trailer = _gameBoard.GetStartingSet();
 
-        //TODO: Right now all player managers only share the same roster.
-        // The player count is given by the console args and is stored in
-        // a rulePackage from then on.
-        // I would prefer player manager to be outside of this method.
-
-        //Create all players
-        // Should it?
-        PlayerManager manager = new PlayerManager(_rules, trailer);
+        // Let's be careful with indexing here
         SetCurrentDay(1);
 
         // Use die to choose a first player
-        //-1 because indexing starts at 0 and dice will allways give is 1-8 instead of 0-7
+        //-1 because indexing starts at 0 and dice will always give is 1-8 instead of 0-7
         Dice dice = Dice.GetInstance();
         int startingPlayer = dice.Roll(1, _rules.GetPlayerCount()) - 1;
-        SetCurrentPlayer( manager.GetPlayerLibrary()[startingPlayer]);
+        SetCurrentPlayer(playerManager.GetPlayerLibrary()[startingPlayer]);
 
+        // Can Confirm Current Player is correctly chosen at random
+        // System.out.println("startingPlayerIndex " + startingPlayer);
+        // System.out.println("StartingCurrentPlayer: " + _currentPlayer.GetPersonalId());
 
         // Start updating the game until it ends.
         _hasEnded = false;
+        int earlyBreak = 0;
         while (!_hasEnded)
         {
+            earlyBreak++;
+
             UpdateGame();
+
+            // Only allows 3 turns
+            if (earlyBreak == 3){
+
+                /// ========= EARLY EXIT HELPER =========
+                System.out.println("Early Helper Has Been Hit");
+                break;
+                /// =====================================
+            }
         }
     }
 
@@ -311,8 +348,13 @@ public class GameManager {
         // The player is always allowed to:
         // - quit
         // - pass turn to next
+        // - location ask where they are
+        // - who are they
+        // - board where is everyone?
         possibleActions.add("quit");
         possibleActions.add("pass");
+        possibleActions.add("location");
+        possibleActions.add("who");
 
         // The player has a role
         if (_currentPlayer.HasRole() && _actionTokens > 0) {
@@ -360,6 +402,25 @@ public class GameManager {
         _actionTokens = tokenCount;
     }
 
+    @Override
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("|~| Game Manager |~|\n");
+        sb.append("Ruleset: ");
+        sb.append(_rules.toString()).append("\n");
+
+        sb.append("Current Player: ");
+        sb.append(_currentPlayer).append("\n");
+
+        sb.append("Current Day: ");
+        sb.append(_currentDay).append("\n");
+
+        sb.append("Has Moved: ");
+        sb.append(_hasMoved).append("\n");
+
+        return sb.toString();
+    }
 
 
 }

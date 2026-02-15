@@ -2,8 +2,8 @@ public class LocationComponent {
 
     //Members
     private int _rehearseTokens = 0;
-    private GameSet _currentGameSet;
-    private ActingRole _currentRole;
+    private GameSet _currentGameSet = null;
+    private ActingRole _currentRole = null;
     private boolean _onCard = false;
 
     // Constructors
@@ -11,13 +11,13 @@ public class LocationComponent {
 
     public LocationComponent(GameSet startingLocation)
     {
-        SetCurrentGameSet(startingLocation);
+        _currentGameSet = startingLocation;
     }
 
     public LocationComponent(GameSet startingLocation, ActingRole startingRole)
     {
-        SetCurrentGameSet(startingLocation);
-        SetCurrentRole(startingRole);
+        _currentGameSet = startingLocation;
+        _currentRole = startingRole;
     }
 
     //Getters
@@ -43,8 +43,8 @@ public class LocationComponent {
     public String toString() {
         return "LocationComponent {" +
                 "rehearseTokens=" + _rehearseTokens +
-                ", currentGameSet=" + (_currentGameSet != null ? _currentGameSet.toString() : "None") +
-                ", currentRole=" + (_currentRole != null ? _currentRole.toString() : "None") +
+                ", currentGameSet=" + (_currentGameSet != null ? _currentGameSet.GetName() : "None") +
+                ", currentRole=" + (_currentRole != null ? _currentRole.GetName() : "None") +
                 ", onCard=" + _onCard +
                 "}";
     }

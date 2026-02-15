@@ -60,7 +60,8 @@ public class GameBoard {
         for (GameSet gameSet : _gameSets) {
             if (gameSet instanceof ActingSet){
                 ArrayList<SceneCard> cards = SceneCard.GetAvailableCards();
-                SceneCard randomCard = cards.get(Dice.GetInstance().Roll(1, cards.size()));
+                // Sub 1 for dice having inclusive bounds
+                SceneCard randomCard = cards.get(Dice.GetInstance().Roll(1, cards.size()) - 1);
                 ((ActingSet) gameSet).AddCard(randomCard);
             }
         }
@@ -126,7 +127,7 @@ public class GameBoard {
                 sb.append("    [")
                         .append(i)
                         .append("] ")
-                        .append(_gameSets[i] != null ? _gameSets[i].toString() : "null")
+                        .append(_gameSets[i] != null ? _gameSets[i].GetName() : "null")
                         .append("\n");
             }
         } else {

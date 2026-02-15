@@ -25,17 +25,19 @@ public class Dice {
 
     public int Roll()
     {
+        // Add 1 due to exclusive upper bounds
         int sum = 0;
         for (int i = 0; i < DEFAULT_COUNT; i++) {
-            sum += randomNumberGenerator.nextInt(DEFAULT_SIDES);
+            sum += randomNumberGenerator.nextInt(DEFAULT_SIDES) + 1;
         }
         return sum;
     }
 
     public int Roll(int numberOfDice){
         int sum = 0;
+        // Add 1 due to exclusive upper bounds
         for (int i = 0; i < numberOfDice; i++) {
-            sum += randomNumberGenerator.nextInt(DEFAULT_SIDES);
+            sum += randomNumberGenerator.nextInt(DEFAULT_SIDES) + 1;
         }
         return sum;
     }
@@ -49,21 +51,21 @@ public class Dice {
     public int Roll(int numberOfDice, int numberOfSides){
         int sum = 0;
         for (int i = 0; i < numberOfDice; i++) {
-            sum += randomNumberGenerator.nextInt(numberOfSides);
+            sum += randomNumberGenerator.nextInt(numberOfSides) + 1;
         }
         return sum;
     }
 
     public int[] RollAsArray(){
         int[] array = new int[DEFAULT_COUNT];
-        array[0] = randomNumberGenerator.nextInt(DEFAULT_SIDES);
+        array[0] = randomNumberGenerator.nextInt(DEFAULT_SIDES) + 1;
         return array;
     }
 
     public int[] RollAsArray(int numberOfDice){
         int[] array = new int[numberOfDice];
         for (int i = 0; i < numberOfDice; i++) {
-            array[i] = randomNumberGenerator.nextInt(DEFAULT_SIDES);
+            array[i] = randomNumberGenerator.nextInt(DEFAULT_SIDES) + 1;
         }
         return array;
     }
@@ -77,7 +79,7 @@ public class Dice {
     public int[] RollAsArray(int numberOfDice, int numberOfSides){
         int[] array = new int[numberOfDice];
         for (int i = 0; i < numberOfDice; i++) {
-            array[i] = randomNumberGenerator.nextInt(numberOfSides);
+            array[i] = randomNumberGenerator.nextInt(numberOfSides) + 1;
         }
         return array;
     }

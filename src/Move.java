@@ -1,3 +1,4 @@
+import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -21,17 +22,26 @@ public class Move implements TurnAction{
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         // Get the neighbors of current location
-        //TODO: Update upon hashmap neighbors
-        //HashMap<String, GameSet> neighbors = currentSet.GetNeighbors();
-        HashMap<String, GameSet> neighbors = new HashMap<>();
-        System.out.println("Check move, not good neighbors");
-
+        HashMap<String, GameSet> neighbors = currentSet.GetNeighbors();
         String playerInput = "";
         // Get the player's input
         while (!_validInput)
         {
+            // Print Available Options
+            System.out.print("Available Locations: ");
+            for (HashMap.Entry<String, GameSet> entry : neighbors.entrySet()) {
+                System.out.print("[" + entry.getKey() + "] ");
+            }
+
+            System.out.println("or [cancel]");
+
             // Check validity
-            playerInput = _input.nextLine().toLowerCase().strip();
+            playerInput = _input.nextLine().strip();
+
+            if (playerInput.equals("cancel")) {
+                return;
+            }
+
             if (playerInput.equals(currentSet.GetName())){
                 System.out.println("You're already there!");
                 return;
@@ -41,11 +51,10 @@ public class Move implements TurnAction{
             if (!foundLocation) {
                 System.out.println("Target location out of reach, please try again!");
             }
-
-            // Got Good Input
-            if (neighbors.containsKey(playerInput))
+            if (foundLocation)
             {
                 _validInput = !_validInput;
+                System.out.println("Moving current player!");
             }
         }
 
@@ -54,6 +63,16 @@ public class Move implements TurnAction{
         // Update new Location
         GameSet targetLocation = currentSet.GetNeighbors().get(playerInput);
         targetLocation.AddPlayer(currentPlayer);
+
+        if (targetLocation instanceof ActingSet)
+        {
+            SceneCard card = ((ActingSet) targetLocation).GetCurrentSceneCard();
+
+            // If not yet visible, make it now visible
+            if (!card.IsVisible()){
+                card.SetVisible(true);
+            }
+        }
 
         // Update old Location and Player
         currentSet.GetPlayers().remove(currentPlayer);

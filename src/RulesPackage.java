@@ -1,5 +1,7 @@
 public class RulesPackage {
     // constants
+
+    // defaults (4 players case)
     private int _days = 4;
     private int _startingCredits = 0;
     private int _startingRank = 1;
@@ -10,11 +12,7 @@ public class RulesPackage {
 
     public RulesPackage(int playerCount) {
 
-        // defaults (4 players case)
         _playerCount = playerCount;
-        _days = 4;
-        _startingCredits = 0;
-        _startingRank = 1;
 
         if (playerCount == 2 || playerCount == 3) {
             _days = 3;
@@ -32,10 +30,6 @@ public class RulesPackage {
 
     public RulesPackage(Player[] playerList) {
         int playerCount = playerList.length;
-        // defaults (4 players case)
-        _days = 4;
-        _startingCredits = 0;
-        _startingRank = 1;
 
         if (playerCount == 2 || playerCount == 3) {
             _days = 3;
@@ -66,4 +60,32 @@ public class RulesPackage {
     }
 
     public int GetPlayerCount() { return _playerCount; }
+
+    public void SetDays(int days) {
+        _days = days;
+    }
+
+    public void SetStartingCredits(int credits) {
+        _startingCredits = credits;
+    }
+
+    public void SetStartingRank(int rank) {
+        _startingRank = rank;
+    }
+
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("RulesPackage [ ");
+        sb.append("<Player Count>: " + _playerCount + " ");
+        sb.append("<Total Days>: " + _days + " ");
+        sb.append("<Starting Rank>: " + _startingRank + " ");
+        sb.append("<Starting Credits>: " + _startingCredits + "]");
+        return sb.toString();
+    }
+
+
 }

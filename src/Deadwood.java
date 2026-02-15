@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,9 +14,6 @@ public class Deadwood {
         System.out.println("Hello and welcome to Deadwood gunslinger!");
         System.out.printf("You have %d players!\n", playerCount);
 
-        // Create and alter the rules based on num of players
-        RulesPackage rulesPackage = new RulesPackage(playerCount);
-
         // =========    =========   =========   =========
         // CHECKPOINT 0: PROGRAM RUNS WITH CORRECT ARGS
         // =========    =========   =========   =========
@@ -26,10 +24,8 @@ public class Deadwood {
         SceneCardParser cardParser = new SceneCardParser(cardPath.toString());
         ArrayList<SceneCard> cardList = cardParser.GetParsedList();
 
-        // TODO: Pass in the fileName to constructor
         Path setPath = Paths.get("xml", "board.xml");
         GameSetParser boardParser = new GameSetParser(setPath.toString());
-
         CastingSet castingSet = boardParser.FindCastingSet();
         GameSet trailerSet = boardParser.FindTrailer();
         ArrayList<ActingSet> actingSets = boardParser.FindActingSets();
@@ -43,14 +39,26 @@ public class Deadwood {
         System.out.println(castingSet.toString());
         System.out.println(trailerSet.toString());
 
+        // ========= Set up RulePackage =========
+        // Be careful of size of acting sets
 
-        /// ========= EARLY EXIT HELPER =========
-        System.exit(0);
-        /// =====================================
+        // Create and alter the rules based on num of players
+        RulesPackage rulesPackage = new RulesPackage(playerCount);
 
+        // Create a rule package for testing upgrades
+        RulesPackage DevRulePackage = new RulesPackage(playerCount);
+        DevRulePackage.SetStartingCredits(99);
 
         // ========= Set Up GameBoard =========
         // Be careful of size of acting sets
+
+        // This is how we limit or at least ensure the
+        // size of the board. Just grab the first 10 boards
+        // We'll worry about neighbor checking it when it matters
+        if (actingSets.size() > 10) {
+            actingSets = limitSize(actingSets);
+        }
+
         ActingSet[] formatedActedSets = actingSets.toArray(new ActingSet[actingSets.size()]);
 
         // Create an empty Game Board to play the game with the made sets
@@ -58,15 +66,19 @@ public class Deadwood {
             // How do we limit the game sets to 10 in total?
             // Good Question
 
+
         // ========= Set Up PlayerManager =========
         // When creating players, maybe add playerName?
         // We do that in AddPlayer in PlayerManager the first time its called.
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager playerManager = new PlayerManager();
+        PlayerManager playerManager = new PlayerManager(rulesPackage, trailerSet);
         //Calling StartGame in GameManager creates all players
         // But should it?
 
         // playerManager.CreatePlayers()?
+
+        System.out.println(playerManager.toString());
+        System.out.println(trailerSet.toString());
 
         // ========= Set Up GameManager =========
         // Create a Game Manager, passing in the rulesPackage
@@ -75,13 +87,14 @@ public class Deadwood {
         gameManager.SetRules(rulesPackage);
         gameManager.SetGameBoard(gameBoard);
 
+        System.out.println(gameManager.toString());
+
         // =========    =========   =========   =========
         // CHECKPOINT 2: GAME HAS BEEN INSTANTIATED AND READY TO START
         // =========    =========   =========   =========
 
         // Now the game runs in its entirety or until someone quits.
-        gameManager.StartGame();
-
+        gameManager.StartGame(playerManager);
 
         // =========    =========   =========   =========
         // CHECKPOINT 3: QUIT PROGRAM
@@ -104,5 +117,15 @@ public class Deadwood {
             System.out.println(set.toString());
         }
     }
+
+    public static ArrayList<ActingSet> limitSize(ArrayList<ActingSet> list) {
+        ArrayList<ActingSet> trimmedSet = new ArrayList<>(10);
+        for (int i = 0; i < list.size(); i++)
+        {
+            trimmedSet.add(list.get(i));
+        }
+        return trimmedSet;
+    }
+
 
 }

@@ -43,21 +43,24 @@ public class PlayerManager {
 
     private Player AddPlayer(RulesPackage rules, GameSet startingLocation)
     {
-        //I will have to add limits for the name
-        System.out.println("Please input your name:");
+        // Get Player Name
+        System.out.print("Please input your name: ");
         Scanner sc = new Scanner(System.in);
-        String name = sc.nextLine();
-        sc.close();
+        String name = sc.nextLine().strip();
+        // sc.close();   // Also closes System.in, do this at the end of program
         System.out.println("Thank you!");
-        Player p = new Player(name,rules.GetStartingRank());
-        p.GetCurrency().IncreaseCredits(rules.GetStartingCredits());
-        LocationComponent loc = p.GetLocation();
-        loc.SetCurrentGameSet(startingLocation);
-        loc.SetCurrentRole(null);
-        loc.SetOnCard(false);
-        loc.SetRehearseTokens(0);
-        startingLocation.AddPlayer(p);
-        return p;
+
+        // Create new player object
+        Player player = new Player(name, rules.GetStartingRank());
+        player.GetCurrency().SetCredits(rules.GetStartingCredits());
+
+        // Set Starting Location
+        LocationComponent playerLocation = player.GetLocation();
+        playerLocation.SetCurrentGameSet(startingLocation);
+
+        // Register the player onto the starting board
+        startingLocation.AddPlayer(player);
+        return player;
     }
 
 

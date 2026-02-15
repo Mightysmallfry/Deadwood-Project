@@ -2,51 +2,38 @@ public class Player {
     // Statics
 
     // Members
-    private LocationComponent _location;
-    private CurrencyComponent _currency;
-//    private ActingRole _role;
-    private String _personalId; //name
+    private LocationComponent _location = new LocationComponent();
+    private CurrencyComponent _currency = new CurrencyComponent();
+    // Name
+    private String _personalId = "";
     private int _score = 0;
-    private int _currentRank;
-
-    //Role now only lives in location component.
-    //Static ID currently does basically nothing so I figure we remove
-    // it because we now have a better method in the player manager
-    //I think we should just hve it be its index in the array at least.
+    private int _currentRank = 1;
 
     // Constructors
-    public Player()
-    {
-        SetPersonalId("");
-    }
+    public Player() {}
 
     public Player(String personalId)
     {
-        SetPersonalId(personalId);
-        SetCurrentRank(1);
+        _personalId = personalId;
     }
 
     public Player(String personalId, int startingRank)
     {
-        SetPersonalId(personalId);
-        SetCurrentRank(_currentRank);
+        _personalId = personalId;
+        _currentRank = startingRank;
     }
 
     public Player(String personalId, int startingRank, LocationComponent location)
     {
-        SetPersonalId(personalId);
-        SetCurrentRank(_currentRank);
-        SetLocation(location);
+        _personalId = personalId;
+        _currentRank = startingRank;
+        _location = location;
     }
 
     // Setter start
     public void SetCurrency(CurrencyComponent currencyComponent) {
         _currency = currencyComponent;
     }
-
-//    public void SetRole(ActingRole role) {
-//        _role = role;
-//    }
 
     public void SetPersonalId(String personalId) {
         _personalId = personalId;
@@ -68,15 +55,10 @@ public class Player {
 
     public void SetScore(int _score){this._score = _score;}
 
-
     // Getter start
     public CurrencyComponent GetCurrency() {
         return _currency;
     }
-
-//    public ActingRole GetRole() {
-//        return _role;
-//    }
 
     public String GetPersonalId() {
         return _personalId;
@@ -109,12 +91,28 @@ public class Player {
     @Override
     public String toString()
     {
-        return "Player{" +
-                "_location=" + _location +
-                ", _currency=" + _currency +
-                ", _personalId='" + _personalId + '\'' +
-                ", _score=" + _score +
-                ", _currentRank=" + _currentRank +
-                '}';
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Player { ");
+        sb.append(_personalId);
+
+        sb.append(" <Score>: ");
+        sb.append(_score);
+
+        sb.append(" <rank>: ");
+        sb.append(_currentRank);
+
+        sb.append(" <coins>: ");
+        sb.append(_currency != null ? _currency.GetCoins() : "null");
+
+        sb.append(" <credits>: ");
+        sb.append(_currency != null ? _currency.GetCredits() : "null");
+
+        sb.append(" <location>: ");
+        sb.append(_location != null ? _location.GetCurrentGameSet().GetName() : "null");
+
+        sb.append("}");
+
+        return sb.toString();
     }
 }
