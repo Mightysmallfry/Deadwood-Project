@@ -69,7 +69,7 @@ public class Move implements TurnAction{
             SceneCard card = ((ActingSet) targetLocation).GetCurrentSceneCard();
 
             // If not yet visible, make it now visible
-            if (!card.IsVisible()){
+            if (card != null && !card.IsVisible()){
                 card.SetVisible(true);
             }
         }
