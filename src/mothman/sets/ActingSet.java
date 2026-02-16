@@ -126,6 +126,15 @@ public class ActingSet extends GameSet {
         _currentSceneCard = null;
     }
 
+    @Override
+    public void RemovePlayer(Player player) {
+        super.RemovePlayer(player);
+
+        if (player.HasRole()){
+            _roleCatalog.put(player.GetLocation().GetCurrentRole(), null);
+        }
+    }
+
     public int GetCurrentProgress(){
         return _currentProgress;
     }

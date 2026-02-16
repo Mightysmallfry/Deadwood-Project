@@ -16,12 +16,31 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class Deadwood {
+    private static final int MINIMUM_PLAYER_COUNT = 2;
+    private static final int MAXIMUM_PLAYER_COUNT = 8;
+    private static final int DEFAULT_PLAYER_COUNT = 4;
+
+
     public static void main(String[] args) {
         if (args.length != 1) {
             System.out.println("Usage: java Deadwood [PlayerCount]");
             System.exit(0);
         }
         int playerCount = Integer.parseInt(args[0]);
+        // ========= Guard Against Too Few or Many Players =========
+        if (playerCount < MINIMUM_PLAYER_COUNT){
+            System.out.println("Sorry it seems you have too few players to enjoy the game!");
+            System.out.println("Please try again with at least: " + MINIMUM_PLAYER_COUNT + " Players");
+            System.out.println("Normally, the game is played with: " + DEFAULT_PLAYER_COUNT + " Players");
+            System.exit(1);
+        } else if (playerCount > MAXIMUM_PLAYER_COUNT) {
+            System.out.println("Sorry it seems you have too many players to enjoy the game!");
+            System.out.println("Please try again with at most: " + MAXIMUM_PLAYER_COUNT + " Players");
+            System.out.println("Normally, the game is played with: " + DEFAULT_PLAYER_COUNT + " Players");
+            System.exit(1);
+        }
+
+
 
         System.out.println("Hello and welcome to Deadwood gunslinger!");
         System.out.printf("You have %d players!\n", playerCount);
@@ -57,6 +76,7 @@ public class Deadwood {
         // Create and alter the rules based on num of players
         RulesPackage rulesPackage = new RulesPackage(playerCount);
 
+
         // Create a rule package for testing upgrades
         RulesPackage DevRulePackage = new RulesPackage(playerCount);
         DevRulePackage.SetStartingCredits(99);
@@ -77,8 +97,7 @@ public class Deadwood {
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
             // How do we limit the game sets to 10 in total?
             // Good Question
-
-
+        
         // ========= Set Up PlayerManager =========
         // When creating players, maybe add playerName?
         // We do that in AddPlayer in PlayerManager the first time its called.

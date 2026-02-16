@@ -187,22 +187,29 @@ public class GameManager {
     private void EndDay() //may be off by 1
     {
         System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
+
+        // Check if it is the end of the Game
         PlayerManager manager = new PlayerManager();
         if (IsEndGame()) {
             EndGame();
             return;
         }
+
+        // Continue the Day loop
         _currentDay++;
         System.out.println("-|-|- Starting Day " + _currentDay + " -|-|-");
 
+        // Reset everyone's location to the trailer and reset sets
         GameSet trailer = GetGameBoard().GetStartingSet();
         for (Player p : manager.GetPlayerLibrary())
         {
             LocationComponent loc = p.GetLocation();
 
-            // remove from old set
+            // remove from old set first
             GameSet oldSet = loc.GetCurrentGameSet();
-            if (oldSet != null) {
+            if (oldSet instanceof ActingSet) {
+                ((ActingSet) oldSet).RemovePlayer(p);
+            } else if (oldSet != null) {
                 oldSet.RemovePlayer(p);
             }
 
