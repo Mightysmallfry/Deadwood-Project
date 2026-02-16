@@ -117,6 +117,7 @@ public class GameManager {
             // Print Available Options
             ArrayList<String> possibleActions = GetActionList();
             DisplayActionList(possibleActions);
+            possibleActions.add("force");
 
             System.out.print("Choice: ");
             String playerChoice = _input.nextLine().toLowerCase().strip();
@@ -155,6 +156,10 @@ public class GameManager {
                 case "upgrade":
                     SetPlayerAction(new Upgrade());
                     break;
+                case "force":
+                    _gameBoard.Clear();
+                    takingTurn = false;
+                    break;
             }
 
             // Execute Selection and return to idle
@@ -166,10 +171,10 @@ public class GameManager {
         //Removed this section because paying the player is handled in Act.
         //Now when on completed scene card we need to fix it giving us the actions to act and rehearse.
 
+        System.out.println("Checking end day");
         if (IsEndDay())
         {
             EndDay();
-            return;
         }
         // Move to next player
         AdvanceTurn();
@@ -181,13 +186,16 @@ public class GameManager {
      */
     private void EndDay() //may be off by 1
     {
+        System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
         PlayerManager manager = new PlayerManager();
-        SetCurrentDay(GetCurrentDay() + 1);
+        _currentDay++;
 
         if (IsEndGame()) {
             EndGame();
             return;
         }
+
+        System.out.println("-|-|- Starting Day " + _currentDay + " -|-|-");
 
         GameSet trailer = GetGameBoard().GetStartingSet();
         for (Player p : manager.GetPlayerLibrary())
