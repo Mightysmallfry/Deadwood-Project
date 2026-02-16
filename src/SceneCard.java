@@ -182,6 +182,18 @@ public class SceneCard {
         return _roles;
     }
 
+    public ArrayList<ActingRole> GetAvailableRoles(){
+        ArrayList<ActingRole> availableRoles = new ArrayList<>();
+        for (ActingRole actingRole : _roles)
+        {
+            if (_roleCatalog.get(actingRole) == null){
+                availableRoles.add(actingRole);
+            }
+        }
+        return availableRoles;
+    }
+
+
     /**
      *
      * @return A map of all roles and the associated player

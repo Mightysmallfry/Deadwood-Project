@@ -33,11 +33,11 @@ public class Deadwood {
         // =========    =========   =========   =========
         // CHECKPOINT 1: ALL FILES PARSED AND DATA RECEIVED
         // =========    =========   =========   =========
-        TestCardList(cardList);
-        TestSetList(actingSets);
-
-        System.out.println(castingSet.toString());
-        System.out.println(trailerSet.toString());
+//        TestCardList(cardList);
+//        TestSetList(actingSets);
+//
+//        System.out.println(castingSet.toString());
+//        System.out.println(trailerSet.toString());
 
         // ========= Set up RulePackage =========
         // Be careful of size of acting sets
@@ -77,8 +77,8 @@ public class Deadwood {
 
         // playerManager.CreatePlayers()?
 
-        System.out.println(playerManager.toString());
-        System.out.println(trailerSet.toString());
+//        System.out.println(playerManager.toString());
+//        System.out.println(trailerSet.toString());
 
         // ========= Set Up GameManager =========
         // Create a Game Manager, passing in the rulesPackage
@@ -87,7 +87,7 @@ public class Deadwood {
         gameManager.SetRules(rulesPackage);
         gameManager.SetGameBoard(gameBoard);
 
-        System.out.println(gameManager.toString());
+//        System.out.println(gameManager.toString());
 
         // =========    =========   =========   =========
         // CHECKPOINT 2: GAME HAS BEEN INSTANTIATED AND READY TO START
@@ -101,7 +101,6 @@ public class Deadwood {
         // =========    =========   =========   =========
 
     }
-
 
     public static void TestCardList(ArrayList<SceneCard> list) {
         // Testing The Cards sets

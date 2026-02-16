@@ -1,8 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Acquire implements TurnAction {
-    private final int ACTION_COST = 1;
+    // Acquiring a role should not cost anything
+    private final int ACTION_COST = 0;
 
     private Scanner _input = new Scanner(System.in);
 
@@ -14,10 +16,11 @@ public class Acquire implements TurnAction {
             return;
         }
 
-        // Get Available roles
+        // Get Player and Location
         Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
+        // Get Available roles
         if (!(currentSet instanceof ActingSet)) {
             System.out.println("You need to be on an acting set to get a job!");
             return;
@@ -27,14 +30,10 @@ public class Acquire implements TurnAction {
         ArrayList<ActingRole> availableRoles = actingSet.GetAvailableRoles();
 
         if (availableRoles.size() == 0) {
-            System.out.println("There are no available roles, good luck next time!");
+            System.out.println("There are no available roles, better luck next time!");
             return;
         }
-
-        // Display available roles
-        // Do we want a simple display class that's a singleton?
-        // Used for printing any list or thing to the screen?
-        // Seems a bit overkill
+        SceneCard sceneCard = actingSet.GetCurrentSceneCard();
 
         // Get Player Selection
         String playerChoice = "";
@@ -43,12 +42,37 @@ public class Acquire implements TurnAction {
         boolean choosingRole = true;
         while (choosingRole)
         {
+            System.out.println("Active Scene: " + sceneCard.GetName());
+
+            System.out.print("Available Starring Roles:");
+            for (ActingRole role : sceneCard.GetAvailableRoles()) {
+                System.out.print("[" + role.GetName() + ", rank: " + role.GetRank() + "] ");
+            }
+            System.out.println();
+
+            System.out.print("Available Extra Roles: ");
+            for (ActingRole role : actingSet.GetAvailableLocalRoles()) {
+                System.out.print("[" + role.GetName() + ", rank: " + role.GetRank() + "] ");
+            }
+            System.out.println("");
+            System.out.println("[cancel] at anytime");
+
             playerChoice = _input.nextLine().strip();
+
+            if (playerChoice.equals("cancel")) {
+                return;
+            }
 
             for (ActingRole role : availableRoles) {
                 if (playerChoice.equals(role.GetName())) {
-                    choosingRole = false;
-                    chosenRole = role;
+
+                    if (currentPlayer.GetCurrentRank() >= role.GetRank()){
+                        choosingRole = false;
+                        chosenRole = role;
+                    }
+                    else {
+                        System.out.println("! You're rank is too low. Choose another role!");
+                    }
                 }
             }
         }
@@ -58,7 +82,6 @@ public class Acquire implements TurnAction {
 
         // Change Player location role
         currentPlayer.GetLocation().SetCurrentRole(chosenRole);
-
 
         // Check if the role is on a card
         if (actingSet.GetLocalRoles().contains(chosenRole)) {

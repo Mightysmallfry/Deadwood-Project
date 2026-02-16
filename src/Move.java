@@ -43,18 +43,18 @@ public class Move implements TurnAction{
             }
 
             if (playerInput.equals(currentSet.GetName())){
-                System.out.println("You're already there!");
+                System.out.println("! You're already there!");
                 return;
             }
 
             boolean foundLocation = neighbors.containsKey(playerInput);
             if (!foundLocation) {
-                System.out.println("Target location out of reach, please try again!");
+                System.out.println("! Target location out of reach, please try again!");
             }
             if (foundLocation)
             {
                 _validInput = !_validInput;
-                System.out.println("Moving current player!");
+                System.out.println("! Moving current player!");
             }
         }
 

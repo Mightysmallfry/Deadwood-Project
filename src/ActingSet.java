@@ -70,6 +70,20 @@ public class ActingSet extends GameSet {
         return _localRoles;
     }
 
+    public ArrayList<ActingRole> GetAvailableLocalRoles(){
+        ArrayList<ActingRole> availableLocalRoles = new ArrayList<>();
+        if (_localRoles.isEmpty() || _complete) {
+            return null;
+        }
+
+        for (ActingRole role : _localRoles){
+            if (_roleCatalog.get(role) == null){
+                availableLocalRoles.add(role);
+            }
+        }
+        return availableLocalRoles;
+    }
+
     public ArrayList<ActingRole> GetAvailableRoles(){
         ArrayList<ActingRole> availableRoles = new ArrayList<>();
 

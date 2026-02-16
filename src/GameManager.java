@@ -17,8 +17,8 @@ public class GameManager {
     private Scanner _input = new Scanner(System.in);
 
     private int _actionTokens = DEFAULT_ACTION_TOKENS;
-    private boolean _hasMoved = false;  // Has Player moved this turn
-    private boolean _hasEnded = false;  // Has Game ended
+    private boolean _hasPlayerMoved = false;
+    private boolean _hasGameEnded = false;
 
     // Constructors
     private GameManager() {}
@@ -51,8 +51,9 @@ public class GameManager {
 
     public void SetCurrentDay(int day){_currentDay = day;}
 
-    public boolean HasMoved() { return _hasMoved; }
-    public void HasMoved(boolean hasMoved) {_hasMoved = hasMoved;}
+    public boolean HasMoved() { return _hasPlayerMoved; }
+    public void HasMoved(boolean hasMoved) {
+        _hasPlayerMoved = hasMoved;}
 
     /**
      * @param playerAction any player action that implements the TurnAction interface
@@ -105,18 +106,8 @@ public class GameManager {
                     System.out.println("Turn Ended");
                     takingTurn = false;
                     break;
-                case "location":
-                    System.out.println("You are located at the: " + currentSet.GetName() + " set");
-                    if (currentSet instanceof ActingSet)
-                    {
-                        SceneCard card = ((ActingSet) currentSet).GetCurrentSceneCard();
-                        if (card.IsVisible()){
-                            System.out.println("Shooting: " + card.GetName() + " Scene " + card.GetCardNumber());
-                        }
-                    }
-                    break;
-                case "who":
-                    System.out.println("Current Player: " + _currentPlayer.GetPersonalId());
+                case "profile":
+                    System.out.println(Player.GetProfileString(_currentPlayer));
                     break;
                 case "acquire":
                     SetPlayerAction(new Acquire());
@@ -149,8 +140,8 @@ public class GameManager {
                 //TODO: I commented the playerManager because
                 // We only use it once in this entire method, here
                 // We need to talk about how we work with playerManager
-
-                // manager.BonusPay(GetCurrentPlayer());
+                PlayerManager manager = new PlayerManager();
+                manager.BonusPay(GetCurrentPlayer());
                 actSet.RemoveCard();
             }
         }
@@ -214,7 +205,7 @@ public class GameManager {
         // Reset Action Tokens and action for the next player
         _actionTokens = DEFAULT_ACTION_TOKENS;
         _playerAction = new Idle();
-        _hasMoved = false;
+        _hasPlayerMoved = false;
 
 
         PlayerManager manager = new PlayerManager();
@@ -263,7 +254,7 @@ public class GameManager {
      */
     public void EndGame()
     {
-        _hasEnded = true;
+        _hasGameEnded = true;
         PlayerManager manager = new PlayerManager(); //WE ONLY PASS IN THE RULES IN START GAME //Otherwise we pass in nothing
         int[] scores = manager.TallyScore(); //This will be its own thing eventually REMEMBER TO CHANGE
 
@@ -316,9 +307,9 @@ public class GameManager {
         // System.out.println("StartingCurrentPlayer: " + _currentPlayer.GetPersonalId());
 
         // Start updating the game until it ends.
-        _hasEnded = false;
+        _hasGameEnded = false;
         int earlyBreak = 0;
-        while (!_hasEnded)
+        while (!_hasGameEnded)
         {
             earlyBreak++;
 
@@ -344,6 +335,11 @@ public class GameManager {
     private ArrayList<String> GetActionList()
     {
         ArrayList<String> possibleActions = new ArrayList<>();
+        GameSet currentSet = _currentPlayer.GetLocation().GetCurrentGameSet();
+        boolean rolesAvailable = false;
+        if (currentSet instanceof ActingSet){
+            rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
+        }
 
         // The player is always allowed to:
         // - quit
@@ -353,13 +349,14 @@ public class GameManager {
         // - board where is everyone?
         possibleActions.add("quit");
         possibleActions.add("pass");
-        possibleActions.add("location");
-        possibleActions.add("who");
+        possibleActions.add("profile");
 
-        // The player has a role
-        if (_currentPlayer.HasRole() && _actionTokens > 0) {
+        if (!_currentPlayer.HasRole() && _actionTokens >= 0 && rolesAvailable){
             // Acquire
             possibleActions.add("acquire");
+        }
+        // The player has a role
+        if (_currentPlayer.HasRole() && _actionTokens > 0) {
             // Act
             possibleActions.add("act");
             // Rehearse
@@ -393,7 +390,7 @@ public class GameManager {
     }
 
 
-    public boolean HasGameEnded() {return _hasEnded;}
+    public boolean HasGameEnded() {return _hasGameEnded;}
     public int GetActionTokens() {
         return _actionTokens;
     }
@@ -417,7 +414,7 @@ public class GameManager {
         sb.append(_currentDay).append("\n");
 
         sb.append("Has Moved: ");
-        sb.append(_hasMoved).append("\n");
+        sb.append(_hasPlayerMoved).append("\n");
 
         return sb.toString();
     }

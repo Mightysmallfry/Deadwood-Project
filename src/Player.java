@@ -88,6 +88,30 @@ public class Player {
         return GetLocation().GetCurrentRole() != null;
     }
 
+    public static String GetProfileString(Player player){
+        GameSet currentSet = player.GetLocation().GetCurrentGameSet();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("[").append(player.GetPersonalId()).append("]\n");
+        sb.append("> RANK: ").append(player.GetCurrentRank()).append("\n");
+        sb.append("> COIN: ").append(player.GetCurrency().GetCoins()).append("\n");
+        sb.append("> CRED: ").append(player.GetCurrency().GetCredits()).append("\n");
+        sb.append("> LOC: ").append(currentSet.GetName()).append("\n");
+
+        if (currentSet instanceof ActingSet)
+        {
+            SceneCard card = ((ActingSet) currentSet).GetCurrentSceneCard();
+            sb.append("> SCN: ").append(card.GetName()).append("\n");
+        }
+
+        if (player.HasRole())
+        {
+            sb.append("> ROL: ").append(player.GetLocation().GetCurrentRole().GetName());
+        }
+        return sb.toString();
+    }
+
+
     @Override
     public String toString()
     {
