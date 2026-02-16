@@ -81,6 +81,26 @@ public class GameManager {
             // Print who's turn it is
             System.out.println("||" + _currentPlayer.GetPersonalId() + "'s Turn||");
             System.out.println("||Location : " + currentSet.GetName() + "||");
+
+            if (currentSet instanceof ActingSet)
+            {
+                if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
+                    int budget = ((ActingSet) currentSet).GetCurrentSceneCard().GetDifficulty();
+                    //The issue is that this scene card no longer exists.
+                    //we need to remove the players from their roll and turn the card into a normal set or somthing like that.
+                    System.out.println("||Budget: " + budget + "||");
+
+                    int maxShots = ((ActingSet) currentSet).GetMaxProgress();
+                    System.out.println("||Total Shots: " + maxShots + "||");
+
+                    int currentShots = ((ActingSet) currentSet).GetCurrentProgress();
+                    System.out.println("||Shot Count: " + currentShots + "||");
+                }
+                else{
+                    System.out.println("||Scene completed||");
+                }
+
+            }
             System.out.println("Action Points Available: " + _actionTokens);
 
             // Print Available Options
@@ -132,21 +152,9 @@ public class GameManager {
             _playerAction = new Idle();
         }
 
-        // Check if scene just wrapped
-        if (_currentPlayer.GetLocation().GetCurrentGameSet() instanceof ActingSet actSet)
-        {
-            if (actSet.IsComplete())
-            {
-                //TODO: I commented the playerManager because
-                // We only use it once in this entire method, here
-                // We need to talk about how we work with playerManager
-                PlayerManager manager = new PlayerManager();
-                manager.BonusPay(GetCurrentPlayer());
-                actSet.RemoveCard();
-            }
-        }
+        //Removed this section because paying the player is handled in Act.
+        //Now when on completed scene card we need to fix it giving us the actions to act and rehearse.
 
-        // Check if day is over
         if (IsEndDay())
         {
             EndDay();
@@ -316,13 +324,13 @@ public class GameManager {
             UpdateGame();
 
             // Only allows 3 turns
-            if (earlyBreak == 3){
-
-                /// ========= EARLY EXIT HELPER =========
-                System.out.println("Early Helper Has Been Hit");
-                break;
-                /// =====================================
-            }
+//            if (earlyBreak == 3){
+//
+//                /// ========= EARLY EXIT HELPER =========
+//                System.out.println("Early Helper Has Been Hit");
+//                break;
+//                /// =====================================
+//            }
         }
     }
 
@@ -338,7 +346,10 @@ public class GameManager {
         GameSet currentSet = _currentPlayer.GetLocation().GetCurrentGameSet();
         boolean rolesAvailable = false;
         if (currentSet instanceof ActingSet){
-            rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
+            if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
+                rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
+            }
+            //No need for else becasue rolesAvalible is assigned as false.
         }
 
         // The player is always allowed to:
@@ -356,7 +367,8 @@ public class GameManager {
             possibleActions.add("acquire");
         }
         // The player has a role
-        if (_currentPlayer.HasRole() && _actionTokens > 0) {
+        //using ActingSet here even though they could be at a trailer because if player has role they are on an ActingSet so currentPlayer will fail first.
+        if (_currentPlayer.HasRole() && _actionTokens > 0 && ((ActingSet)currentSet).GetCurrentSceneCard() != null){
             // Act
             possibleActions.add("act");
             // Rehearse

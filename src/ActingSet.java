@@ -125,6 +125,8 @@ public class ActingSet extends GameSet {
         return _currentProgress;
     }
 
+    public int GetMaxProgress() {return _maximumProgress;}
+
     public void SetCurrentProgress(int progress){
         _currentProgress = progress;
     }

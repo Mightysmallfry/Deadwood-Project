@@ -158,6 +158,16 @@ public class PlayerManager {
             }
         }
 
+        //takes off all player rolls on the scene
+        for (Player player : offCard)
+        {
+            player.GetLocation().SetCurrentRole(null);
+        }
+        for (Player player : onCard)
+        {
+            player.GetLocation().SetCurrentRole(null);
+        }
+
     }
 
 

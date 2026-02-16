@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Act implements TurnAction{
     private final int ACTION_COST = 1;
 
@@ -23,6 +25,8 @@ public class Act implements TurnAction{
 
         // Roll 1d6 against difficulty
         int attempt = Dice.GetInstance().Roll();
+        System.out.println("You rolled: " + attempt + " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
+        attempt = attempt + currentPlayer.GetLocation().GetRehearseTokens();
 
         boolean success = attempt >= currentCard.GetDifficulty();
         // On success increment both
@@ -30,20 +34,22 @@ public class Act implements TurnAction{
         //added creation of PlayerManager to pay the players
         PlayerManager manager = new PlayerManager();
 
-        if (success)
+        if (success)//check for the scene breaking
         {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
             for (Player player : currentSet.GetPlayers())
             {
                 manager.BasicPay(player, true);
             }
-            if (currentSet.IsComplete()) {
+            if (currentSet.IsComplete()) {//This makes sense
                 manager.BonusPay(currentPlayer);
+                currentSet.RemoveCard();
             }
         } else {
             for (Player player : currentSet.GetPlayers())
             {
                 manager.BasicPay(player, false);
+                //PayingPlayers
             }
         }
 
