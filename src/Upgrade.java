@@ -27,83 +27,120 @@ public class Upgrade implements TurnAction {
         int playerCoin = playerCurrency.GetCoins();
         int playerCredit = playerCurrency.GetCredits();
 
-        // We'll assume players typically only want to upgrade within 3 levels of their current.
-        // that way we're not too greedy or frugal with resources
-        ArrayList<UpgradeData> possibleCoinUpgrades = new ArrayList<>(3);
-        ArrayList<UpgradeData> possibleCreditUpgrades = new ArrayList<>(3);
 
-        for (UpgradeData upgrade : upgrades)
-        {
-            if (upgrade.GetRank() <= currentPlayer.GetCurrentRank()) {
-                continue;
-            }
+        System.out.println("Available Upgrades:");
 
-            switch (upgrade.GetCurrencyType())
-            {
-                case "dollar":
-                    if (upgrade.GetCostAmount() <= playerCoin) {
-                        possibleCoinUpgrades.add(upgrade);
-                    }
-                    break;
-
-                case "credit":
-                    if (upgrade.GetCostAmount() <= playerCredit) {
-                        possibleCreditUpgrades.add(upgrade);
-                    }
-                    break;
-            }
-        }
-
-        // Display the options that the player can afford
-        for (UpgradeData upgrade : possibleCoinUpgrades){
-            System.out.println(upgrade.toString());
-        }
-
-        for (UpgradeData upgrade : possibleCreditUpgrades){
-            System.out.println(upgrade.toString());
-        }
-
-        // Get Player requested level
-            // What currency do they want to pay
-            // Assume minimum level
-        String currencyChoice = Input.nextLine().strip();
-        int rankRequest = 1;
-
-        // What rank do they want
-        while (true)
-        {
-            String playerInput = Input.nextLine().strip();
-            try {
-                rankRequest = Integer.parseInt(playerInput);
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter a valid number");
-            }
-        }
-
+        int currentRank = currentPlayer.GetCurrentRank();
         int maxRank = castingSet.GetMaxRank();
 
-        switch (currencyChoice){
-            case "dollar":
-                for (UpgradeData upgrade : possibleCoinUpgrades)
-                {
-                    if (1 < rankRequest && rankRequest < maxRank && rankRequest == upgrade.GetRank()) {
-                        int newBalance = playerCurrency.GetCoins() - upgrade.GetCostAmount();
-                        playerCurrency.SetCoins(newBalance);
+        for (int rank = currentRank + 1; rank <= maxRank; rank++) {
+
+            Integer dollarCost = null;
+            Integer creditCost = null;
+
+            // Find both costs for this rank
+            for (UpgradeData upgrade : upgrades) {
+
+                if (upgrade.GetRank() == rank) {
+
+                    if (upgrade.GetCurrencyType().equals("dollar")) {
+                        dollarCost = upgrade.GetCostAmount();
+                    }
+
+                    if (upgrade.GetCurrencyType().equals("credit")) {
+                        creditCost = upgrade.GetCostAmount();
                     }
                 }
+            }
+
+            // Only print if at least one currency option exists
+            if (dollarCost != null || creditCost != null) {
+
+                System.out.print("Rank " + rank + " | Cost: | ");
+
+                if (creditCost != null) {
+                    System.out.print(creditCost + " credits | ");
+                }
+
+                if (dollarCost != null) {
+                    System.out.print(dollarCost + " dollars | ");
+                }
+
+                System.out.println();
+            }
+        }
+
+
+        System.out.println("Enter the rank you want to purchase:");
+        int rankRequest;
+
+        while (true) {
+            try {
+                rankRequest = Integer.parseInt(Input.nextLine().strip());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+
+        UpgradeData selectedUpgrade = null;
+
+        for (UpgradeData upgrade : upgrades) {
+            if (upgrade.GetRank() == rankRequest) {
+                selectedUpgrade = upgrade;
+                break;
+            }
+        }
+
+        if (selectedUpgrade == null) {
+            System.out.println("That rank does not exist!");
+            return;
+        }
+
+        if (rankRequest <= currentPlayer.GetCurrentRank()) {
+            System.out.println("You already have this rank or higher!");
+            return;
+        }
+
+        if (rankRequest > maxRank) {
+            System.out.println("That rank does not exist!");
+            return;
+        }
+
+        //here we ask what payment type
+        System.out.println("Please enter payment type. [dollar] [credit]");
+        String currencyChoice = Input.nextLine().strip();
+
+        int cost = selectedUpgrade.GetCostAmount();
+
+        switch (currencyChoice) {
+
+            case "dollar":
+                if (playerCoin < cost) {
+                    System.out.println("You do not have enough dollars!");
+                    return;
+                }
+
+                playerCurrency.SetCoins(playerCoin - cost);
+                currentPlayer.SetCurrentRank(rankRequest);
+                System.out.println("Successfully upgraded to Rank " + rankRequest + "!");
                 break;
 
             case "credit":
-                for (UpgradeData upgrade : possibleCreditUpgrades)
-                {
-                    if (1 < rankRequest && rankRequest < maxRank && rankRequest == upgrade.GetRank()) {
-                        int newBalance = playerCurrency.GetCredits() - upgrade.GetCostAmount();
-                        playerCurrency.SetCredits(newBalance);
-                    }
+                if (playerCredit < cost) {
+                    System.out.println("You do not have enough credits!");
+                    return;
                 }
+
+                playerCurrency.SetCredits(playerCredit - cost);
+                currentPlayer.SetCurrentRank(rankRequest);
+                System.out.println("Successfully upgraded to Rank " + rankRequest + "!");
                 break;
+
+            default:
+                System.out.println("Invalid currency type.");
         }
+
 
         // return to action select
         // Upgrading costs no action points
