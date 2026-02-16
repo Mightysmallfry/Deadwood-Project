@@ -43,6 +43,7 @@ public class Act implements TurnAction{
             }
             if (currentSet.IsComplete()) {//This makes sense
                 manager.BonusPay(currentPlayer);
+                manager.PostSceneReset(currentPlayer);
                 currentSet.RemoveCard();
             }
         } else {

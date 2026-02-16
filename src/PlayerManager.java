@@ -157,17 +157,16 @@ public class PlayerManager {
                 player.GetCurrency().IncreaseCoins(role.GetRank());
             }
         }
+    }
 
-        //takes off all player rolls on the scene
-        for (Player player : offCard)
-        {
-            player.GetLocation().SetCurrentRole(null);
+    public void PostSceneReset(Player currentPlayer)
+    {
+        for (Player player : _playerLibrary){
+            if(player.GetLocation().GetCurrentGameSet() == currentPlayer.GetLocation().GetCurrentGameSet()){
+                player.GetLocation().SetCurrentRole(null);
+                player.GetLocation().SetRehearseTokens(0);
+            }
         }
-        for (Player player : onCard)
-        {
-            player.GetLocation().SetCurrentRole(null);
-        }
-
     }
 
 
