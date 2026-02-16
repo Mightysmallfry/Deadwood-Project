@@ -77,17 +77,18 @@ public class Acquire implements TurnAction {
             }
         }
 
-        // Register with scene catalog
-        actingSet.GetRoleCatalog().put(chosenRole, currentPlayer);
 
         // Change Player location role
         currentPlayer.GetLocation().SetCurrentRole(chosenRole);
 
+        // Register with scene catalog
         // Check if the role is on a card
         if (actingSet.GetLocalRoles().contains(chosenRole)) {
             currentPlayer.GetLocation().SetOnCard(false);
+            actingSet.GetRoleCatalog().put(chosenRole, currentPlayer);
         } else {
             currentPlayer.GetLocation().SetOnCard(true);
+            sceneCard.GetRoleCatalog().put(chosenRole, currentPlayer);
         }
 
         // Process end of action

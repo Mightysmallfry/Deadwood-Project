@@ -102,7 +102,10 @@ public class Player {
         if (currentSet instanceof ActingSet)
         {
             SceneCard card = ((ActingSet) currentSet).GetCurrentSceneCard();
-            sb.append("> SCN: ").append(card.GetName()).append("\n");
+
+            if (card != null) {
+                sb.append("> SCN: ").append(card.GetName()).append("\n");
+            }
 
             int rehearseTokens = player.GetLocation().GetRehearseTokens();
             sb.append("> REH: ").append(rehearseTokens).append("\n");
