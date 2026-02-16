@@ -82,6 +82,8 @@ public class Acquire implements TurnAction {
         }
 
 
+        // TODO: We need to display role quote, possibly also in act.
+
         // Change Player location role
         currentPlayer.GetLocation().SetCurrentRole(chosenRole);
 

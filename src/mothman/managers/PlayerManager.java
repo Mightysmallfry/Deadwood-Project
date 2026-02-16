@@ -203,7 +203,17 @@ public class PlayerManager {
         return scores;
     }
 
+    public static String LocatePlayers(){
+        StringBuilder sb = new StringBuilder();
 
+        for (Player player : _playerLibrary)
+        {
+            sb.append("- PLR: ").append(player.GetPersonalId());
+            sb.append(" - LOC: ").append(player.GetLocation().GetCurrentGameSet().GetName()).append("\n");
+        }
+
+        return sb.toString();
+    }
 
 
     @Override

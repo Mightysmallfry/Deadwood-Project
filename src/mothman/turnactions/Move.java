@@ -59,6 +59,7 @@ public class Move implements TurnAction{
             if (foundLocation)
             {
                 _validInput = !_validInput;
+                // TODO: We need to display start and end destinations
                 System.out.println("! Moving current player!");
             }
         }

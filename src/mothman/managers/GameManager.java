@@ -138,6 +138,10 @@ public class GameManager {
                     System.out.println("Turn Ended");
                     takingTurn = false;
                     break;
+                case "board":
+                    // TODO: Show every player and their location
+                    System.out.print(PlayerManager.LocatePlayers());
+                    break;
                 case "profile":
                     System.out.println(Player.GetProfileString(_currentPlayer));
                     break;
@@ -385,6 +389,7 @@ public class GameManager {
         possibleActions.add("quit");
         possibleActions.add("pass");
         possibleActions.add("profile");
+        possibleActions.add("board");
 
         if (!_currentPlayer.HasRole() && _actionTokens >= 0 && rolesAvailable){
             // Acquire
