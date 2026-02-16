@@ -188,13 +188,11 @@ public class GameManager {
     {
         System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
         PlayerManager manager = new PlayerManager();
-        _currentDay++;
-
         if (IsEndGame()) {
             EndGame();
             return;
         }
-
+        _currentDay++;
         System.out.println("-|-|- Starting Day " + _currentDay + " -|-|-");
 
         GameSet trailer = GetGameBoard().GetStartingSet();
