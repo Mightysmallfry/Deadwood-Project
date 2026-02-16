@@ -1,3 +1,7 @@
+package mothman.utils;
+
+import mothman.player.Player;
+
 public class RulesPackage {
     // constants
 

@@ -101,7 +101,7 @@
         <area x="1111" y="469" h="46" w="46" />
         <line>Zzzzzzz...Whiskey!</line>
       </part>
-      <part name="Faro Player" level="1">
+      <part name="Faro mothman.player.Player" level="1">
         <area x="1044" y="509" h="46" w="46" />
         <line>Hit me!</line>
       </part>
@@ -142,7 +142,7 @@
       </part>
       <part name="Mayor McGinty" level="4">
         <area x="720" y="105" h="46" w="46" />
-        <line>People of Deadwood!</line>
+        <line>People of mothman.Deadwood!</line>
       </part>
     </parts>
   </set>

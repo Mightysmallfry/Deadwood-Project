@@ -1,3 +1,5 @@
+package mothman.utils;
+
 import java.util.Random;
 
 public class Dice {

@@ -1,4 +1,9 @@
-import java.util.ArrayList;
+package mothman.turnactions;
+
+import mothman.player.*;
+import mothman.managers.*;
+import mothman.sets.*;
+import mothman.utils.*;
 
 public class Act implements TurnAction{
     private final int ACTION_COST = 1;

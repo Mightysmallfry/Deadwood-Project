@@ -1,5 +1,12 @@
+package mothman.turnactions;
+
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import mothman.utils.*;
+import mothman.player.*;
+import mothman.managers.*;
+import mothman.sets.*;
 
 public class Upgrade implements TurnAction {
     private Scanner Input = new Scanner(System.in);

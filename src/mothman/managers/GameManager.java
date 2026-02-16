@@ -1,3 +1,14 @@
+package mothman.managers;
+
+import mothman.player.LocationComponent;
+import mothman.player.Player;
+import mothman.sets.ActingSet;
+import mothman.sets.CastingSet;
+import mothman.sets.GameSet;
+import mothman.turnactions.*;
+import mothman.utils.Dice;
+import mothman.utils.RulesPackage;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -87,7 +98,7 @@ public class GameManager {
                 if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
                     int budget = ((ActingSet) currentSet).GetCurrentSceneCard().GetDifficulty();
                     //The issue is that this scene card no longer exists.
-                    //we need to remove the players from their roll and turn the card into a normal set or somthing like that.
+                    //we need to remove the players from their roll and turn the card into a normal set or something like that.
                     System.out.println("||Budget: " + budget + "||");
 
                     int maxShots = ((ActingSet) currentSet).GetMaxProgress();
@@ -231,7 +242,7 @@ public class GameManager {
     }
 
     /**
-     * Checks the ammount of scene cards in play to know how many remain
+     * Checks the amount of scene cards in play to know how many remain
      * If there is one left returns True
      * @return boolean
      */
@@ -349,7 +360,7 @@ public class GameManager {
             if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
                 rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
             }
-            //No need for else becasue rolesAvalible is assigned as false.
+            //No need for else because rolesAvailable is assigned as false.
         }
 
         // The player is always allowed to:
@@ -367,7 +378,8 @@ public class GameManager {
             possibleActions.add("acquire");
         }
         // The player has a role
-        //using ActingSet here even though they could be at a trailer because if player has role they are on an ActingSet so currentPlayer will fail first.
+        //using ActingSet here even though they could be at a trailer because if player has role they are on an
+        // ActingSet so currentPlayer will fail first.
         if (_currentPlayer.HasRole() && _actionTokens > 0 && ((ActingSet)currentSet).GetCurrentSceneCard() != null){
             // Act
             possibleActions.add("act");

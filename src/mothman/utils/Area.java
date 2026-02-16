@@ -1,3 +1,5 @@
+package mothman.utils;
+
 public class Area {
     // Members
     private int _x = 0;

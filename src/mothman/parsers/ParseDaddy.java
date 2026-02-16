@@ -1,5 +1,10 @@
+package mothman.parsers;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import mothman.utils.Area;
+import mothman.sets.ActingRole;
 
 import java.util.ArrayList;
 

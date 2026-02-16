@@ -1,3 +1,7 @@
+package mothman.sets;
+
+import mothman.utils.Area;
+
 public class UpgradeData
 {
     private int _rank;

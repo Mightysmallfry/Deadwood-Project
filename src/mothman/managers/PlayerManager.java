@@ -1,3 +1,13 @@
+package mothman.managers;
+
+import mothman.player.LocationComponent;
+import mothman.player.Player;
+import mothman.sets.ActingRole;
+import mothman.sets.ActingSet;
+import mothman.sets.GameSet;
+import mothman.utils.Dice;
+import mothman.utils.RulesPackage;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -106,7 +116,7 @@ public class PlayerManager {
         ArrayList<Player> offCard = new ArrayList<>();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
-        //grabling dificulty
+        //grabbing difficulty
         if (!(currentSet instanceof ActingSet act)) {
             return; // no bonus pay here
         }
@@ -171,11 +181,11 @@ public class PlayerManager {
 
 
     /**
-     * Runs through the list of players and Tallys their Score
+     * Runs through the list of players and tallies their Score
      * @return int[] of player scores
      */
     public int[] TallyScore()
-    //as the last day finishes this tallies the score and displays it before the Deadwood ends.
+    //as the last day finishes this tallies the score and displays it before game ends.
     {
         Player[] players = GetPlayerLibrary();
         if (players == null || players.length == 0) {

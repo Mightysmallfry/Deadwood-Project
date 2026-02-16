@@ -1,3 +1,8 @@
+package mothman.sets;
+
+import mothman.player.Player;
+import mothman.utils.Area;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

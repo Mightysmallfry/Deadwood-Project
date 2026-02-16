@@ -1,4 +1,16 @@
-import java.lang.reflect.Array;
+package mothman;
+
+import mothman.managers.GameBoard;
+import mothman.managers.GameManager;
+import mothman.managers.PlayerManager;
+import mothman.parsers.GameSetParser;
+import mothman.parsers.SceneCardParser;
+import mothman.sets.ActingSet;
+import mothman.sets.CastingSet;
+import mothman.sets.GameSet;
+import mothman.sets.SceneCard;
+import mothman.utils.RulesPackage;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;

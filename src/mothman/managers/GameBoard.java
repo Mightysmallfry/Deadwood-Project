@@ -1,3 +1,11 @@
+package mothman.managers;
+
+import mothman.sets.ActingSet;
+import mothman.sets.CastingSet;
+import mothman.sets.GameSet;
+import mothman.sets.SceneCard;
+import mothman.utils.Dice;
+
 import java.util.ArrayList;
 
 public class GameBoard {
@@ -38,7 +46,7 @@ public class GameBoard {
     public void Clear()
     //This method clears the cards on the board in preparation for a day reset
     {
-        //This could just be act.ResetForNewDay
+        //This could just be ResetForNewDay
         for (GameSet gameSet : _gameSets) {
             if (gameSet instanceof ActingSet)
             {
@@ -70,7 +78,7 @@ public class GameBoard {
 
     /**
      * Attempts to add the given gameSet if a gameSet index is available.
-     * Otherwise does nothing
+     * Other-wise does nothing
      * @param gameSet
      */
     public void AddGameSet(GameSet gameSet)

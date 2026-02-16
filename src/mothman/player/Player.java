@@ -1,3 +1,7 @@
+package mothman.player;
+
+import mothman.sets.*;
+
 public class Player {
     // Statics
 

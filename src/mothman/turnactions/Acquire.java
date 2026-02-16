@@ -1,6 +1,10 @@
+package mothman.turnactions;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
+import mothman.managers.*;
+import mothman.player.*;
+import mothman.sets.*;
 
 public class Acquire implements TurnAction {
     // Acquiring a role should not cost anything

@@ -1,3 +1,5 @@
+package mothman.turnactions;
+
 public class Idle implements TurnAction{
 
     @Override

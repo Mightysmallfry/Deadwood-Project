@@ -1,3 +1,8 @@
+package mothman.turnactions;
+
+import mothman.player.*;
+import mothman.managers.GameManager;
+
 public class Rehearse implements TurnAction{
     private final int ACTION_COST = 1;
 

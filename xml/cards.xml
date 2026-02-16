@@ -267,7 +267,7 @@
       After the mine explosion, the traveling circus takes time out to get drunk
       and start a fight.
     </scene>
-    <part name="Piano Player" level="2">
+    <part name="Piano mothman.player.Player" level="2">
       <area x="20" y="47" h="40" w="40" />
       <line>It's a nocturne!</line>
     </part>

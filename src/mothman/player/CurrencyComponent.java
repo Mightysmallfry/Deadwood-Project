@@ -1,3 +1,5 @@
+package mothman.player;
+
 public class CurrencyComponent {
 
     //members
@@ -7,9 +9,9 @@ public class CurrencyComponent {
     //constructors
     public CurrencyComponent() {}
 
-    public CurrencyComponent(int startingcoins)
+    public CurrencyComponent(int startingCoins)
     {
-        _coins = startingcoins;
+        _coins = startingCoins;
         _credits = 0;
     }
 

@@ -1,5 +1,6 @@
+package mothman.sets;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CastingSet extends GameSet {
     private final String CASTING_OFFICE_NAME = "Casting Office";

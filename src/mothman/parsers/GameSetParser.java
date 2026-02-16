@@ -1,3 +1,5 @@
+package mothman.parsers;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import mothman.sets.*;
+import mothman.utils.Area;
 
 public class GameSetParser extends ParseDaddy{
 
@@ -54,9 +58,9 @@ public class GameSetParser extends ParseDaddy{
         }
     }
 
-    private void Set_AllSets(HashMap<String,GameSet> sets){this._allSets = sets;}
+    private void Set_AllSets(HashMap<String, GameSet> sets){this._allSets = sets;}
 
-    private HashMap<String,GameSet> Get_AllSets(){return this._allSets;}
+    private HashMap<String, GameSet> Get_AllSets(){return this._allSets;}
 
     private GameSet ParseCastingSet(Node set) {
 
@@ -89,7 +93,7 @@ public class GameSetParser extends ParseDaddy{
     private void ParseBoard(Document document) {
         Element root = document.getDocumentElement();
         NodeList children = root.getChildNodes();
-        HashMap<String,GameSet> setHolder = new HashMap<>(children.getLength());
+        HashMap<String, GameSet> setHolder = new HashMap<>(children.getLength());
         HashMap<String,ArrayList<String>> neighborHolder = new HashMap<>(children.getLength());
         for(int i = 0; i < children.getLength(); i++)
         {
@@ -130,12 +134,12 @@ public class GameSetParser extends ParseDaddy{
 
         }   //everything should be in the hashmap now! so we need to go back through and parse neighbors.
 
-        for(Map.Entry<String,GameSet> entry : setHolder.entrySet())
+        for(Map.Entry<String, GameSet> entry : setHolder.entrySet())
         {
             String key = entry.getKey();
             GameSet value = entry.getValue();
             ArrayList<String> stringNeighbors = neighborHolder.get(key);
-            HashMap<String,GameSet> newNeighbors = new HashMap<>(stringNeighbors.size());
+            HashMap<String, GameSet> newNeighbors = new HashMap<>(stringNeighbors.size());
 
             for (String stringNeighbor : stringNeighbors) {
                 GameSet neighbor = setHolder.get(stringNeighbor);
@@ -250,7 +254,7 @@ public class GameSetParser extends ParseDaddy{
     }
 
 
-    private GameSet FindActingSetData(Node setNode,String name) {
+    private GameSet FindActingSetData(Node setNode, String name) {
 
         Area area = null;
         ArrayList<ActingRole> roles = new ArrayList<>();

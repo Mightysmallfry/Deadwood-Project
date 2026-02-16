@@ -1,6 +1,11 @@
-import java.security.KeyStore;
+package mothman.turnactions;
+
 import java.util.HashMap;
 import java.util.Scanner;
+
+import mothman.sets.*;
+import mothman.player.*;
+import mothman.managers.GameManager;
 
 public class Move implements TurnAction{
     //TODO: Can the player acquire a role after and before moving?
