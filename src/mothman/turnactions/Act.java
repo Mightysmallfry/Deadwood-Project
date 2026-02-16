@@ -34,6 +34,7 @@ public class Act implements TurnAction{
         attempt = attempt + currentPlayer.GetLocation().GetRehearseTokens();
 
         boolean success = attempt >= currentCard.GetDifficulty();
+
         // On success increment both
 
         //added creation of PlayerManager to pay the players
@@ -42,21 +43,16 @@ public class Act implements TurnAction{
         if (success)//check for the scene breaking
         {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
-            for (Player player : currentSet.GetPlayers())
-            {
-                manager.BasicPay(player, true);
-            }
+            manager.BasicPay(currentPlayer, true);
+
             if (currentSet.IsComplete()) {//This makes sense
+                manager.BasicPay(currentPlayer, true);
                 manager.BonusPay(currentPlayer);
                 manager.PostSceneReset(currentPlayer);
                 currentSet.RemoveCard();
             }
         } else {
-            for (Player player : currentSet.GetPlayers())
-            {
-                manager.BasicPay(player, false);
-                //PayingPlayers
-            }
+            manager.BasicPay(currentPlayer, false);
         }
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();
