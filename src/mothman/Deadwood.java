@@ -102,7 +102,7 @@ public class Deadwood {
         // When creating players, maybe add playerName?
         // We do that in AddPlayer in PlayerManager the first time its called.
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager playerManager = new PlayerManager(DevRulePackage, trailerSet);
+        PlayerManager playerManager = new PlayerManager(rulesPackage, trailerSet);
         //Calling StartGame in GameManager creates all players
         // But should it?
 
