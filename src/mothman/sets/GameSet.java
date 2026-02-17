@@ -54,22 +54,6 @@ public class GameSet {
      * Adds the neighbor to array list of neighbors, if the neighbor
      * does not already exist in the array.
      */
-    //Does not work with hashMap
-//    public void AddNeighbor(GameSet neighbor) {
-//        if (!_neighbors.contains(neighbor))
-//        {
-//            _neighbors.add(neighbor);
-//        }
-//    }
-
-//    public void RemoveNeighbor(GameSet neighbor) {
-//        if (!_neighbors.contains(neighbor)) {
-//            return;
-//        }
-//
-//        _neighbors.remove(neighbor);
-//    }
-
     public HashMap<String,GameSet> GetNeighbors() {
         return _neighbors;
     }
