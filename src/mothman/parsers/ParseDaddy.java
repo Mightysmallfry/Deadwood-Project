@@ -76,31 +76,6 @@ public class ParseDaddy {
 
             if ("part".equals(partNode.getNodeName()))
             {
-//                String roleName = partNode.getAttributes().getNamedItem("name").getNodeValue();
-//
-//                int roleLevel = Integer.parseInt(partNode.getAttributes().getNamedItem("level").getNodeValue());
-//
-//                String roleLine = "";
-//                Area roleArea = null;
-//
-//
-//                NodeList partDetails = partNode.getChildNodes();
-//
-//                for (int j = 0; j < partDetails.getLength(); j++)
-//                {
-//                    Node detail = partDetails.item(j);
-//
-//                    if ("area".equals(detail.getNodeName()))
-//                    {
-//                        roleArea = ParseArea(detail);
-//                    }
-//
-//                    if ("line".equals(detail.getNodeName()))
-//                    {
-//                        roleLine = detail.getTextContent().trim();
-//                    }
-//                }
-
                 ActingRole role = ParseRole(partNode);
 
                 roles.add(role);
