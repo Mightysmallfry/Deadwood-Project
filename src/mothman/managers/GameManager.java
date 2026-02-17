@@ -123,6 +123,7 @@ public class GameManager {
             ArrayList<String> possibleActions = GetActionList();
             DisplayActionList(possibleActions);
             possibleActions.add("force");
+            possibleActions.add("end game");
 
             System.out.print("Choice: ");
             String playerChoice = _input.nextLine().toLowerCase().strip();
@@ -167,6 +168,10 @@ public class GameManager {
                 case "force":
                     _gameBoard.Clear();
                     takingTurn = false;
+                    break;
+                case "end game":
+                    EndGame();
+                    System.exit(1);
                     break;
             }
 
