@@ -82,7 +82,8 @@ public class Acquire implements TurnAction {
         }
 
 
-        // TODO: We need to display role quote, possibly also in act.
+        //Role test now displays at the start of your turn if you have a role
+        //it was changed in game manager
 
         // Change Player location role
         currentPlayer.GetLocation().SetCurrentRole(chosenRole);

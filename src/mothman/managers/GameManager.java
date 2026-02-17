@@ -96,6 +96,11 @@ public class GameManager {
             if (currentSet instanceof ActingSet)
             {
                 if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
+                    if(_currentPlayer.HasRole())
+                    {
+                            System.out.println(_currentPlayer.GetLocation().GetCurrentRole().GetLine());
+                    }
+
                     int budget = ((ActingSet) currentSet).GetCurrentSceneCard().GetDifficulty();
                     //The issue is that this scene card no longer exists.
                     //we need to remove the players from their roll and turn the card into a normal set or something like that.

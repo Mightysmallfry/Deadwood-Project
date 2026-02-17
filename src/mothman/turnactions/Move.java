@@ -8,8 +8,6 @@ import mothman.player.*;
 import mothman.managers.GameManager;
 
 public class Move implements TurnAction{
-    //TODO: Can the player acquire a role after and before moving?
-    // If so change the action cost to 0;
     private final int ACTION_COST = 1;
 
     private Scanner _input = new Scanner(System.in);
@@ -59,8 +57,8 @@ public class Move implements TurnAction{
             if (foundLocation)
             {
                 _validInput = !_validInput;
-                // TODO: We need to display start and end destinations
-                System.out.println("! Moving current player!");
+
+                System.out.println("! Moving current player from " + currentSet.GetName() + " to " + playerInput + "!");
             }
         }
 
