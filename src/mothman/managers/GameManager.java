@@ -184,7 +184,6 @@ public class GameManager {
         //Removed this section because paying the player is handled in Act.
         //Now when on completed scene card we need to fix it giving us the actions to act and rehearse.
 
-        System.out.println("Checking end day");
         if (IsEndDay())
         {
             EndDay();
