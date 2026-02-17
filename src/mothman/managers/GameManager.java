@@ -139,7 +139,6 @@ public class GameManager {
                     takingTurn = false;
                     break;
                 case "board":
-                    // TODO: Show every player and their location
                     System.out.print(PlayerManager.LocatePlayers());
                     break;
                 case "profile":
@@ -302,21 +301,54 @@ public class GameManager {
             }
         }
 
+
         // Grab Winner
-        //TODO: As tiebreaker might I recommend name?
         ArrayList<Player> winners = new ArrayList<>();//Could add a tiebreaker piece.
         for (int i = 0; i < scores.length; i++) {
             if (scores[i] == highest) {
                 winners.add(manager.GetPlayerLibrary()[i]);
             }
         }
-
-        // Display
-        System.out.println("=== GAME OVER ===");
-        for (Player winner : winners)
+        if (winners.size() > 1)
         {
-            System.out.println("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
+
+
+            int[] creditScores = manager.TallyCredits(winners);
+            //Grab the highest credit score.
+            int highestCredit = Integer.MIN_VALUE;
+            for (int creditScore : creditScores)
+            {
+                if (creditScore > highestCredit)
+                {
+                    highestCredit = creditScore;
+                }
+            }
+
+            ArrayList<Player> tieWinners = new ArrayList<>();
+            for (int i = 0; i < creditScores.length; i++)
+            {
+                if(creditScores[i] == highestCredit){
+                    tieWinners.add(manager.GetPlayerLibrary()[i]);
+                }
+            }
+
+            // Display
+            System.out.println("=== GAME OVER ===");
+            for (Player winner : tieWinners)
+            {
+                System.out.println("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
+            }
         }
+        else
+        {
+            // Display
+            System.out.println("=== GAME OVER ===");
+            for (Player winner : winners)
+            {
+                System.out.println("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
+            }
+        }
+
     }
 
     /**

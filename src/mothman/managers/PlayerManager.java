@@ -203,6 +203,21 @@ public class PlayerManager {
         return scores;
     }
 
+    public int[] TallyCredits(ArrayList<Player> players)
+    {
+        if (players == null || players.isEmpty())
+        {
+            return new int[0];
+        }
+        int[] creditScore = new int[players.size()];
+        for (int i = 0; i < players.size(); i++)
+        {
+            Player p = players.get(i);
+            creditScore[i] = p.GetCurrency().GetCredits();
+        }
+        return creditScore;
+    }
+
     public static String LocatePlayers(){
         StringBuilder sb = new StringBuilder();
 
