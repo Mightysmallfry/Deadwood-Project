@@ -7,6 +7,10 @@ western themed movie set with 2-8 friends.
 ## Build and Run Instructions
 
 ### Linux
+use the `cd` command to enter the directory that contains `src/, xml/, readme, out, and deadwood-Project.iml` next
+use the command: `javac -d out -sourcepath src src/mothman/Deadwood.java`
+then : `java -cp out mothman.Deadwood arg1` putting the player count instead of
+`arg1`
 
 ### Windows 11 Platform
 
