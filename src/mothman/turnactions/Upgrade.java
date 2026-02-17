@@ -34,12 +34,11 @@ public class Upgrade implements TurnAction {
         int playerCoin = playerCurrency.GetCoins();
         int playerCredit = playerCurrency.GetCredits();
 
-
-        System.out.println("Available Upgrades:");
-
         int currentRank = currentPlayer.GetCurrentRank();
         int maxRank = castingSet.GetMaxRank();
 
+        System.out.println("Your current rank is: " + currentRank);
+        System.out.println("Available Upgrades:");
         for (int rank = currentRank + 1; rank <= maxRank; rank++) {
 
             Integer dollarCost = null;
@@ -141,7 +140,7 @@ public class Upgrade implements TurnAction {
 
                 playerCurrency.SetCredits(playerCredit - cost);
                 currentPlayer.SetCurrentRank(rankRequest);
-                System.out.println("Successfully upgraded to Rank " + rankRequest + "!");
+                System.out.println("Successfully upgraded from rank " + currentRank + " to Rank"  + rankRequest + "!");
                 break;
 
             default:
