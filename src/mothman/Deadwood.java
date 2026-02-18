@@ -6,6 +6,7 @@ import mothman.managers.PlayerManager;
 import mothman.managers.ViewportController;
 import mothman.parsers.GameSetParser;
 import mothman.parsers.SceneCardParser;
+import mothman.player.Player;
 import mothman.sets.ActingSet;
 import mothman.sets.CastingSet;
 import mothman.sets.GameSet;
@@ -41,8 +42,6 @@ public class Deadwood {
             System.out.println("Normally, the game is played with: " + DEFAULT_PLAYER_COUNT + " Players");
             System.exit(1);
         }
-
-
 
         System.out.println("Hello and welcome to Deadwood gunslinger!");
         System.out.printf("You have %d players!\n", playerCount);
@@ -102,18 +101,13 @@ public class Deadwood {
             // Good Question
 
         // ========= Set Up Viewport =======
-        ViewportController vc = new ViewportController(new ViewportText());
-
+        ViewportController display = new ViewportController(new ViewportText());
 
         // ========= Set Up PlayerManager =========
-        // When creating players, maybe add playerName?
-        // We do that in AddPlayer in PlayerManager the first time its called.
-        // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager.CreateManager(rulesPackage, trailerSet,vc);
-        //Calling StartGame in GameManager creates all players
-        // But should it?
+        // This isn't my preferred way but I think this is an intuitive way.
+        // Get the instance, if it is null, use these starting values
+        PlayerManager playerManager = PlayerManager.GetInstance(rulesPackage, trailerSet, display);
 
-        // playerManager.CreatePlayers()?
 
 //        System.out.println(playerManager.toString());
 //        System.out.println(trailerSet.toString());
@@ -125,19 +119,16 @@ public class Deadwood {
         gameManager.SetRules(rulesPackage);
         gameManager.SetGameBoard(gameBoard);
 
-
-        // ========= Run Game =======
-        RunGame(gameManager,vc);
-
-
-//        System.out.println(gameManager.toString());
-
         // =========    =========   =========   =========
         // CHECKPOINT 2: GAME HAS BEEN INSTANTIATED AND READY TO START
         // =========    =========   =========   =========
 
+        RunGame(gameManager, display);
+//        System.out.println(gameManager.toString());
+
+        // Because we run the game in a Deadwood method, we can remove this
         // Now the game runs in its entirety or until someone quits.
-        gameManager.StartGame();
+        // gameManager.StartGame();
 
         // =========    =========   =========   =========
         // CHECKPOINT 3: QUIT PROGRAM
@@ -149,18 +140,18 @@ public class Deadwood {
      * The primary game loop. Deadwood owns this so that GameManager
      * can stay focused on game state rather than driving the loop.
      */
-    private static void RunGame(GameManager gm, ViewportController vc) {
-        gm.StartGame();
+    private static void RunGame(GameManager gameManager, ViewportController viewportController) {
+        gameManager.StartGame();
 
-        while (!gm.HasGameEnded()) {
-            String action = vc.AskAction();
-            gm.UpdateGame(action, vc);
+        while (!gameManager.HasGameEnded()) {
+            String action = viewportController.AskAction();
+            gameManager.UpdateGame(action, viewportController);
 
             if (action.equals("pass")) {
-                if (gm.IsEndDay()) {
-                    gm.EndDay();
+                if (gameManager.IsEndDay()) {
+                    gameManager.EndDay();
                 }
-                gm.AdvanceTurn();
+                gameManager.AdvanceTurn();
             }
         }
     }

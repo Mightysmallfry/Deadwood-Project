@@ -1,7 +1,6 @@
 package mothman.turnactions;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 import mothman.managers.*;
 import mothman.player.*;
 import mothman.sets.*;
@@ -10,10 +9,8 @@ public class Acquire implements TurnAction {
     // Acquiring a role should not cost anything
     private final int ACTION_COST = 0;
 
-    private Scanner _input = new Scanner(System.in);
-
     @Override
-    public void Execute(ViewportController vc) {
+    public void Execute(ViewportController viewportController) {
         // Already has a role
         if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole() != null)
         {
@@ -24,17 +21,16 @@ public class Acquire implements TurnAction {
         Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
-        // Get Available roles
-        if (!(currentSet instanceof ActingSet)) {
-            vc.ShowMessage("You need to be on an acting set to get a job!");
+        // Get Available roles and convert currentSet to an acting set
+        if (!(currentSet instanceof ActingSet actingSet)) {
+            viewportController.ShowMessage("You need to be on an acting set to get a job!");
             return;
         }
 
-        ActingSet actingSet = (ActingSet) currentSet;
         ArrayList<ActingRole> availableRoles = actingSet.GetAvailableRoles();
 
         if (availableRoles.isEmpty()) {
-            vc.ShowMessage("There are no available roles, better luck next time!");
+            viewportController.ShowMessage("There are no available roles, better luck next time!");
             return;
         }
         SceneCard sceneCard = actingSet.GetCurrentSceneCard();
@@ -45,7 +41,7 @@ public class Acquire implements TurnAction {
         boolean choosingRole = true;
         while (choosingRole)
         {
-           String playerChoice = vc.AskRoleSelection(sceneCard, actingSet.GetAvailableLocalRoles());
+           String playerChoice = viewportController.AskRoleSelection(sceneCard, actingSet.GetAvailableLocalRoles());
 
             if (playerChoice.equals("cancel")) {
                 return;
@@ -59,7 +55,7 @@ public class Acquire implements TurnAction {
                         chosenRole = role;
                     }
                     else {
-                        vc.ShowMessage("! You're rank is too low. Choose another role!");
+                        viewportController.ShowMessage("! You're rank is too low. Choose another role!");
                     }
                 }
             }

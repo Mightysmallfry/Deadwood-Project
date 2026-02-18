@@ -19,10 +19,8 @@ public class GameManager {
     private static RulesPackage _rules = new RulesPackage();
 
     // Members
-
     private int _currentDay;
     private GameBoard _gameBoard;
-    private TurnAction _playerAction = new Idle();
 
     private int _actionTokens = DEFAULT_ACTION_TOKENS;
     private boolean _hasPlayerMoved = false;
@@ -60,14 +58,6 @@ public class GameManager {
         _hasPlayerMoved = hasMoved;}
 
     /**
-     * @param playerAction any player action that implements the TurnAction interface
-     */
-    private void SetPlayerAction(TurnAction playerAction) {
-        _playerAction = playerAction;
-    }
-
-
-    /**
      * This is the primary game loop. We get the current player, let them choose their turn action
      * Execute said action, check for any end conditions and then advance to the next player
      */
@@ -83,7 +73,7 @@ public class GameManager {
             case "move"     -> new Move().Execute(vc);
             case "upgrade"  -> new Upgrade().Execute(vc);
             case "force"    -> _gameBoard.Clear();
-            case "end game" -> { EndGame(); return; }
+            case "end game" -> EndGame();
             case "board"    -> vc.ShowMessage(PlayerManager.LocatePlayers());
             case "profile"  -> vc.ShowMessage(PlayerManager.GetInstance().GetCurrentPlayer().toString());
             default         -> vc.ShowMessage("Invalid Choice");
@@ -96,6 +86,8 @@ public class GameManager {
      */
     public void EndDay() //may be off by 1
     {
+        // TODO: Should these end day messages be here?
+        // I think they should replace these with ShowMessage calls
         System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
 
         // Check if it is the end of the Game
@@ -145,7 +137,6 @@ public class GameManager {
     {
         // Reset Action Tokens and action for the next player
         _actionTokens = DEFAULT_ACTION_TOKENS;
-        _playerAction = new Idle();
         _hasPlayerMoved = false;
 
 
@@ -195,7 +186,8 @@ public class GameManager {
     public void EndGame()
     {
         _hasGameEnded = true;
-        int[] scores = PlayerManager.GetInstance().TallyScore(); //This will be its own thing eventually REMEMBER TO CHANGE
+        int[] scores = PlayerManager.GetInstance().TallyScore();
+        // TODO: This will be its own thing eventually REMEMBER TO CHANGE
 
         // Grab the highest score
         int highest = Integer.MIN_VALUE;
@@ -218,7 +210,7 @@ public class GameManager {
 
 
             int[] creditScores = PlayerManager.GetInstance().TallyCredits(winners);
-            //Grab the highest credit score.
+            // Grab the highest credit score.
             int highestCredit = Integer.MIN_VALUE;
             for (int creditScore : creditScores)
             {
@@ -267,7 +259,7 @@ public class GameManager {
         SetCurrentDay(1);
 
         // Use die to choose a first player
-        //-1 because indexing starts at 0 and dice will always give is 1-8 instead of 0-7
+        // -1 because indexing starts at 0 and dice will always give is 1-8 instead of 0-7
         Dice dice = Dice.GetInstance();
         int startingPlayer = dice.Roll(1, _rules.GetPlayerCount()) - 1;
         PlayerManager.GetInstance().SetCurrentPlayer(PlayerManager.GetInstance().GetPlayerLibrary()[startingPlayer]);

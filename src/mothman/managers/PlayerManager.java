@@ -22,7 +22,7 @@ public class PlayerManager {
     private Player _currentPlayer;
 
     // Constructors
-    public PlayerManager() {}
+    private PlayerManager() {}
 
     private PlayerManager(RulesPackage rules, GameSet startLocation, ViewportController vc)
     {
@@ -34,17 +34,24 @@ public class PlayerManager {
         }
     }
 
-    public static void CreateManager(RulesPackage rules, GameSet startLocation, ViewportController vc)
-    {
-        if (_instance == null){
-            _instance = new PlayerManager(rules,startLocation,vc);
-        }
-    }
-
+    /**
+     * Only Safe to call this if you have already called the manager once before
+     * with starting rules, start location and a viewport controller
+     * @return
+     */
     public static PlayerManager GetInstance(){
+        if (_instance == null){
+            _instance = new PlayerManager();
+        }
         return _instance;
     }
 
+    public static PlayerManager GetInstance(RulesPackage rules, GameSet startLocation, ViewportController vc){
+        if (_instance == null){
+            _instance = new PlayerManager(rules, startLocation, vc);
+        }
+        return _instance;
+    }
 
     // Getters
     public Player[] GetPlayerLibrary() {return _playerLibrary;}

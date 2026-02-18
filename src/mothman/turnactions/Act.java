@@ -36,22 +36,21 @@ public class Act implements TurnAction{
         boolean success = attempt >= currentCard.GetDifficulty();
 
         // On success increment both
-
         //added creation of PlayerManager to pay the players
-
+        PlayerManager playerManager = PlayerManager.GetInstance();
         if (success)//check for the scene breaking
         {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
-            PlayerManager.GetInstance().BasicPay(currentPlayer, true);
+            playerManager.BasicPay(currentPlayer, true);
 
             if (currentSet.IsComplete()) {//This makes sense
-                PlayerManager.GetInstance().BasicPay(currentPlayer, true);
-                PlayerManager.GetInstance().BonusPay(currentPlayer);
-                PlayerManager.GetInstance().PostSceneReset(currentPlayer);
+                playerManager.BasicPay(currentPlayer, true);
+                playerManager.BonusPay(currentPlayer);
+                playerManager.PostSceneReset(currentPlayer);
                 currentSet.RemoveCard();
             }
         } else {
-            PlayerManager.GetInstance().BasicPay(currentPlayer, false);
+            playerManager.BasicPay(currentPlayer, false);
             vc.ShowMessage("Act failed, better luck next time!");
         }
 

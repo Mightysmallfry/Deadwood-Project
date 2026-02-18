@@ -32,8 +32,6 @@ public class SceneCardParser extends ParseDaddy{
         return _parsedCards;
     }
 
-
-
     /**
      * Attempts to open xml file by the given fileName
      * Throws an error if not possible

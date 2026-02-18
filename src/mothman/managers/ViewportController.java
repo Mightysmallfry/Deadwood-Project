@@ -52,6 +52,10 @@ public class ViewportController {
         _viewport.DisplayMessage(message);
     }
 
+    /**
+     *
+     * @return A TurnDisplayInfo containing a snapshot of the current Game State
+     */
     private TurnDisplayInfo BuildTurnInfo() {
         TurnDisplayInfo info = new TurnDisplayInfo();
         Player player = PlayerManager.GetInstance().GetCurrentPlayer();
@@ -109,14 +113,18 @@ public class ViewportController {
         possibleActions.add("profile");
         possibleActions.add("board");
 
-        if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() && GameManager.GetInstance().GetActionTokens() >= 0 && rolesAvailable){
+        if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
+                GameManager.GetInstance().GetActionTokens() >= 0 &&
+                rolesAvailable){
             // Acquire
             possibleActions.add("acquire");
         }
         // The player has a role
         //using ActingSet here even though they could be at a trailer because if player has role they are on an
         // ActingSet so currentPlayer will fail first.
-        if (PlayerManager.GetInstance().GetCurrentPlayer().HasRole() && GameManager.GetInstance().GetActionTokens() > 0 && ((ActingSet)currentSet).GetCurrentSceneCard() != null){
+        if (PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
+                GameManager.GetInstance().GetActionTokens() > 0 &&
+                ((ActingSet)currentSet).GetCurrentSceneCard() != null){
             // Act
             possibleActions.add("act");
             // Rehearse
