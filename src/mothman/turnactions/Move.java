@@ -3,6 +3,7 @@ package mothman.turnactions;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import mothman.managers.PlayerManager;
 import mothman.sets.*;
 import mothman.player.*;
 import mothman.managers.GameManager;
@@ -21,7 +22,7 @@ public class Move implements TurnAction{
         }
 
         // Get the player's current location
-        Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
+        Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         // Get the neighbors of current location

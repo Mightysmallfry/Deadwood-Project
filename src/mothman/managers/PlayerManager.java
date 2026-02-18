@@ -12,10 +12,13 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
+
 public class PlayerManager {
 
     // Members
     private static Player[] _playerLibrary;
+    private static PlayerManager _instance;
+    private Player _currentPlayer;
 
     // Constructors
     public PlayerManager() {}
@@ -30,9 +33,24 @@ public class PlayerManager {
         }
     }
 
+    public static void CreateManager(RulesPackage rules, GameSet startLocation)
+    {
+        if (_instance == null){
+            _instance = new PlayerManager(rules,startLocation);
+        }
+    }
+
+    public static PlayerManager GetInstance(){
+        return _instance;
+    }
+
 
     // Getters
     public Player[] GetPlayerLibrary() {return _playerLibrary;}
+
+    public Player GetCurrentPlayer() {return _currentPlayer;}
+
+    public void SetCurrentPlayer(Player currentPlayer) {_currentPlayer = currentPlayer;}
 
     public int GetPlayerCount() {
         return _playerLibrary == null ? 0 : _playerLibrary.length;

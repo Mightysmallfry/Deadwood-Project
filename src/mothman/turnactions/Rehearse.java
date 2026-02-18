@@ -1,5 +1,6 @@
 package mothman.turnactions;
 
+import mothman.managers.PlayerManager;
 import mothman.player.*;
 import mothman.managers.GameManager;
 
@@ -9,7 +10,7 @@ public class Rehearse implements TurnAction{
     @Override
     public void Execute() {
 
-        Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
+        Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
 
         if (!currentPlayer.HasRole())
         {

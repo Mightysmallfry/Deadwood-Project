@@ -15,13 +15,13 @@ public class Acquire implements TurnAction {
     @Override
     public void Execute() {
         // Already has a role
-        if (GameManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole() != null)
+        if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole() != null)
         {
             return;
         }
 
         // Get Player and Location
-        Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
+        Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         // Get Available roles

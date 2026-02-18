@@ -45,6 +45,7 @@ public class Deadwood {
         System.out.println("Hello and welcome to Deadwood gunslinger!");
         System.out.printf("You have %d players!\n", playerCount);
 
+
         // =========    =========   =========   =========
         // CHECKPOINT 0: PROGRAM RUNS WITH CORRECT ARGS
         // =========    =========   =========   =========
@@ -102,7 +103,7 @@ public class Deadwood {
         // When creating players, maybe add playerName?
         // We do that in AddPlayer in PlayerManager the first time its called.
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager playerManager = new PlayerManager(rulesPackage, trailerSet);
+        PlayerManager.CreateManager(rulesPackage, trailerSet);
         //Calling StartGame in GameManager creates all players
         // But should it?
 
@@ -125,7 +126,7 @@ public class Deadwood {
         // =========    =========   =========   =========
 
         // Now the game runs in its entirety or until someone quits.
-        gameManager.StartGame(playerManager);
+        gameManager.StartGame();
 
         // =========    =========   =========   =========
         // CHECKPOINT 3: QUIT PROGRAM

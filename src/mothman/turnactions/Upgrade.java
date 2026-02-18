@@ -15,7 +15,7 @@ public class Upgrade implements TurnAction {
     public void Execute()
     {
         // Get Player's current location
-        Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
+        Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
         // Ensure that it is the casting Set

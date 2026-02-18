@@ -11,7 +11,7 @@ public class Act implements TurnAction{
     @Override
     public void Execute() {
 
-        Player currentPlayer = GameManager.GetInstance().GetCurrentPlayer();
+        Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
 
         // Pre-conditions
         if (!currentPlayer.HasRole()) {
@@ -38,21 +38,20 @@ public class Act implements TurnAction{
         // On success increment both
 
         //added creation of PlayerManager to pay the players
-        PlayerManager manager = new PlayerManager();
 
         if (success)//check for the scene breaking
         {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
-            manager.BasicPay(currentPlayer, true);
+            PlayerManager.GetInstance().BasicPay(currentPlayer, true);
 
             if (currentSet.IsComplete()) {//This makes sense
-                manager.BasicPay(currentPlayer, true);
-                manager.BonusPay(currentPlayer);
-                manager.PostSceneReset(currentPlayer);
+                PlayerManager.GetInstance().BasicPay(currentPlayer, true);
+                PlayerManager.GetInstance().BonusPay(currentPlayer);
+                PlayerManager.GetInstance().PostSceneReset(currentPlayer);
                 currentSet.RemoveCard();
             }
         } else {
-            manager.BasicPay(currentPlayer, false);
+            PlayerManager.GetInstance().BasicPay(currentPlayer, false);
         }
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();

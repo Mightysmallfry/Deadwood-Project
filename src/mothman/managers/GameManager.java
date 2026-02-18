@@ -21,7 +21,7 @@ public class GameManager {
     private static RulesPackage _rules = new RulesPackage();
 
     // Members
-    private Player _currentPlayer;
+
     private int _currentDay;
     private GameBoard _gameBoard;
     private TurnAction _playerAction = new Idle();
@@ -49,16 +49,12 @@ public class GameManager {
 
     public GameBoard GetGameBoard() {return _gameBoard;}
 
-    public Player GetCurrentPlayer() {return _currentPlayer;}
-
     public int GetCurrentDay(){return _currentDay;}
 
     // Setters
     public void SetRules(RulesPackage rules) {_rules = rules;}
 
     public void SetGameBoard(GameBoard gameBoard) {_gameBoard = gameBoard;}
-
-    public void SetCurrentPlayer(Player currentPlayer) {_currentPlayer = currentPlayer;}
 
     public void SetCurrentDay(int day){_currentDay = day;}
 
@@ -86,19 +82,19 @@ public class GameManager {
         while (takingTurn)
         {
             // Make sure we keep track of these actively
-            LocationComponent loc = _currentPlayer.GetLocation();
+            LocationComponent loc = PlayerManager.GetInstance().GetCurrentPlayer().GetLocation();
             GameSet currentSet = loc.GetCurrentGameSet();
 
             // Print who's turn it is
-            System.out.println("||" + _currentPlayer.GetPersonalId() + "'s Turn||");
+            System.out.println("||" + PlayerManager.GetInstance().GetCurrentPlayer().GetPersonalId() + "'s Turn||");
             System.out.println("||Location : " + currentSet.GetName() + "||");
 
             if (currentSet instanceof ActingSet)
             {
                 if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
-                    if(_currentPlayer.HasRole())
+                    if(PlayerManager.GetInstance().GetCurrentPlayer().HasRole())
                     {
-                            System.out.println(_currentPlayer.GetLocation().GetCurrentRole().GetLine());
+                            System.out.println(PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole().GetLine());
                     }
 
                     int budget = ((ActingSet) currentSet).GetCurrentSceneCard().GetDifficulty();
@@ -148,7 +144,7 @@ public class GameManager {
                     System.out.print(PlayerManager.LocatePlayers());
                     break;
                 case "profile":
-                    System.out.println(Player.GetProfileString(_currentPlayer));
+                    System.out.println(Player.GetProfileString(PlayerManager.GetInstance().GetCurrentPlayer()));
                     break;
                 case "acquire":
                     SetPlayerAction(new Acquire());
@@ -201,7 +197,6 @@ public class GameManager {
         System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
 
         // Check if it is the end of the Game
-        PlayerManager manager = new PlayerManager();
         if (IsEndGame()) {
             EndGame();
             return;
@@ -213,7 +208,7 @@ public class GameManager {
 
         // Reset everyone's location to the trailer and reset sets
         GameSet trailer = GetGameBoard().GetStartingSet();
-        for (Player p : manager.GetPlayerLibrary())
+        for (Player p : PlayerManager.GetInstance().GetPlayerLibrary())
         {
             LocationComponent loc = p.GetLocation();
 
@@ -252,18 +247,17 @@ public class GameManager {
         _hasPlayerMoved = false;
 
 
-        PlayerManager manager = new PlayerManager();
         int index = 0;
 
-        for (int i = 0; i < manager.GetPlayerLibrary().length; i++)
+        for (int i = 0; i < PlayerManager.GetInstance().GetPlayerLibrary().length; i++)
         {
-            if (manager.GetPlayerLibrary()[i] == _currentPlayer)
+            if (PlayerManager.GetInstance().GetPlayerLibrary()[i] == PlayerManager.GetInstance().GetCurrentPlayer())
             {
                 index = i;
                 break;
             }
         }
-        _currentPlayer = manager.GetPlayerLibrary()[(index + 1) % manager.GetPlayerLibrary().length];
+        PlayerManager.GetInstance().SetCurrentPlayer(PlayerManager.GetInstance().GetPlayerLibrary()[(index + 1) % PlayerManager.GetInstance().GetPlayerLibrary().length]);
     }
 
     /**
@@ -299,8 +293,7 @@ public class GameManager {
     public void EndGame()
     {
         _hasGameEnded = true;
-        PlayerManager manager = new PlayerManager(); //WE ONLY PASS IN THE RULES IN START GAME //Otherwise we pass in nothing
-        int[] scores = manager.TallyScore(); //This will be its own thing eventually REMEMBER TO CHANGE
+        int[] scores = PlayerManager.GetInstance().TallyScore(); //This will be its own thing eventually REMEMBER TO CHANGE
 
         // Grab the highest score
         int highest = Integer.MIN_VALUE;
@@ -315,14 +308,14 @@ public class GameManager {
         ArrayList<Player> winners = new ArrayList<>();//Could add a tiebreaker piece.
         for (int i = 0; i < scores.length; i++) {
             if (scores[i] == highest) {
-                winners.add(manager.GetPlayerLibrary()[i]);
+                winners.add(PlayerManager.GetInstance().GetPlayerLibrary()[i]);
             }
         }
         if (winners.size() > 1)
         {
 
 
-            int[] creditScores = manager.TallyCredits(winners);
+            int[] creditScores = PlayerManager.GetInstance().TallyCredits(winners);
             //Grab the highest credit score.
             int highestCredit = Integer.MIN_VALUE;
             for (int creditScore : creditScores)
@@ -337,7 +330,7 @@ public class GameManager {
             for (int i = 0; i < creditScores.length; i++)
             {
                 if(creditScores[i] == highestCredit){
-                    tieWinners.add(manager.GetPlayerLibrary()[i]);
+                    tieWinners.add(PlayerManager.GetInstance().GetPlayerLibrary()[i]);
                 }
             }
 
@@ -364,12 +357,10 @@ public class GameManager {
      *This starts the game using the given rules package as well as sets the day to one and moves players to the start.
      * Next it sets up all the players default values then populates the board and chooses a starting player.
      */
-    public void StartGame(PlayerManager playerManager)
+    public void StartGame()
     {
         // Populate board
         _gameBoard.Populate();
-        GameSet trailer = _gameBoard.GetStartingSet();
-
         // Let's be careful with indexing here
         SetCurrentDay(1);
 
@@ -377,29 +368,13 @@ public class GameManager {
         //-1 because indexing starts at 0 and dice will always give is 1-8 instead of 0-7
         Dice dice = Dice.GetInstance();
         int startingPlayer = dice.Roll(1, _rules.GetPlayerCount()) - 1;
-        SetCurrentPlayer(playerManager.GetPlayerLibrary()[startingPlayer]);
-
-        // Can Confirm Current Player is correctly chosen at random
-        // System.out.println("startingPlayerIndex " + startingPlayer);
-        // System.out.println("StartingCurrentPlayer: " + _currentPlayer.GetPersonalId());
+        PlayerManager.GetInstance().SetCurrentPlayer(PlayerManager.GetInstance().GetPlayerLibrary()[startingPlayer]);
 
         // Start updating the game until it ends.
         _hasGameEnded = false;
-        int earlyBreak = 0;
         while (!_hasGameEnded)
         {
-            earlyBreak++;
-
             UpdateGame();
-
-            // Only allows 3 turns
-//            if (earlyBreak == 3){
-//
-//                /// ========= EARLY EXIT HELPER =========
-//                System.out.println("Early Helper Has Been Hit");
-//                break;
-//                /// =====================================
-//            }
         }
     }
 
@@ -412,7 +387,7 @@ public class GameManager {
     private ArrayList<String> GetActionList()
     {
         ArrayList<String> possibleActions = new ArrayList<>();
-        GameSet currentSet = _currentPlayer.GetLocation().GetCurrentGameSet();
+        GameSet currentSet = PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet();
         boolean rolesAvailable = false;
         if (currentSet instanceof ActingSet){
             if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
@@ -432,14 +407,14 @@ public class GameManager {
         possibleActions.add("profile");
         possibleActions.add("board");
 
-        if (!_currentPlayer.HasRole() && _actionTokens >= 0 && rolesAvailable){
+        if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() && _actionTokens >= 0 && rolesAvailable){
             // Acquire
             possibleActions.add("acquire");
         }
         // The player has a role
         //using ActingSet here even though they could be at a trailer because if player has role they are on an
         // ActingSet so currentPlayer will fail first.
-        if (_currentPlayer.HasRole() && _actionTokens > 0 && ((ActingSet)currentSet).GetCurrentSceneCard() != null){
+        if (PlayerManager.GetInstance().GetCurrentPlayer().HasRole() && _actionTokens > 0 && ((ActingSet)currentSet).GetCurrentSceneCard() != null){
             // Act
             possibleActions.add("act");
             // Rehearse
@@ -451,7 +426,7 @@ public class GameManager {
                 possibleActions.add("move");
             }
             // Upgrade
-            if (_currentPlayer.GetLocation().GetCurrentGameSet() instanceof CastingSet) {
+            if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet() instanceof CastingSet) {
                 possibleActions.add("upgrade");
             }
         }
@@ -489,9 +464,6 @@ public class GameManager {
         sb.append("|~| Game Manager |~|\n");
         sb.append("Ruleset: ");
         sb.append(_rules.toString()).append("\n");
-
-        sb.append("Current Player: ");
-        sb.append(_currentPlayer).append("\n");
 
         sb.append("Current Day: ");
         sb.append(_currentDay).append("\n");
