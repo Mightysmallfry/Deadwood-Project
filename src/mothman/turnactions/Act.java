@@ -9,18 +9,18 @@ public class Act implements TurnAction{
     private final int ACTION_COST = 1;
 
     @Override
-    public void Execute() {
+    public void Execute(ViewportController vc) {
 
         Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
 
         // Pre-conditions
         if (!currentPlayer.HasRole()) {
-            System.out.println("You don't have a role yet!");
+            vc.ShowMessage("You don't have a role yet!");
             return;
         }
 
         if (!(currentPlayer.GetLocation().GetCurrentGameSet() instanceof ActingSet)){
-            System.out.println("You need to be on an acting set first!");
+            vc.ShowMessage("You need to be on an acting set first!");
         }
 
         // Let's just make it
@@ -30,7 +30,7 @@ public class Act implements TurnAction{
 
         // Roll 1d6 against difficulty
         int attempt = Dice.GetInstance().Roll();
-        System.out.println("You rolled: " + attempt + " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
+        vc.ShowMessage("You rolled: " + attempt + " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
         attempt = attempt + currentPlayer.GetLocation().GetRehearseTokens();
 
         boolean success = attempt >= currentCard.GetDifficulty();
@@ -52,6 +52,7 @@ public class Act implements TurnAction{
             }
         } else {
             PlayerManager.GetInstance().BasicPay(currentPlayer, false);
+            vc.ShowMessage("Act failed, better luck next time!");
         }
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();

@@ -7,6 +7,7 @@ import mothman.sets.ActingSet;
 import mothman.sets.GameSet;
 import mothman.utils.Dice;
 import mothman.utils.RulesPackage;
+import mothman.viewports.Viewport;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,20 +24,20 @@ public class PlayerManager {
     // Constructors
     public PlayerManager() {}
 
-    public PlayerManager(RulesPackage rules, GameSet startLocation)
+    private PlayerManager(RulesPackage rules, GameSet startLocation, ViewportController vc)
     {
         _playerLibrary = new Player[rules.GetPlayerCount()];
         for(int i = 0; i < rules.GetPlayerCount(); i++)
         {
-            Player p = AddPlayer(rules, startLocation);
+            Player p = AddPlayer(rules, startLocation, vc);
             _playerLibrary[i] = p;
         }
     }
 
-    public static void CreateManager(RulesPackage rules, GameSet startLocation)
+    public static void CreateManager(RulesPackage rules, GameSet startLocation, ViewportController vc)
     {
         if (_instance == null){
-            _instance = new PlayerManager(rules,startLocation);
+            _instance = new PlayerManager(rules,startLocation,vc);
         }
     }
 
@@ -69,14 +70,10 @@ public class PlayerManager {
      * @return
      */
 
-    private Player AddPlayer(RulesPackage rules, GameSet startingLocation)
+    private Player AddPlayer(RulesPackage rules, GameSet startingLocation, ViewportController vc)
     {
         // Get Player Name
-        System.out.print("Please input your name: ");
-        Scanner sc = new Scanner(System.in);
-        String name = sc.nextLine().strip();
-        // sc.close();   // Also closes System.in, do this at the end of program
-        System.out.println("Thank you!");
+        String name = vc.AskName();
 
         // Create new player object
         Player player = new Player(name, rules.GetStartingRank());

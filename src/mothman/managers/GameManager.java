@@ -3,14 +3,12 @@ package mothman.managers;
 import mothman.player.LocationComponent;
 import mothman.player.Player;
 import mothman.sets.ActingSet;
-import mothman.sets.CastingSet;
 import mothman.sets.GameSet;
 import mothman.turnactions.*;
 import mothman.utils.Dice;
 import mothman.utils.RulesPackage;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class GameManager {
     // Constants
@@ -25,7 +23,6 @@ public class GameManager {
     private int _currentDay;
     private GameBoard _gameBoard;
     private TurnAction _playerAction = new Idle();
-    private Scanner _input = new Scanner(System.in);
 
     private int _actionTokens = DEFAULT_ACTION_TOKENS;
     private boolean _hasPlayerMoved = false;
@@ -74,125 +71,30 @@ public class GameManager {
      * This is the primary game loop. We get the current player, let them choose their turn action
      * Execute said action, check for any end conditions and then advance to the next player
      */
-    private void UpdateGame()
+    public void UpdateGame(String action, ViewportController vc)
     //This processes the current player's turn
     {
-        // While taking turn
-        boolean takingTurn = true;
-        while (takingTurn)
-        {
-            // Make sure we keep track of these actively
-            LocationComponent loc = PlayerManager.GetInstance().GetCurrentPlayer().GetLocation();
-            GameSet currentSet = loc.GetCurrentGameSet();
-
-            // Print who's turn it is
-            System.out.println("||" + PlayerManager.GetInstance().GetCurrentPlayer().GetPersonalId() + "'s Turn||");
-            System.out.println("||Location : " + currentSet.GetName() + "||");
-
-            if (currentSet instanceof ActingSet)
-            {
-                if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
-                    if(PlayerManager.GetInstance().GetCurrentPlayer().HasRole())
-                    {
-                            System.out.println(PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole().GetLine());
-                    }
-
-                    int budget = ((ActingSet) currentSet).GetCurrentSceneCard().GetDifficulty();
-                    //The issue is that this scene card no longer exists.
-                    //we need to remove the players from their roll and turn the card into a normal set or something like that.
-                    System.out.println("||Budget: " + budget + "||");
-
-                    int maxShots = ((ActingSet) currentSet).GetMaxProgress();
-                    System.out.println("||Total Shots: " + maxShots + "||");
-
-                    int currentShots = ((ActingSet) currentSet).GetCurrentProgress();
-                    System.out.println("||Shot Count: " + currentShots + "||");
-                }
-                else{
-                    System.out.println("||Scene completed||");
-                }
-
-            }
-            System.out.println("Action Points Available: " + _actionTokens);
-
-            // Print Available Options
-            ArrayList<String> possibleActions = GetActionList();
-            DisplayActionList(possibleActions);
-            possibleActions.add("force");
-            possibleActions.add("end game");
-
-            System.out.print("Choice: ");
-            String playerChoice = _input.nextLine().toLowerCase().strip();
-
-            if (!possibleActions.contains(playerChoice))
-            {
-                System.out.println("Invalid Choice");
-                continue;
-            }
-
-            switch (playerChoice)
-            {
-                case "quit":
-                    System.out.println("Quiting Game!");
-                    System.exit(1);
-                    break;
-                case "pass":
-                    System.out.println("Turn Ended");
-                    takingTurn = false;
-                    break;
-                case "board":
-                    System.out.print(PlayerManager.LocatePlayers());
-                    break;
-                case "profile":
-                    System.out.println(Player.GetProfileString(PlayerManager.GetInstance().GetCurrentPlayer()));
-                    break;
-                case "acquire":
-                    SetPlayerAction(new Acquire());
-                    break;
-                case "act":
-                    SetPlayerAction(new Act());
-                    break;
-                case "rehearse":
-                    SetPlayerAction(new Rehearse());
-                    break;
-                case "move":
-                    SetPlayerAction(new Move());
-                    break;
-                case "upgrade":
-                    SetPlayerAction(new Upgrade());
-                    break;
-                case "force":
-                    _gameBoard.Clear();
-                    takingTurn = false;
-                    break;
-                case "end game":
-                    EndGame();
-                    System.exit(1);
-                    break;
-            }
-
-            // Execute Selection and return to idle
-            // System.out.println("Player Action: " + _playerAction.getClass());
-            _playerAction.Execute();
-            _playerAction = new Idle();
+        switch (action) {
+            case "quit"     -> System.exit(1);
+            case "pass"     -> {}
+            case "acquire"  -> new Acquire().Execute(vc);
+            case "act"      -> new Act().Execute(vc);
+            case "rehearse" -> new Rehearse().Execute(vc);
+            case "move"     -> new Move().Execute(vc);
+            case "upgrade"  -> new Upgrade().Execute(vc);
+            case "force"    -> _gameBoard.Clear();
+            case "end game" -> { EndGame(); return; }
+            case "board"    -> vc.ShowMessage(PlayerManager.LocatePlayers());
+            case "profile"  -> vc.ShowMessage(PlayerManager.GetInstance().GetCurrentPlayer().toString());
+            default         -> vc.ShowMessage("Invalid Choice");
         }
-
-        //Removed this section because paying the player is handled in Act.
-        //Now when on completed scene card we need to fix it giving us the actions to act and rehearse.
-
-        if (IsEndDay())
-        {
-            EndDay();
-        }
-        // Move to next player
-        AdvanceTurn();
     }
 
     /**
      * Gets called if there is only one scene card remaining UpdateGame.
      * Removes SceneCards and Resets Shot Tokens
      */
-    private void EndDay() //may be off by 1
+    public void EndDay() //may be off by 1
     {
         System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
 
@@ -239,7 +141,7 @@ public class GameManager {
      * This Function is a Helper for UpdateGame that moves focus to the next player
      * after the game is done updating.
      */
-    private void AdvanceTurn()
+    public void AdvanceTurn()
     {
         // Reset Action Tokens and action for the next player
         _actionTokens = DEFAULT_ACTION_TOKENS;
@@ -372,79 +274,6 @@ public class GameManager {
 
         // Start updating the game until it ends.
         _hasGameEnded = false;
-        while (!_hasGameEnded)
-        {
-            UpdateGame();
-        }
-    }
-
-
-    /**
-     * Checks what actions are available to the player and returns
-     * them as a list of strings
-     * @return
-     */
-    private ArrayList<String> GetActionList()
-    {
-        ArrayList<String> possibleActions = new ArrayList<>();
-        GameSet currentSet = PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet();
-        boolean rolesAvailable = false;
-        if (currentSet instanceof ActingSet){
-            if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
-                rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
-            }
-            //No need for else because rolesAvailable is assigned as false.
-        }
-
-        // The player is always allowed to:
-        // - quit
-        // - pass turn to next
-        // - location ask where they are
-        // - who are they
-        // - board where is everyone?
-        possibleActions.add("quit");
-        possibleActions.add("pass");
-        possibleActions.add("profile");
-        possibleActions.add("board");
-
-        if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() && _actionTokens >= 0 && rolesAvailable){
-            // Acquire
-            possibleActions.add("acquire");
-        }
-        // The player has a role
-        //using ActingSet here even though they could be at a trailer because if player has role they are on an
-        // ActingSet so currentPlayer will fail first.
-        if (PlayerManager.GetInstance().GetCurrentPlayer().HasRole() && _actionTokens > 0 && ((ActingSet)currentSet).GetCurrentSceneCard() != null){
-            // Act
-            possibleActions.add("act");
-            // Rehearse
-            possibleActions.add("rehearse");
-
-        } else {
-            if (_actionTokens > 0) {
-                // Move
-                possibleActions.add("move");
-            }
-            // Upgrade
-            if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet() instanceof CastingSet) {
-                possibleActions.add("upgrade");
-            }
-        }
-
-        return possibleActions;
-    }
-
-    private void DisplayActionList(ArrayList<String> actionList)
-    {
-        System.out.print("Available actions : ");
-        for (int i = 0; i < actionList.size(); i++) {
-            System.out.print("[" + actionList.get(i) + "]");
-
-            if (i != actionList.size() - 1) {
-                System.out.print(", ");
-            }
-        }
-        System.out.println();
     }
 
 

@@ -1,6 +1,7 @@
 package mothman.turnactions;
 
 import mothman.managers.PlayerManager;
+import mothman.managers.ViewportController;
 import mothman.player.*;
 import mothman.managers.GameManager;
 
@@ -8,7 +9,7 @@ public class Rehearse implements TurnAction{
     private final int ACTION_COST = 1;
 
     @Override
-    public void Execute() {
+    public void Execute(ViewportController vc) {
 
         Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
 

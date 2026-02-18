@@ -13,7 +13,7 @@ public class Acquire implements TurnAction {
     private Scanner _input = new Scanner(System.in);
 
     @Override
-    public void Execute() {
+    public void Execute(ViewportController vc) {
         // Already has a role
         if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentRole() != null)
         {
@@ -26,42 +26,26 @@ public class Acquire implements TurnAction {
 
         // Get Available roles
         if (!(currentSet instanceof ActingSet)) {
-            System.out.println("You need to be on an acting set to get a job!");
+            vc.ShowMessage("You need to be on an acting set to get a job!");
             return;
         }
 
         ActingSet actingSet = (ActingSet) currentSet;
         ArrayList<ActingRole> availableRoles = actingSet.GetAvailableRoles();
 
-        if (availableRoles.size() == 0) {
-            System.out.println("There are no available roles, better luck next time!");
+        if (availableRoles.isEmpty()) {
+            vc.ShowMessage("There are no available roles, better luck next time!");
             return;
         }
         SceneCard sceneCard = actingSet.GetCurrentSceneCard();
 
         // Get Player Selection
-        String playerChoice = "";
         ActingRole chosenRole = null;
 
         boolean choosingRole = true;
         while (choosingRole)
         {
-            System.out.println("Active Scene: " + sceneCard.GetName());
-
-            System.out.print("Available Starring Roles:");
-            for (ActingRole role : sceneCard.GetAvailableRoles()) {
-                System.out.print("[" + role.GetName() + ", rank: " + role.GetRank() + "] ");
-            }
-            System.out.println();
-
-            System.out.print("Available Extra Roles: ");
-            for (ActingRole role : actingSet.GetAvailableLocalRoles()) {
-                System.out.print("[" + role.GetName() + ", rank: " + role.GetRank() + "] ");
-            }
-            System.out.println("");
-            System.out.println("[cancel] at anytime");
-
-            playerChoice = _input.nextLine().strip();
+           String playerChoice = vc.AskRoleSelection(sceneCard, actingSet.GetAvailableLocalRoles());
 
             if (playerChoice.equals("cancel")) {
                 return;
@@ -75,7 +59,7 @@ public class Acquire implements TurnAction {
                         chosenRole = role;
                     }
                     else {
-                        System.out.println("! You're rank is too low. Choose another role!");
+                        vc.ShowMessage("! You're rank is too low. Choose another role!");
                     }
                 }
             }

@@ -3,6 +3,7 @@ package mothman;
 import mothman.managers.GameBoard;
 import mothman.managers.GameManager;
 import mothman.managers.PlayerManager;
+import mothman.managers.ViewportController;
 import mothman.parsers.GameSetParser;
 import mothman.parsers.SceneCardParser;
 import mothman.sets.ActingSet;
@@ -10,6 +11,7 @@ import mothman.sets.CastingSet;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
 import mothman.utils.RulesPackage;
+import mothman.viewports.ViewportText;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,7 +56,7 @@ public class Deadwood {
         // - Sets - Cards - Roles
         Path cardPath = Paths.get("xml", "cards.xml");
         SceneCardParser cardParser = new SceneCardParser(cardPath.toString());
-        ArrayList<SceneCard> cardList = cardParser.GetParsedList();
+        ArrayList<SceneCard> cardList = cardParser.GetParsedList(); //This is never used, do we want it gone?
 
         Path setPath = Paths.get("xml", "board.xml");
         GameSetParser boardParser = new GameSetParser(setPath.toString());
@@ -98,12 +100,16 @@ public class Deadwood {
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
             // How do we limit the game sets to 10 in total?
             // Good Question
-        
+
+        // ========= Set Up Viewport =======
+        ViewportController vc = new ViewportController(new ViewportText());
+
+
         // ========= Set Up PlayerManager =========
         // When creating players, maybe add playerName?
         // We do that in AddPlayer in PlayerManager the first time its called.
         // We keep track via id anyway. Not necessary but would make sense
-        PlayerManager.CreateManager(rulesPackage, trailerSet);
+        PlayerManager.CreateManager(rulesPackage, trailerSet,vc);
         //Calling StartGame in GameManager creates all players
         // But should it?
 
@@ -119,6 +125,11 @@ public class Deadwood {
         gameManager.SetRules(rulesPackage);
         gameManager.SetGameBoard(gameBoard);
 
+
+        // ========= Run Game =======
+        RunGame(gameManager,vc);
+
+
 //        System.out.println(gameManager.toString());
 
         // =========    =========   =========   =========
@@ -132,6 +143,26 @@ public class Deadwood {
         // CHECKPOINT 3: QUIT PROGRAM
         // =========    =========   =========   =========
 
+    }
+
+    /**
+     * The primary game loop. Deadwood owns this so that GameManager
+     * can stay focused on game state rather than driving the loop.
+     */
+    private static void RunGame(GameManager gm, ViewportController vc) {
+        gm.StartGame();
+
+        while (!gm.HasGameEnded()) {
+            String action = vc.AskAction();
+            gm.UpdateGame(action, vc);
+
+            if (action.equals("pass")) {
+                if (gm.IsEndDay()) {
+                    gm.EndDay();
+                }
+                gm.AdvanceTurn();
+            }
+        }
     }
 
     public static void TestCardList(ArrayList<SceneCard> list) {
@@ -151,10 +182,7 @@ public class Deadwood {
 
     public static ArrayList<ActingSet> limitSize(ArrayList<ActingSet> list) {
         ArrayList<ActingSet> trimmedSet = new ArrayList<>(10);
-        for (int i = 0; i < list.size(); i++)
-        {
-            trimmedSet.add(list.get(i));
-        }
+        trimmedSet.addAll(list);
         return trimmedSet;
     }
 
