@@ -14,7 +14,7 @@ public class Move implements TurnAction{
 
     @Override
     public void Execute(ViewportController vc) {
-        // If you move once you are done.
+        // If you move once you are done moving for the turn.
         if (GameManager.GetInstance().HasMoved()) {
             vc.ShowMessage("You've already moved this turn!");
             return;
@@ -52,8 +52,6 @@ public class Move implements TurnAction{
                 vc.ShowMessage("! Moving current player from " + currentSet.GetName() + " to " + playerInput + "!");
             }
         }
-
-        // Update player location
 
         // Update new Location
         GameSet targetLocation = currentSet.GetNeighbors().get(playerInput);

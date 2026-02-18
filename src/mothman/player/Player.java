@@ -59,7 +59,6 @@ public class Player {
 
     public void SetScore(int _score){this._score = _score;}
 
-    // Getter start
     public CurrencyComponent GetCurrency() {
         return _currency;
     }

@@ -9,7 +9,8 @@ import mothman.utils.Dice;
 import java.util.ArrayList;
 
 public class GameBoard {
-    private final int DEFAULT_SET_COUNT = 10;  // Should include Casting and Trailer Sets
+    // This should include Casting and Trailer Sets
+    private final int DEFAULT_SET_COUNT = 10;
 
     // Members
     private GameSet[] _gameSets;

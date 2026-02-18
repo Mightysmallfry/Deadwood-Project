@@ -21,7 +21,6 @@ public class GameSetParser extends ParseDaddy{
     // Methods
     private HashMap<String, GameSet> _allSets;
 
-
     //Constructor
     public GameSetParser(String fileName) {
         try {
@@ -58,9 +57,9 @@ public class GameSetParser extends ParseDaddy{
         }
     }
 
-    private void Set_AllSets(HashMap<String, GameSet> sets){this._allSets = sets;}
+    private void SetAllSets(HashMap<String, GameSet> sets){this._allSets = sets;}
 
-    private HashMap<String, GameSet> Get_AllSets(){return this._allSets;}
+    private HashMap<String, GameSet> GetAllSets(){return this._allSets;}
 
     private GameSet ParseCastingSet(Node set) {
 
@@ -128,11 +127,10 @@ public class GameSetParser extends ParseDaddy{
 
             if(name != null)
             {
-                Node neighborsNode = getNeighborsNode(currentNode);
+                Node neighborsNode = GetNeighborsNode(currentNode);
                 neighborHolder.put(name, neighborsNode != null ? ParseNeighborNames(neighborsNode) : new ArrayList<>());
             }
-
-        }   //everything should be in the hashmap now! so we need to go back through and parse neighbors.
+        }
 
         for(Map.Entry<String, GameSet> entry : setHolder.entrySet())
         {
@@ -151,8 +149,7 @@ public class GameSetParser extends ParseDaddy{
             }
             value.SetNeighbors(newNeighbors);
         }
-
-        Set_AllSets(setHolder);
+        SetAllSets(setHolder);
     }
 
     public CastingSet FindCastingSet()
@@ -161,7 +158,7 @@ public class GameSetParser extends ParseDaddy{
         {
             throw new IllegalStateException("Board not parsed yet.");
         }
-            GameSet set = Get_AllSets().get("office");
+            GameSet set = GetAllSets().get("office");
         return (set instanceof CastingSet) ? (CastingSet) set : null;
     }
 
@@ -171,7 +168,7 @@ public class GameSetParser extends ParseDaddy{
         {
             throw new IllegalStateException("Board not parsed yet.");
         }
-        return Get_AllSets().get("trailer");
+        return GetAllSets().get("trailer");
     }
 
     public ArrayList<ActingSet> FindActingSets()
@@ -182,20 +179,17 @@ public class GameSetParser extends ParseDaddy{
         {
             throw new IllegalStateException("Board not parsed yet.");
         }
-        for(GameSet set : Get_AllSets().values())
+        for(GameSet set : GetAllSets().values())
         {
             if (set instanceof ActingSet)
             {
                 actingSets.add(((ActingSet) set));
             }
-
         }
         return actingSets;
     }
 
-
-    //Helper to get the neighbor node name.
-    private Node getNeighborsNode(Node daddy)
+    private Node GetNeighborsNode(Node daddy)
     {
         NodeList nodes = daddy.getChildNodes();
         for(int i = 0; i < nodes.getLength(); i++)
@@ -331,13 +325,11 @@ public class GameSetParser extends ParseDaddy{
                 }
             }
         }
-
         return max;
     }
 
     private GameSet FindTrailerSetData(Node trailerNode)
     {
-
         Area area = null;
 
         NodeList children = trailerNode.getChildNodes();
@@ -354,7 +346,6 @@ public class GameSetParser extends ParseDaddy{
                 area = ParseArea(child);
             }
         }
-
         return new GameSet("trailer", new HashMap<>(), area);
     }
 

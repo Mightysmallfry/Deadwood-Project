@@ -6,7 +6,6 @@ import mothman.managers.PlayerManager;
 import mothman.managers.ViewportController;
 import mothman.parsers.GameSetParser;
 import mothman.parsers.SceneCardParser;
-import mothman.player.Player;
 import mothman.sets.ActingSet;
 import mothman.sets.CastingSet;
 import mothman.sets.GameSet;
@@ -22,7 +21,6 @@ public class Deadwood {
     private static final int MINIMUM_PLAYER_COUNT = 2;
     private static final int MAXIMUM_PLAYER_COUNT = 8;
     private static final int DEFAULT_PLAYER_COUNT = 4;
-
 
     public static void main(String[] args) {
         if (args.length != 1) {
@@ -46,7 +44,6 @@ public class Deadwood {
         System.out.println("Hello and welcome to Deadwood gunslinger!");
         System.out.printf("You have %d players!\n", playerCount);
 
-
         // =========    =========   =========   =========
         // CHECKPOINT 0: PROGRAM RUNS WITH CORRECT ARGS
         // =========    =========   =========   =========
@@ -55,7 +52,7 @@ public class Deadwood {
         // - Sets - Cards - Roles
         Path cardPath = Paths.get("xml", "cards.xml");
         SceneCardParser cardParser = new SceneCardParser(cardPath.toString());
-        ArrayList<SceneCard> cardList = cardParser.GetParsedList(); //This is never used, do we want it gone?
+        ArrayList<SceneCard> cardList = cardParser.GetParsedList();
 
         Path setPath = Paths.get("xml", "board.xml");
         GameSetParser boardParser = new GameSetParser(setPath.toString());
@@ -63,58 +60,34 @@ public class Deadwood {
         GameSet trailerSet = boardParser.FindTrailer();
         ArrayList<ActingSet> actingSets = boardParser.FindActingSets();
 
-        // =========    =========   =========   =========
+        // =========    =========   =========   =========   =========
         // CHECKPOINT 1: ALL FILES PARSED AND DATA RECEIVED
-        // =========    =========   =========   =========
-//        TestCardList(cardList);
-//        TestSetList(actingSets);
-//
-//        System.out.println(castingSet.toString());
-//        System.out.println(trailerSet.toString());
+        // =========    =========   =========   =========   =========
 
         // ========= Set up RulePackage =========
-        // Be careful of size of acting sets
 
         // Create and alter the rules based on num of players
         RulesPackage rulesPackage = new RulesPackage(playerCount);
-
 
         // Create a rule package for testing upgrades
         RulesPackage DevRulePackage = new RulesPackage(playerCount);
         DevRulePackage.SetStartingCredits(99);
 
         // ========= Set Up GameBoard =========
-        // Be careful of size of acting sets
-
-        // This is how we limit or at least ensure the
-        // size of the board. Just grab the first 10 boards
-        // We'll worry about neighbor checking it when it matters
         if (actingSets.size() > 10) {
             actingSets = limitSize(actingSets);
         }
-
         ActingSet[] formatedActedSets = actingSets.toArray(new ActingSet[actingSets.size()]);
-
-        // Create an empty Game Board to play the game with the made sets
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
-            // How do we limit the game sets to 10 in total?
-            // Good Question
 
         // ========= Set Up Viewport =======
         ViewportController display = new ViewportController(new ViewportText());
 
         // ========= Set Up PlayerManager =========
-        // This isn't my preferred way but I think this is an intuitive way.
-        // Get the instance, if it is null, use these starting values
         PlayerManager playerManager = PlayerManager.GetInstance(rulesPackage, trailerSet, display);
-
-
-//        System.out.println(playerManager.toString());
-//        System.out.println(trailerSet.toString());
 
         // ========= Set Up GameManager =========
         // Create a Game Manager, passing in the rulesPackage
-        // When start Game Is called it asks for the player count and sets the Rules for Game manager!
         GameManager gameManager = GameManager.GetInstance();
         gameManager.SetRules(rulesPackage);
         gameManager.SetGameBoard(gameBoard);
@@ -124,11 +97,7 @@ public class Deadwood {
         // =========    =========   =========   =========
 
         RunGame(gameManager, display);
-//        System.out.println(gameManager.toString());
 
-        // Because we run the game in a Deadwood method, we can remove this
-        // Now the game runs in its entirety or until someone quits.
-        // gameManager.StartGame();
 
         // =========    =========   =========   =========
         // CHECKPOINT 3: QUIT PROGRAM

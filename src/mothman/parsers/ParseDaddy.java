@@ -48,8 +48,6 @@ public class ParseDaddy {
             }
         }
 
-        // Combine, construct and add
-        // Our new Role to the card
         return new ActingRole(
                 roleRank,
                 roleName,
@@ -59,7 +57,6 @@ public class ParseDaddy {
 
     protected ArrayList<ActingRole> ParseRoleList(Node partsNode)
     {
-
         ArrayList<ActingRole> roles = new ArrayList<>();
 
         if (partsNode == null)

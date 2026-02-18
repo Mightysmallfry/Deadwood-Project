@@ -102,10 +102,9 @@ public class PlayerManager {
      */
     public void BasicPay(Player player, boolean success)
     {
-        //I need to make a way to exclude people who are just hanging out on the card!
         if(player.GetLocation().GetOnCard())
         {
-            if(success) //if the roll is a success
+            if(success)
             {
                 player.GetCurrency().IncreaseCoins(2);
             }
@@ -138,26 +137,28 @@ public class PlayerManager {
         ArrayList<Player> offCard = new ArrayList<>();
         GameSet currentSet = currentPlayer.GetLocation().GetCurrentGameSet();
 
-        //grabbing difficulty
+        // Check if it is called on an acting set
         if (!(currentSet instanceof ActingSet act)) {
-            return; // no bonus pay here
+            return;
         }
 
         int difficulty = act.GetCurrentSceneCard().GetDifficulty();
 
-        //rolling dice
+        // roll for bonuses
         Dice dice = Dice.GetInstance();
         ArrayList<Integer> rolls = new ArrayList<>();
         for (int i = 0; i < difficulty; i++) {
-            rolls.add(dice.Roll(1, 6)); // 1d6
+            // roll 1d6 * difficulty
+            rolls.add(dice.Roll(1, 6));
         }
-        rolls.sort(Comparator.reverseOrder());// descending
+        // Sort in descending order
+        rolls.sort(Comparator.reverseOrder());
 
         // Sort Players
         for(Player player : players){
             if(currentSet.equals(player.GetLocation().GetCurrentGameSet())
                     && player.GetLocation().GetOnCard()
-                    && player.GetLocation().GetCurrentRole() != null)  //if it's the correct scene and on card add to a list, double check logic!!!
+                    && player.GetLocation().GetCurrentRole() != null)
             {
                 onCard.add(player);
             }
@@ -167,9 +168,9 @@ public class PlayerManager {
             }
         }
 
-        //onCard cant be empty if this is called but just in case
+        // Check if we need to pay left over
         if (onCard.isEmpty()) {
-            return; // no one to pay
+            return;
         }
         onCard.sort((p1, p2) -> Integer.compare(p2.GetLocation().GetCurrentRole().GetRank(), p1.GetLocation().GetCurrentRole().GetRank()));
 
@@ -181,7 +182,7 @@ public class PlayerManager {
             p.GetCurrency().IncreaseCoins(payout);
         }
 
-        //for the elements in off card pay based on the rank
+        // For people off of the card, pay them their rank
         for (Player player : offCard)
         {
             ActingRole role = player.GetLocation().GetCurrentRole();
@@ -207,7 +208,6 @@ public class PlayerManager {
      * @return int[] of player scores
      */
     public int[] TallyScore()
-    //as the last day finishes this tallies the score and displays it before game ends.
     {
         Player[] players = GetPlayerLibrary();
         if (players == null || players.length == 0) {
@@ -215,11 +215,11 @@ public class PlayerManager {
         }
         int[] scores = new int[players.length];
 
-        //for each player calculate their score then retrieve it.
+        // Calculate and Retrieve player scores
         for (int i = 0; i < players.length; i++)
         {
             Player p = players[i];
-            p.SetScore(); //This recalculates the players score.
+            p.SetScore();
             scores[i] = p.GetScore();
         }
         return scores;
@@ -240,6 +240,7 @@ public class PlayerManager {
         return creditScore;
     }
 
+    // TODO: Potentially change this to a viewportController call
     public static String LocatePlayers(){
         StringBuilder sb = new StringBuilder();
 

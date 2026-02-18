@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class CastingSet extends GameSet {
     private final String CASTING_OFFICE_NAME = "Casting Office";
     private int MAX_RANK = 6;
-    // Cost Maps should be <rank, cost> pairing
+    // upgrade Maps should be <rank, cost> pairing
     private ArrayList<UpgradeData> _upgrades;
 
     public CastingSet() {

@@ -27,7 +27,7 @@ public class Dice {
 
     public int Roll()
     {
-        // Add 1 due to exclusive upper bounds
+        // Add 1 due to include the upper bounds
         int sum = 0;
         for (int i = 0; i < DEFAULT_COUNT; i++) {
             sum += randomNumberGenerator.nextInt(DEFAULT_SIDES) + 1;
@@ -37,7 +37,7 @@ public class Dice {
 
     public int Roll(int numberOfDice){
         int sum = 0;
-        // Add 1 due to exclusive upper bounds
+        // Add 1 due to include the upper bounds
         for (int i = 0; i < numberOfDice; i++) {
             sum += randomNumberGenerator.nextInt(DEFAULT_SIDES) + 1;
         }

@@ -62,7 +62,6 @@ public class GameManager {
      * Execute said action, check for any end conditions and then advance to the next player
      */
     public void UpdateGame(String action, ViewportController vc)
-    //This processes the current player's turn
     {
         switch (action) {
             case "quit"     -> System.exit(1);
@@ -187,7 +186,6 @@ public class GameManager {
     {
         _hasGameEnded = true;
         int[] scores = PlayerManager.GetInstance().TallyScore();
-        // TODO: This will be its own thing eventually REMEMBER TO CHANGE
 
         // Grab the highest score
         int highest = Integer.MIN_VALUE;
@@ -199,16 +197,16 @@ public class GameManager {
 
 
         // Grab Winner
-        ArrayList<Player> winners = new ArrayList<>();//Could add a tiebreaker piece.
+        ArrayList<Player> winners = new ArrayList<>();
         for (int i = 0; i < scores.length; i++) {
             if (scores[i] == highest) {
                 winners.add(PlayerManager.GetInstance().GetPlayerLibrary()[i]);
             }
         }
+
+        // Tiebreaker
         if (winners.size() > 1)
         {
-
-
             int[] creditScores = PlayerManager.GetInstance().TallyCredits(winners);
             // Grab the highest credit score.
             int highestCredit = Integer.MIN_VALUE;
@@ -228,6 +226,7 @@ public class GameManager {
                 }
             }
 
+            // TODO: Fix Display
             // Display
             System.out.println("=== GAME OVER ===");
             for (Player winner : tieWinners)

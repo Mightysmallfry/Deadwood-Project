@@ -18,18 +18,18 @@ public class ViewportController {
     }
 
 
+    // Prompt players for name
     public String AskName(){
-        //A viewport function that asks the name.
         return _viewport.GetName();
     }
 
-
+    // Prompt player for their actions
     public String AskAction() {
         ArrayList<String> possibleActions = GetActionList();
         TurnDisplayInfo info = BuildTurnInfo();
         String choice = _viewport.GetAction(possibleActions, info);
 
-        // These are here so they are not shown to the player
+        // Hidden and always valid commands
         possibleActions.add("force");
         possibleActions.add("end game");
 
@@ -99,7 +99,6 @@ public class ViewportController {
             if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
                 rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
             }
-            //No need for else because rolesAvailable is assigned as false.
         }
 
         // The player is always allowed to:
@@ -119,9 +118,8 @@ public class ViewportController {
             // Acquire
             possibleActions.add("acquire");
         }
-        // The player has a role
-        //using ActingSet here even though they could be at a trailer because if player has role they are on an
-        // ActingSet so currentPlayer will fail first.
+
+        // Check if the player has a valid role
         if (PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
                 GameManager.GetInstance().GetActionTokens() > 0 &&
                 ((ActingSet)currentSet).GetCurrentSceneCard() != null){
@@ -135,8 +133,8 @@ public class ViewportController {
                 // Move
                 possibleActions.add("move");
             }
-            // Upgrade
             if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet() instanceof CastingSet) {
+                // Upgrade
                 possibleActions.add("upgrade");
             }
         }
