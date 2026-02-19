@@ -116,7 +116,7 @@ public class Deadwood {
             String action = viewportController.AskAction();
             gameManager.UpdateGame(action, viewportController);
 
-            if (action.equals("pass")) {
+            if (action.equals("pass") || action.equals("force")) {
                 if (gameManager.IsEndDay()) {
                     gameManager.EndDay(viewportController);
                 }
