@@ -106,7 +106,7 @@ public class ActingSet extends GameSet {
         }
 
         if (_currentSceneCard != null) {
-            availableRoles.addAll(_currentSceneCard.GetEmptyRoles());
+            availableRoles.addAll(_currentSceneCard.GetAvailableRoles());
         }
 
         return availableRoles;

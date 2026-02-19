@@ -160,22 +160,6 @@ public class SceneCard {
     }
 
 
-    /**
-     * Searches through the role dictionary, returning an arrayList
-     * containing all the roles without an associated player
-     * @return emptyRoles
-     */
-    public ArrayList<ActingRole> GetEmptyRoles()
-    {
-        ArrayList<ActingRole> emptyRoles = new ArrayList<ActingRole>();
-        for (ActingRole role : _roleCatalog.keySet()) {
-            if (_roleCatalog.get(role) == null) {
-                emptyRoles.add(role);
-            }
-        }
-
-        return emptyRoles;
-    }
 
     /**
      *
@@ -186,6 +170,11 @@ public class SceneCard {
         return _roles;
     }
 
+    /**
+     * Searches through the role dictionary, returning an arrayList
+     * containing all the roles without an associated player
+     * @return availableRoles
+     */
     public ArrayList<ActingRole> GetAvailableRoles(){
         ArrayList<ActingRole> availableRoles = new ArrayList<>();
         for (ActingRole actingRole : _roles)
