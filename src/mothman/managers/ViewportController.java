@@ -81,6 +81,10 @@ public class ViewportController {
         return info;
     }
 
+    public void ShowBoard() {
+        _viewport.DisplayMessage(PlayerManager.LocatePlayers());
+    }
+
     public String AskMove(HashMap<String, GameSet> neighbors) {
         return _viewport.GetMove(neighbors);
     }

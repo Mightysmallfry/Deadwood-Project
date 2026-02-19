@@ -72,8 +72,8 @@ public class GameManager {
             case "move"     -> new Move().Execute(vc);
             case "upgrade"  -> new Upgrade().Execute(vc);
             case "force"    -> _gameBoard.Clear();
-            case "end game" -> EndGame();
-            case "board"    -> vc.ShowMessage(PlayerManager.LocatePlayers());
+            case "end game" -> EndGame(vc);
+            case "board"    -> vc.ShowBoard();
             case "profile"  -> vc.ShowMessage(PlayerManager.GetInstance().GetCurrentPlayer().toString());
             default         -> vc.ShowMessage("Invalid Choice");
         }
@@ -83,21 +83,19 @@ public class GameManager {
      * Gets called if there is only one scene card remaining UpdateGame.
      * Removes SceneCards and Resets Shot Tokens
      */
-    public void EndDay() //may be off by 1
+    public void EndDay(ViewportController vc) //may be off by 1
     {
-        // TODO: Should these end day messages be here?
-        // I think they should replace these with ShowMessage calls
-        System.out.println("-|-|- Ending Day " + _currentDay + " -|-|-");
+        vc.ShowMessage("-|-|- Ending Day " + _currentDay + " -|-|-");
 
         // Check if it is the end of the Game
         if (IsEndGame()) {
-            EndGame();
+            EndGame(vc);
             return;
         }
 
         // Continue the Day loop
         _currentDay++;
-        System.out.println("-|-|- Starting Day " + _currentDay + " -|-|-");
+        vc.ShowMessage("-|-|- Starting Day " + _currentDay + " -|-|-");
 
         // Reset everyone's location to the trailer and reset sets
         GameSet trailer = GetGameBoard().GetStartingSet();
@@ -182,7 +180,7 @@ public class GameManager {
      * This function ends the game (:  It grabs the score of each player and gets the winners, next it displays the
      * winners to the players.
      */
-    public void EndGame()
+    public void EndGame(ViewportController vc)
     {
         _hasGameEnded = true;
         int[] scores = PlayerManager.GetInstance().TallyScore();
@@ -226,21 +224,20 @@ public class GameManager {
                 }
             }
 
-            // TODO: Fix Display
-            // Display
-            System.out.println("=== GAME OVER ===");
+
+            vc.ShowMessage("=== GAME OVER ===");
             for (Player winner : tieWinners)
             {
-                System.out.println("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
+                vc.ShowMessage("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
             }
         }
         else
         {
             // Display
-            System.out.println("=== GAME OVER ===");
+            vc.ShowMessage("=== GAME OVER ===");
             for (Player winner : winners)
             {
-                System.out.println("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
+                vc.ShowMessage("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
             }
         }
 

@@ -118,7 +118,7 @@ public class Deadwood {
 
             if (action.equals("pass")) {
                 if (gameManager.IsEndDay()) {
-                    gameManager.EndDay();
+                    gameManager.EndDay(viewportController);
                 }
                 gameManager.AdvanceTurn();
             }
