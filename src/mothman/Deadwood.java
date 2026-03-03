@@ -11,6 +11,7 @@ import mothman.sets.CastingSet;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
 import mothman.utils.RulesPackage;
+import mothman.viewports.ViewportGui;
 import mothman.viewports.ViewportText;
 
 import java.nio.file.Path;
@@ -81,7 +82,8 @@ public class Deadwood {
         GameBoard gameBoard = new GameBoard(formatedActedSets, castingSet, trailerSet);
 
         // ========= Set Up Viewport =======
-        ViewportController display = new ViewportController(new ViewportText());
+//        ViewportController display = new ViewportController(new ViewportText());
+        ViewportController display = new ViewportController(new ViewportGui());
 
         // ========= Set Up PlayerManager =========
         PlayerManager playerManager = PlayerManager.GetInstance(rulesPackage, trailerSet, display);
