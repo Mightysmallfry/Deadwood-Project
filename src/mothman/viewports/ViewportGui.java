@@ -19,67 +19,97 @@ public class ViewportGui extends JFrame implements Viewport {
 
     // Card images are exactly 205x115px — same as each set's <area> in board.xml.
     // No scaling is needed; we just position them at the set's x,y.
-    private static final String CARD_IMAGE_PATH = "Assets/cards/";
+    private static final String CARD_IMAGE_PATH = "Assets/Card/";
 
     // --- Layout ---
-    private final JLayeredPane _gameLayeredPane;
-    private final JPanel       _rightPanel;
-    private final JLabel       _messageLabel;
-    private final JLabel       _boardLabel;
-
-    // One overlay label per acting set, keyed by set name. All active cards stay visible simultaneously.
     private final Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
     private Map<String, String> _pendingCardImages = null;
     private Map<String, Area>   _pendingCardAreas  = null;
+    private JPanel _leftPanel;
+    private JPanel _rightContainer;
+    private JPanel _pastLogPanel;
+    private JPanel _actionsPanel;
+    private JTextArea _pastLogArea;
+    private JLayeredPane _gameLayeredPane;
+    private JLabel _messageLabel;
+    private int boardW = 1200;
+    private int boardH = 900;
 
     // Bridges button clicks (EDT) to blocking Viewport calls (game thread).
     private final BlockingQueue<String> _inputQueue = new LinkedBlockingQueue<>();
 
-    // -------------------------------------------------------------------------
     // Constructor
-    // -------------------------------------------------------------------------
-
     public ViewportGui() {
         super("Deadwood");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
-        // Board
-        _boardLabel = new JLabel();
-        ImageIcon ourBoard = new ImageIcon("Assets/board.jpg");
-        _boardLabel.setIcon(ourBoard);
-        int boardW = ourBoard.getIconWidth();
-        int boardH = ourBoard.getIconHeight();
-
+        // BOARD LAYER (CENTER)
         _gameLayeredPane = new JLayeredPane();
         _gameLayeredPane.setPreferredSize(new Dimension(boardW, boardH));
-        _boardLabel.setBounds(0, 0, boardW, boardH);
-        _gameLayeredPane.add(_boardLabel, JLayeredPane.DEFAULT_LAYER);
+        _gameLayeredPane.setLayout(null); // absolute positioning for cards
+        ImageIcon boardIcon = new ImageIcon("Assets/board.jpg");
+        JLabel boardLabel = new JLabel(boardIcon);
+        boardLabel.setBounds(0, 0, boardW, boardH);
+        _gameLayeredPane.add(boardLabel, JLayeredPane.DEFAULT_LAYER);
 
-        // Card labels are created on demand in updateSceneCards() as sets become active.
+        // MAIN CONTAINER (3 columns)
+        JPanel mainContainer = new JPanel(new BorderLayout());
+        add(mainContainer, BorderLayout.CENTER);
 
-        add(_gameLayeredPane, BorderLayout.CENTER);
+        // LEFT PANEL (Player Info)
+        _leftPanel = new JPanel();
+        _leftPanel.setPreferredSize(new Dimension(220, boardH));
+        _leftPanel.setBackground(new Color(35, 35, 35));
+        _leftPanel.setLayout(new BoxLayout(_leftPanel, BoxLayout.Y_AXIS));
+        _leftPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Right panel — dark sidebar
-        _rightPanel = new JPanel();
-        _rightPanel.setLayout(new BoxLayout(_rightPanel, BoxLayout.Y_AXIS));
-        _rightPanel.setPreferredSize(new Dimension(200, boardH));
-        _rightPanel.setBackground(new Color(40, 40, 40));
-        _rightPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainContainer.add(_leftPanel, BorderLayout.WEST);
 
-        // Permanent header components — indices 0-3, never removed by showButtons().
-        _messageLabel = new JLabel("<html><body style='width:170px'>&nbsp;</body></html>");
+        // CENTER (Board)
+        mainContainer.add(_gameLayeredPane, BorderLayout.CENTER);
+
+        // RIGHT CONTAINER
+        _rightContainer = new JPanel(new BorderLayout());
+        _rightContainer.setPreferredSize(new Dimension(260, boardH));
+        _rightContainer.setBackground(new Color(30, 30, 30));
+        _rightContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        mainContainer.add(_rightContainer, BorderLayout.EAST);
+
+        // PAST TURNS LOG (Top Right)
+        _pastLogPanel = new JPanel(new BorderLayout());
+        _pastLogPanel.setPreferredSize(new Dimension(260, boardH / 3));
+        _pastLogPanel.setBackground(new Color(50, 50, 50));
+        _pastLogPanel.setBorder(BorderFactory.createTitledBorder("Past Turns Log"));
+
+        _pastLogArea = new JTextArea();
+        _pastLogArea.setEditable(false);
+        _pastLogArea.setLineWrap(true);
+        _pastLogArea.setWrapStyleWord(true);
+
+        JScrollPane logScrollPane = new JScrollPane(_pastLogArea);
+        _pastLogPanel.add(logScrollPane, BorderLayout.CENTER);
+
+        _rightContainer.add(_pastLogPanel, BorderLayout.NORTH);
+
+        // ACTIONS PANEL (Bottom Right)
+        _actionsPanel = new JPanel();
+        _actionsPanel.setBackground(new Color(40, 40, 40));
+        _actionsPanel.setLayout(new BoxLayout(_actionsPanel, BoxLayout.Y_AXIS));
+        _actionsPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
+
+        // Message label (turn info)
+        _messageLabel = new JLabel();
         _messageLabel.setForeground(Color.LIGHT_GRAY);
         _messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        _messageLabel.setMaximumSize(new Dimension(180, 150));
-        _rightPanel.add(_messageLabel);               // 0
-        _rightPanel.add(Box.createVerticalStrut(10)); // 1
-        _rightPanel.add(new JSeparator());            // 2
-        _rightPanel.add(Box.createVerticalStrut(10)); // 3
+        _actionsPanel.add(_messageLabel);
+        _actionsPanel.add(Box.createVerticalStrut(10));
 
-        add(_rightPanel, BorderLayout.EAST);
+        _rightContainer.add(_actionsPanel, BorderLayout.CENTER);
 
         pack();
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -171,8 +201,8 @@ public class ViewportGui extends JFrame implements Viewport {
     public void DisplayMessage(String message) {
         SwingUtilities.invokeLater(() -> {
             _messageLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
-            _rightPanel.revalidate();
-            _rightPanel.repaint();
+            _actionsPanel.revalidate();
+            _actionsPanel.repaint();
         });
     }
 
@@ -256,7 +286,7 @@ public class ViewportGui extends JFrame implements Viewport {
             String setName = entry.getKey();
             String imgName = entry.getValue();
             Area   area    = areas.get(setName);
-            ImageIcon icon = new ImageIcon("Assets/Card/" + imgName);
+            ImageIcon icon = new ImageIcon(CARD_IMAGE_PATH + imgName);
 
             if (icon.getIconWidth() <= 0) continue;
             JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
@@ -291,26 +321,26 @@ public class ViewportGui extends JFrame implements Viewport {
     private void showButtons(ArrayList<String> options, String header) {
         try {
             SwingUtilities.invokeAndWait(() -> {
-                while (_rightPanel.getComponentCount() > 4) {
-                    _rightPanel.remove(_rightPanel.getComponentCount() - 1);
-                }
+                _actionsPanel.removeAll();
+                _actionsPanel.add(_messageLabel);
+                _actionsPanel.add(Box.createVerticalStrut(10));
 
                 JLabel headerLabel = new JLabel(header);
                 headerLabel.setForeground(Color.GRAY);
                 headerLabel.setFont(headerLabel.getFont().deriveFont(Font.BOLD, 11f));
                 headerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                _rightPanel.add(headerLabel);
-                _rightPanel.add(Box.createVerticalStrut(6));
+                _actionsPanel.add(headerLabel);
+                _actionsPanel.add(Box.createVerticalStrut(6));
 
                 for (String option : options) {
                     JButton btn = makeActionButton(option);
                     btn.addActionListener(e -> _inputQueue.offer(option));
-                    _rightPanel.add(btn);
-                    _rightPanel.add(Box.createVerticalStrut(4));
+                    _actionsPanel.add(btn);
+                    _actionsPanel.add(Box.createVerticalStrut(4));
                 }
 
-                _rightPanel.revalidate();
-                _rightPanel.repaint();
+                _actionsPanel.revalidate();
+                _actionsPanel.repaint();
                 if (_pendingCardImages != null && _pendingCardAreas != null) {
                     applySceneCards(_pendingCardImages, _pendingCardAreas);
                     _pendingCardImages = null;
@@ -320,6 +350,14 @@ public class ViewportGui extends JFrame implements Viewport {
         } catch (Exception e) {
             Thread.currentThread().interrupt();
         }
+    }
+
+    //used to update the live log in the future in managers or smthn
+    public void addToLog(String message) {
+        SwingUtilities.invokeLater(() -> {
+            _pastLogArea.append(message + "\n");
+            _pastLogArea.setCaretPosition(_pastLogArea.getDocument().getLength());
+        });
     }
 
     /** Parks the game thread until a button click arrives in the queue. */
@@ -368,8 +406,8 @@ public class ViewportGui extends JFrame implements Viewport {
         final String text = sb.toString();
         SwingUtilities.invokeLater(() -> {
             _messageLabel.setText(text);
-            _rightPanel.revalidate();
-            _rightPanel.repaint();
+            _actionsPanel.revalidate();
+            _actionsPanel.repaint();
         });
     }
 }
