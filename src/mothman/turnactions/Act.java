@@ -4,8 +4,9 @@ import mothman.player.*;
 import mothman.managers.*;
 import mothman.sets.*;
 import mothman.utils.*;
+import mothman.viewports.ViewportGui;
 
-public class Act implements TurnAction{
+public class Act implements TurnAction {
     private final int ACTION_COST = 1;
 
     @Override
@@ -13,41 +14,36 @@ public class Act implements TurnAction{
 
         Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
 
-        // Pre-conditions
         if (!currentPlayer.HasRole()) {
             vc.ShowMessage("You don't have a role yet!");
             return;
         }
 
-        if (!(currentPlayer.GetLocation().GetCurrentGameSet() instanceof ActingSet)){
+        if (!(currentPlayer.GetLocation().GetCurrentGameSet() instanceof ActingSet)) {
             vc.ShowMessage("You need to be on an acting set first!");
+            return;
         }
 
-        // Let's just make it
-        // We'll assume the player is on an acting set
         ActingSet currentSet = (ActingSet) currentPlayer.GetLocation().GetCurrentGameSet();
         SceneCard currentCard = currentSet.GetCurrentSceneCard();
 
         // Roll 1d6 against difficulty
         int attempt = Dice.GetInstance().Roll();
         vc.ShowMessage("You rolled: " + attempt + " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
-        attempt = attempt + currentPlayer.GetLocation().GetRehearseTokens();
+        attempt += currentPlayer.GetLocation().GetRehearseTokens();
 
         boolean success = attempt >= currentCard.GetDifficulty();
 
-        // On success increment both
-        //added creation of PlayerManager to pay the players
         PlayerManager playerManager = PlayerManager.GetInstance();
-        if (success)//check for the scene breaking
-        {
+
+        if (success) {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
             playerManager.BasicPay(currentPlayer, true);
 
-            if (currentSet.IsComplete()) {//This makes sense
+            if (currentSet.IsComplete()) {
                 playerManager.BasicPay(currentPlayer, true);
                 playerManager.BonusPay(currentPlayer);
                 playerManager.PostSceneReset(currentPlayer);
-                currentSet.RemoveCard();
             }
         } else {
             playerManager.BasicPay(currentPlayer, false);
@@ -55,8 +51,6 @@ public class Act implements TurnAction{
         }
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();
-        actionTokens -= ACTION_COST;
-        GameManager.GetInstance().SetActionTokens(actionTokens);
-
+        GameManager.GetInstance().SetActionTokens(actionTokens - ACTION_COST);
     }
 }

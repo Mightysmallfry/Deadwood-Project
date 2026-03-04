@@ -4,32 +4,31 @@ import mothman.player.Player;
 import mothman.sets.*;
 import mothman.utils.TurnDisplayInfo;
 import mothman.viewports.Viewport;
+import mothman.viewports.ViewportGui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ViewportController {
 
-    //Methods
     private Viewport _viewport;
 
-    public ViewportController(Viewport viewport){
+    public ViewportController(Viewport viewport) {
         _viewport = viewport;
     }
 
+    public Viewport GetViewport() { return _viewport; }
 
-    // Prompt players for name
-    public String AskName(){
+    public String AskName() {
         return _viewport.GetName();
     }
 
-    // Prompt player for their actions
     public String AskAction() {
         ArrayList<String> possibleActions = GetActionList();
         TurnDisplayInfo info = BuildTurnInfo();
         String choice = _viewport.GetAction(possibleActions, info);
 
-        // Hidden and always valid commands
         possibleActions.add("force");
         possibleActions.add("end game");
 
@@ -48,37 +47,53 @@ public class ViewportController {
         return _viewport.GetUpgradeCurrency();
     }
 
-    public void ShowMessage(String message) {
-        _viewport.DisplayMessage(message);
-    }
-
     /**
+     * Handles the full upgrade interaction — rank then currency — routing to the
+     * GUI panel flow or text fallback depending on the active viewport.
      *
-     * @return A TurnDisplayInfo containing a snapshot of the current Game State
+     * @return int[]{ rank, cost } for the chosen upgrade, or null if cancelle.
      */
-    private TurnDisplayInfo BuildTurnInfo() {
-        TurnDisplayInfo info = new TurnDisplayInfo();
-        Player player = PlayerManager.GetInstance().GetCurrentPlayer();
-        GameSet currentSet = player.GetLocation().GetCurrentGameSet();
+    public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
+        int    rankRequest;
+        String currencyChoice;
 
-        info.playerId = player.GetPersonalId();
-        info.locationName = currentSet.GetName();
-        info.actionTokens = GameManager.GetInstance().GetActionTokens();
-        info.isActingSet = currentSet instanceof ActingSet;
-
-        if (currentSet instanceof ActingSet actSet) {
-            SceneCard card = actSet.GetCurrentSceneCard();
-            info.sceneComplete = (card == null);
-            if (card != null) {
-                info.budget = card.GetDifficulty();
-                info.maxShots = actSet.GetMaxProgress();
-                info.currentShots = actSet.GetCurrentProgress();
-                if (player.HasRole()) {
-                    info.roleLine = player.GetLocation().GetCurrentRole().GetLine();
+        if (_viewport instanceof ViewportGui gui) {
+            String[] result = gui.ShowUpgradeMenu(currentRank, maxRank, upgrades);
+            if (result == null) return null;
+            rankRequest    = Integer.parseInt(result[0]);
+            currencyChoice = result[1];
+        } else {
+            ShowMessage("Your current rank is: " + currentRank);
+            ShowMessage("Available Upgrades:");
+            for (int rank = currentRank + 1; rank <= maxRank; rank++) {
+                Integer dollarCost = null;
+                Integer creditCost = null;
+                for (UpgradeData u : upgrades) {
+                    if (u.GetRank() == rank) {
+                        if ("dollar".equals(u.GetCurrencyType())) dollarCost = u.GetCostAmount();
+                        if ("credit".equals(u.GetCurrencyType())) creditCost = u.GetCostAmount();
+                    }
+                }
+                if (dollarCost != null || creditCost != null) {
+                    StringBuilder sb = new StringBuilder("Rank " + rank + " | Cost: | ");
+                    if (creditCost != null) sb.append(creditCost).append(" credits | ");
+                    if (dollarCost != null) sb.append(dollarCost).append(" dollars | ");
+                    ShowMessage(sb.toString());
                 }
             }
+            rankRequest    = AskUpgradeRank();
+            currencyChoice = AskUpgradeCurrency();
         }
-        return info;
+        for (UpgradeData u : upgrades) {
+            if (u.GetRank() == rankRequest && u.GetCurrencyType().equals(currencyChoice)) {
+                return new int[]{ rankRequest, u.GetCostAmount() };
+            }
+        }
+        return null;
+    }
+
+    public void ShowMessage(String message) {
+        _viewport.DisplayMessage(message);
     }
 
     public void ShowBoard() {
@@ -89,28 +104,73 @@ public class ViewportController {
         return _viewport.GetMove(neighbors);
     }
 
+    // Internal helpers
     /**
-     * Checks what actions are available to the player and returns
-     * them as a list of strings
-     * @return Arraylist <String>
+     * Builds a snapshot of the current game state for the viewport to display.
+     * cardImageName and cardArea are populated here so ViewportGui can place
+     * the scene card image on the board at the correct position.
      */
-    private ArrayList<String> GetActionList()
-    {
+    private TurnDisplayInfo BuildTurnInfo() {
+        TurnDisplayInfo info = new TurnDisplayInfo();
+        Player player = PlayerManager.GetInstance().GetCurrentPlayer();
+        GameSet currentSet = player.GetLocation().GetCurrentGameSet();
+
+        info.playerId     = player.GetPersonalId();
+        info.locationName = currentSet.GetName();
+        info.actionTokens = GameManager.GetInstance().GetActionTokens();
+        info.isActingSet  = currentSet instanceof ActingSet;
+
+        if (currentSet instanceof ActingSet actSet) {
+            SceneCard card = actSet.GetCurrentSceneCard();
+            info.sceneComplete = (card == null);
+            if (card != null) {
+                info.budget        = card.GetDifficulty();
+                info.maxShots      = actSet.GetMaxProgress();
+                info.currentShots  = actSet.GetCurrentProgress();
+                info.cardImageName = card.GetImageName();
+                if (player.HasRole()) {
+                    info.roleLine = player.GetLocation().GetCurrentRole().GetLine();
+                }
+            }
+        }
+
+        Map<String, String> images = new HashMap<>();
+        Map<String, mothman.utils.Area> areas  = new HashMap<>();
+        GameSet[] allSets = GameManager.GetInstance()
+                .GetGameBoard().GetAllGameSets();
+
+        for (GameSet gs : allSets) {
+
+            if (gs instanceof ActingSet actingSet) {
+
+                SceneCard card = actingSet.GetCurrentSceneCard();
+
+                if (card != null && card.IsVisible()) {
+
+                    images.put(gs.GetName(), card.GetImageName());
+                    areas.put(gs.GetName(), gs.GetArea());
+                }
+            }
+        }
+
+        info.activeCardImages = images;
+        info.activeCardAreas  = areas;
+
+        return info;
+    }
+
+    private ArrayList<String> GetActionList() {
         ArrayList<String> possibleActions = new ArrayList<>();
-        GameSet currentSet = PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet();
+        GameSet currentSet = PlayerManager.GetInstance().GetCurrentPlayer()
+                .GetLocation().GetCurrentGameSet();
+
         boolean rolesAvailable = false;
-        if (currentSet instanceof ActingSet){
-            if (((ActingSet) currentSet).GetCurrentSceneCard() != null){
+        if (currentSet instanceof ActingSet) {
+            if (((ActingSet) currentSet).GetCurrentSceneCard() != null) {
                 rolesAvailable = !((ActingSet) currentSet).GetAvailableRoles().isEmpty();
             }
         }
 
-        // The player is always allowed to:
-        // - quit
-        // - pass turn to next
-        // - location ask where they are
-        // - who are they
-        // - board where is everyone?
         possibleActions.add("quit");
         possibleActions.add("pass");
         possibleActions.add("profile");
@@ -118,32 +178,24 @@ public class ViewportController {
 
         if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
                 GameManager.GetInstance().GetActionTokens() >= 0 &&
-                rolesAvailable){
-            // Acquire
+                rolesAvailable) {
             possibleActions.add("acquire");
         }
 
-        // Check if the player has a valid role
         if (PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
                 GameManager.GetInstance().GetActionTokens() > 0 &&
-                ((ActingSet)currentSet).GetCurrentSceneCard() != null){
-            // Act
+                currentSet instanceof ActingSet &&
+                ((ActingSet) currentSet).GetCurrentSceneCard() != null) {
             possibleActions.add("act");
-            // Rehearse
             possibleActions.add("rehearse");
-
         } else {
             if (GameManager.GetInstance().GetActionTokens() > 0) {
-                // Move
                 possibleActions.add("move");
             }
-            if (PlayerManager.GetInstance().GetCurrentPlayer().GetLocation().GetCurrentGameSet() instanceof CastingSet) {
-                // Upgrade
+            if (currentSet instanceof CastingSet) {
                 possibleActions.add("upgrade");
             }
         }
-
         return possibleActions;
     }
-
 }

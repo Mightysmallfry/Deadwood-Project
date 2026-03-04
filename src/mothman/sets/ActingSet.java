@@ -13,6 +13,7 @@ public class ActingSet extends GameSet {
     private int _currentProgress = 0;   // Current Progress via running Game
 
     private boolean _complete = false;
+    private boolean revealed = false;
 
     private SceneCard _currentSceneCard;
     private ArrayList<ActingRole> _localRoles;

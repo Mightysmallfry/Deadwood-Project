@@ -72,6 +72,8 @@ public class GameBoard {
                 // Sub 1 for dice having inclusive bounds
                 SceneCard randomCard = cards.get(Dice.GetInstance().Roll(1, cards.size()) - 1);
                 ((ActingSet) gameSet).AddCard(randomCard);
+                randomCard.SetUsed(true);
+                randomCard.SetVisible(false);
             }
         }
     }
