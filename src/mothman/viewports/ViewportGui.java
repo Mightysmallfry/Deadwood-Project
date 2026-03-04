@@ -9,28 +9,60 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class ViewportGui implements Viewport {
-    private JFrame _canvas = new JFrame("Deadwood");
+public class ViewportGui extends JFrame implements Viewport {
+
+    // Main game window
+    private JLayeredPane _gameLayeredPane;
+
+    // Labels - images and menus
+    private JLabel boardLabel;
+
+    private JLabel curPlayerLabel; // Current Player Display
+    private JLabel actionMenuLabel;
+
+//    private JLabel playerLabel; // Player profiles
+//    private JLabel cardLabel; // SceneCard images
+
+    // Buttons - actions,
+    private JButton bAct;
+    private JButton bAcquire;
+    private JButton bMove;
+    private JButton bRehearse;
+    private JButton bUpgrade;
+    private JButton bPass;
+
+
     // 9 Dice Colors, Reserve white for actual dice rolling.
     // We can then have the colored dice be the players,
     // with the visible face being their rank
 
-    // All of these getters are probably going to be listeners for buttons
-    // Or other things
-
-    // TODO: Solve how we want present but not active players presented
     // TODO: Solve how the upgrade menu works
+    // TODO: Notify on end turn?
+        // On end turn we need to update the current player label
+    // TODO: After performing an action
+        // update the board and player scores
+
 
     public ViewportGui(){
-        _canvas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        _canvas.setSize(800, 600);
-        _canvas.setVisible(true);
+        super("Deadwood");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // This pauses the program while displaying, Could be useful for starting game
-        JOptionPane.showMessageDialog(_canvas,
-                "This is a deadwood Message Dialogue, Start Game?",
-                "Woah",
-                JOptionPane.QUESTION_MESSAGE);
+        // Create the board image
+        boardLabel = new JLabel();
+        ImageIcon ourBoard = new ImageIcon("Assets/board.jpg");
+        boardLabel.setIcon(ourBoard);
+        boardLabel.setBounds(0, 0, ourBoard.getIconWidth(), ourBoard.getIconHeight());
+
+        // Add the board image to the default layer, it shall be the only one here.
+        _gameLayeredPane = getLayeredPane();
+        _gameLayeredPane.add(boardLabel, JLayeredPane.DEFAULT_LAYER);
+
+        // TODO: May want to scale the image
+
+        // Set the size of our main window to have some excess room
+        setSize(ourBoard.getIconWidth() + 200, ourBoard.getIconHeight() + 50);
+
+        setVisible(true);
     }
 
     @Override
