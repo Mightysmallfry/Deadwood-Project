@@ -112,7 +112,7 @@ public class Deadwood {
      * can stay focused on game state rather than driving the loop.
      */
     private static void RunGame(GameManager gameManager, ViewportController viewportController) {
-        gameManager.StartGame();
+        gameManager.StartGame(viewportController);
 
         while (!gameManager.HasGameEnded()) {
             String action = viewportController.AskAction();

@@ -1,14 +1,15 @@
 package mothman.viewports;
 
-import mothman.sets.ActingRole;
-import mothman.sets.GameSet;
-import mothman.sets.SceneCard;
-import mothman.sets.UpgradeData;
+import mothman.managers.GameBoard;
+import mothman.managers.GameManager;
+import mothman.managers.PlayerManager;
+import mothman.sets.*;
 import mothman.utils.Area;
 import mothman.utils.TurnDisplayInfo;
 import java.util.Map;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,12 +21,13 @@ public class ViewportGui extends JFrame implements Viewport {
     // Card images are exactly 205x115px — same as each set's <area> in board.xml.
     // No scaling is needed; we just position them at the set's x,y.
     private static final String CARD_IMAGE_PATH = "Assets/Card/";
+    private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
 
     // --- Layout ---
     private final Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
     private Map<String, String> _pendingCardImages = null;
     private Map<String, Area>   _pendingCardAreas  = null;
-    private JPanel _leftPanel;
+    private JPanel _scoreboardPanel;
     private JPanel _rightContainer;
     private JPanel _pastLogPanel;
     private JPanel _actionsPanel;
@@ -58,20 +60,22 @@ public class ViewportGui extends JFrame implements Viewport {
         add(mainContainer, BorderLayout.CENTER);
 
         // LEFT PANEL (Player Info)
-        _leftPanel = new JPanel();
-        _leftPanel.setPreferredSize(new Dimension(220, boardH));
-        _leftPanel.setBackground(new Color(35, 35, 35));
-        _leftPanel.setLayout(new BoxLayout(_leftPanel, BoxLayout.Y_AXIS));
-        _leftPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        _scoreboardPanel = new JPanel();
+        _scoreboardPanel.setPreferredSize(new Dimension(boardW/5, boardH));
+        _scoreboardPanel.setBackground(new Color(35, 35, 35));
+        _scoreboardPanel.setLayout(new BoxLayout(_scoreboardPanel, BoxLayout.Y_AXIS));
+        TitledBorder scoreboardBorder = BorderFactory.createTitledBorder("Scoreboard");
+        scoreboardBorder.setTitleColor(Color.CYAN);
+        _scoreboardPanel.setBorder(scoreboardBorder);
 
-        mainContainer.add(_leftPanel, BorderLayout.WEST);
+        mainContainer.add(_scoreboardPanel, BorderLayout.WEST);
 
         // CENTER (Board)
         mainContainer.add(_gameLayeredPane, BorderLayout.CENTER);
 
         // RIGHT CONTAINER
         _rightContainer = new JPanel(new BorderLayout());
-        _rightContainer.setPreferredSize(new Dimension(260, boardH));
+        _rightContainer.setPreferredSize(new Dimension(3 * boardW / 10, boardH));
         _rightContainer.setBackground(new Color(30, 30, 30));
         _rightContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -79,9 +83,11 @@ public class ViewportGui extends JFrame implements Viewport {
 
         // PAST TURNS LOG (Top Right)
         _pastLogPanel = new JPanel(new BorderLayout());
-        _pastLogPanel.setPreferredSize(new Dimension(260, boardH / 3));
+        _pastLogPanel.setPreferredSize(new Dimension(3 * boardW / 10, boardH / 3));
         _pastLogPanel.setBackground(new Color(50, 50, 50));
-        _pastLogPanel.setBorder(BorderFactory.createTitledBorder("Past Turns Log"));
+        TitledBorder pastLogBorder = BorderFactory.createTitledBorder("Past Turns Log");
+        pastLogBorder.setTitleColor(Color.ORANGE);
+        _pastLogPanel.setBorder(pastLogBorder);
 
         _pastLogArea = new JTextArea();
         _pastLogArea.setEditable(false);
@@ -97,7 +103,9 @@ public class ViewportGui extends JFrame implements Viewport {
         _actionsPanel = new JPanel();
         _actionsPanel.setBackground(new Color(40, 40, 40));
         _actionsPanel.setLayout(new BoxLayout(_actionsPanel, BoxLayout.Y_AXIS));
-        _actionsPanel.setBorder(BorderFactory.createTitledBorder("Actions"));
+        TitledBorder actionBorder = BorderFactory.createTitledBorder("Actions");
+        actionBorder.setTitleColor(Color.ORANGE);
+        _actionsPanel.setBorder(actionBorder);
 
         // Message label (turn info)
         _messageLabel = new JLabel();
@@ -275,7 +283,6 @@ public class ViewportGui extends JFrame implements Viewport {
     }
 
     // Scene card overlay
-
     private void applySceneCards(Map<String, String> images, Map<String, Area> areas) {
         for (Map.Entry<String, JLabel> entry : _cardLabels.entrySet()) {
             if (!images.containsKey(entry.getKey())) {
@@ -373,7 +380,7 @@ public class ViewportGui extends JFrame implements Viewport {
     private JButton makeActionButton(String label) {
         JButton btn = new JButton(label);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btn.setMaximumSize(new Dimension(180, 32));
+        btn.setMaximumSize(new Dimension(_actionsPanel.getPreferredSize().width, 32));
         btn.setBackground(new Color(70, 70, 70));
         btn.setForeground(Color.WHITE);
         btn.setFocusPainted(false);
@@ -409,5 +416,30 @@ public class ViewportGui extends JFrame implements Viewport {
             _actionsPanel.revalidate();
             _actionsPanel.repaint();
         });
+    }
+
+    /**
+     * Used to update the actual gameboard, this should be used when
+     * we clear and populate the game board
+     *
+     */
+    @Override
+    public void DealCards()
+    {
+        GameBoard gameBoard = GameManager.GetInstance().GetGameBoard();
+
+        for (GameSet gameSet : gameBoard.GetAllGameSets())
+        {
+            // If we get to a game set, populate the card panel with a card backing.
+            if (gameSet instanceof ActingSet)
+            {
+                Area cardArea = ((ActingSet) gameSet).GetArea();
+                // TODO: We should talk about how cards are dealt with
+                // I was thinking that when we populate the board,
+                // we update the icons associated with the sets
+                // Then as we move we can check if it has been revealed
+                // If it has we swap the icon and move one.
+            }
+        }
     }
 }

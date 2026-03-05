@@ -60,7 +60,7 @@ public class GameBoard {
      * Populates each scene that can have a card with a scene card if
      * it does not already have one. The scene cards are chosen at random.
      */
-    public void Populate()
+    public void Populate(ViewportController vc)
     {
         if (_gameSets == null){
             return;
@@ -76,6 +76,8 @@ public class GameBoard {
                 randomCard.SetVisible(false);
             }
         }
+
+        vc.DealCards();
     }
 
 

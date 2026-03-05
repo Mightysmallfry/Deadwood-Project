@@ -1,5 +1,6 @@
 package mothman.viewports;
 
+import mothman.managers.PlayerManager;
 import mothman.sets.ActingRole;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
@@ -55,6 +56,11 @@ public class ViewportText implements Viewport{
 
     @Override
     public String GetAction(ArrayList<String> possibleActions, TurnDisplayInfo info) {
+
+        // Add any display specific extra actions
+        possibleActions.add("profile");
+        possibleActions.add("board");
+
         // Print whose turn it is
         System.out.println("||" + info.playerId + "'s Turn||");
         System.out.println("||Location: " + info.locationName + "||");
@@ -113,6 +119,13 @@ public class ViewportText implements Viewport{
     @Override
     public void DisplayMessage(String message) {
         System.out.println(message);
+    }
+
+    /**
+     * Text has no need for this since the cards are naturally hidden at first.
+     */
+    @Override
+    public void DealCards(){
     }
 
 }

@@ -173,8 +173,6 @@ public class ViewportController {
 
         possibleActions.add("quit");
         possibleActions.add("pass");
-        possibleActions.add("profile");
-        possibleActions.add("board");
 
         if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
                 GameManager.GetInstance().GetActionTokens() >= 0 &&
@@ -198,4 +196,9 @@ public class ViewportController {
         }
         return possibleActions;
     }
+
+    public void DealCards(){
+        _viewport.DealCards();
+    }
+
 }

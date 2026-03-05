@@ -122,7 +122,7 @@ public class GameManager {
         }
 
         GetGameBoard().Clear();
-        GetGameBoard().Populate();
+        GetGameBoard().Populate(vc);
     }
 
 
@@ -247,10 +247,10 @@ public class GameManager {
      *This starts the game using the given rules package as well as sets the day to one and moves players to the start.
      * Next it sets up all the players default values then populates the board and chooses a starting player.
      */
-    public void StartGame()
+    public void StartGame(ViewportController vc)
     {
         // Populate board
-        _gameBoard.Populate();
+        _gameBoard.Populate(vc);
         // Let's be careful with indexing here
         SetCurrentDay(1);
 
