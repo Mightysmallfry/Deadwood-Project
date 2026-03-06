@@ -18,6 +18,14 @@ public class ViewportController {
         _viewport = viewport;
     }
 
+    public void updateViewport() {
+
+        TurnDisplayInfo info = BuildTurnInfo();
+
+        _viewport.update(info);
+
+    }
+
     public Viewport GetViewport() { return _viewport; }
 
     public String AskName() {
@@ -54,42 +62,7 @@ public class ViewportController {
      * @return int[]{ rank, cost } for the chosen upgrade, or null if cancelle.
      */
     public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
-        int    rankRequest;
-        String currencyChoice;
-
-        if (_viewport instanceof ViewportGui gui) {
-            String[] result = gui.ShowUpgradeMenu(currentRank, maxRank, upgrades);
-            if (result == null) return null;
-            rankRequest    = Integer.parseInt(result[0]);
-            currencyChoice = result[1];
-        } else {
-            ShowMessage("Your current rank is: " + currentRank);
-            ShowMessage("Available Upgrades:");
-            for (int rank = currentRank + 1; rank <= maxRank; rank++) {
-                Integer dollarCost = null;
-                Integer creditCost = null;
-                for (UpgradeData u : upgrades) {
-                    if (u.GetRank() == rank) {
-                        if ("dollar".equals(u.GetCurrencyType())) dollarCost = u.GetCostAmount();
-                        if ("credit".equals(u.GetCurrencyType())) creditCost = u.GetCostAmount();
-                    }
-                }
-                if (dollarCost != null || creditCost != null) {
-                    StringBuilder sb = new StringBuilder("Rank " + rank + " | Cost: | ");
-                    if (creditCost != null) sb.append(creditCost).append(" credits | ");
-                    if (dollarCost != null) sb.append(dollarCost).append(" dollars | ");
-                    ShowMessage(sb.toString());
-                }
-            }
-            rankRequest    = AskUpgradeRank();
-            currencyChoice = AskUpgradeCurrency();
-        }
-        for (UpgradeData u : upgrades) {
-            if (u.GetRank() == rankRequest && u.GetCurrencyType().equals(currencyChoice)) {
-                return new int[]{ rankRequest, u.GetCostAmount() };
-            }
-        }
-        return null;
+        return _viewport.AskUpgrade(currentRank, maxRank, upgrades);
     }
 
     public void ShowMessage(String message) {

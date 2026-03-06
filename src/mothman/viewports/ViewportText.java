@@ -4,6 +4,7 @@ import mothman.managers.PlayerManager;
 import mothman.sets.ActingRole;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
+import mothman.sets.UpgradeData;
 import mothman.utils.TurnDisplayInfo;
 
 import java.util.ArrayList;
@@ -31,6 +32,54 @@ public class ViewportText implements Viewport{
         }
         System.out.println("or [cancel]");
         return _sc.nextLine().strip();
+    }
+
+    @Override
+    public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
+
+        DisplayMessage("Your current rank is: " + currentRank);
+        DisplayMessage("Available Upgrades:");
+
+        for (int rank = currentRank + 1; rank <= maxRank; rank++) {
+
+            Integer dollarCost = null;
+            Integer creditCost = null;
+
+            for (UpgradeData u : upgrades) {
+                if (u.GetRank() == rank) {
+                    if ("dollar".equals(u.GetCurrencyType()))
+                        dollarCost = u.GetCostAmount();
+
+                    if ("credit".equals(u.GetCurrencyType()))
+                        creditCost = u.GetCostAmount();
+                }
+            }
+
+            if (dollarCost != null || creditCost != null) {
+                StringBuilder sb = new StringBuilder("Rank " + rank + " | Cost: | ");
+
+                if (creditCost != null)
+                    sb.append(creditCost).append(" credits | ");
+
+                if (dollarCost != null)
+                    sb.append(dollarCost).append(" dollars | ");
+
+                DisplayMessage(sb.toString());
+            }
+        }
+
+        int rankRequest = GetUpgradeRank();
+        String currencyChoice = GetUpgradeCurrency();
+
+        for (UpgradeData u : upgrades) {
+            if (u.GetRank() == rankRequest &&
+                    u.GetCurrencyType().equals(currencyChoice)) {
+
+                return new int[]{ rankRequest, u.GetCostAmount() };
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -125,6 +174,11 @@ public class ViewportText implements Viewport{
      * Text has no need for this since the cards are naturally hidden at first.
      */
     @Override
+    public void update(TurnDisplayInfo info) {
+        // Text viewport has no live display to update
+        // THis is not ideal
+    }
+
     public void DealCards(TurnDisplayInfo info){
     }
 

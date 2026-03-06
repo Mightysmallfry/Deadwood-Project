@@ -1,9 +1,6 @@
 package mothman.viewports;
 
 import mothman.gui.ScoreBoardPanel;
-import mothman.managers.GameBoard;
-import mothman.managers.GameManager;
-import mothman.managers.PlayerManager;
 import mothman.sets.*;
 import mothman.utils.Area;
 import mothman.utils.TurnDisplayInfo;
@@ -19,8 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ViewportGui extends JFrame implements Viewport {
 
-    // Card images are exactly 205x115px — same as each set's <area> in board.xml.
-    // No scaling is needed; we just position them at the set's x,y.
+    // Card images are exactly 205x115px
     private static final String CARD_IMAGE_PATH = "Assets/Card/";
     private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
 
@@ -40,6 +36,8 @@ public class ViewportGui extends JFrame implements Viewport {
 
     // Bridges button clicks (EDT) to blocking Viewport calls (game thread).
     private final BlockingQueue<String> _inputQueue = new LinkedBlockingQueue<>();
+
+    //TODO: implement Panel and layer classes.
 
     // Constructor
     public ViewportGui() {
@@ -61,7 +59,7 @@ public class ViewportGui extends JFrame implements Viewport {
         add(mainContainer, BorderLayout.CENTER);
 
         // LEFT PANEL (Player Info)
-        _scoreboardPanel = new ScoreBoardPanel(boardW/5, boardH/5);
+        _scoreboardPanel = new ScoreBoardPanel(boardW/5, boardH);
 
         mainContainer.add(_scoreboardPanel, BorderLayout.WEST);
 
@@ -209,6 +207,20 @@ public class ViewportGui extends JFrame implements Viewport {
         });
     }
 
+    @Override
+    public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
+        String[] result = ShowUpgradeMenu(currentRank, maxRank, upgrades);
+        if (result == null) return null;
+        int rank = Integer.parseInt(result[0]);
+        String currency = result[1];
+        for (UpgradeData u : upgrades) {
+            if (u.GetRank() == rank && u.GetCurrencyType().equals(currency)) {
+                return new int[]{ rank, u.GetCostAmount() };
+            }
+        }
+        return null;
+    }
+
     /**
      * Two-step upgrade flow entirely on the right panel.
      *   Step 1: one button per purchasable rank, showing both costs.
@@ -218,7 +230,7 @@ public class ViewportGui extends JFrame implements Viewport {
      */
     public String[] ShowUpgradeMenu(int currentRank, int maxRank,
                                     ArrayList<UpgradeData> upgrades) {
-        // Step 1 — rank selection
+        // Step 1: rank selection
         ArrayList<String> rankButtons = new ArrayList<>();
 
         for (int rank = currentRank + 1; rank <= maxRank; rank++) {
@@ -256,7 +268,7 @@ public class ViewportGui extends JFrame implements Viewport {
                     rankChoice.split("\\|")[0].replace("Rank", "").strip());
         } catch (NumberFormatException e) { return null; }
 
-        // Step 2 — currency selection (only currencies valid for this rank)
+        // Step 2: currency selection (only currencies valid for this rank)
         boolean hasDollar = false, hasCredit = false;
         for (UpgradeData u : upgrades) {
             if (u.GetRank() == chosenRank) {
@@ -386,6 +398,20 @@ public class ViewportGui extends JFrame implements Viewport {
 
     // =========== Card Layer =============
 
+    private JLabel getOrCreateCardLabel(String setName) {
+        return _cardLabels.computeIfAbsent(setName, k -> {
+            JLabel label = new JLabel();
+            _gameLayeredPane.add(label, JLayeredPane.PALETTE_LAYER);
+            return label;
+        });
+    }
+
+    @Override
+    public void update(TurnDisplayInfo info) {
+        updateTurnHeader(info);
+        _scoreboardPanel.update(info);
+    }
+
     /**
      * Used to redraw the card layer, drawing all cards, Called only after
      * Gameboard.Populate()
@@ -398,16 +424,11 @@ public class ViewportGui extends JFrame implements Viewport {
         {
             // Print that card face down.
             String setName = entry.getKey();
-            String imgName = entry.getValue();
             Area   area    = info.allPresentCardAreas.get(setName);
             ImageIcon icon = new ImageIcon(CARD_BACKING_IMAGE_PATH);
 
             // If the card has not been made yet, create it
-            JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
-                JLabel lable = new JLabel();
-                _gameLayeredPane.add(lable, JLayeredPane.PALETTE_LAYER);
-                return lable;
-            });
+            JLabel label = getOrCreateCardLabel(setName);
 
             label.setIcon(icon);
             label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
@@ -433,19 +454,14 @@ public class ViewportGui extends JFrame implements Viewport {
         for (Map.Entry<String, String> entry : images.entrySet()) {
 
             String setName = entry.getKey();
-            String imgName = entry.getValue();
             Area   area    = areas.get(setName);
-            ImageIcon icon = new ImageIcon(CARD_IMAGE_PATH + imgName);
+            ImageIcon icon = new ImageIcon(CARD_IMAGE_PATH + entry.getValue());
 
             // If invalid icon just skip
             if (icon.getIconWidth() <= 0) continue;
 
             // Create if the card is missing, Otherwise simply swap out the icon.
-            JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
-                JLabel l = new JLabel();
-                _gameLayeredPane.add(l, JLayeredPane.PALETTE_LAYER);
-                return l;
-            });
+            JLabel label = getOrCreateCardLabel(setName);
             label.setIcon(icon);
             label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
             label.setVisible(true);
@@ -455,5 +471,4 @@ public class ViewportGui extends JFrame implements Viewport {
         _gameLayeredPane.revalidate();
         _gameLayeredPane.repaint();
     }
-
 }
