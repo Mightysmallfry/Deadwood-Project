@@ -35,6 +35,3 @@ public class PlayerProfilePanel extends JPanel{
 
 
 }
-
-
-

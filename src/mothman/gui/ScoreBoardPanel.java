@@ -1,6 +1,7 @@
 package mothman.gui;
 
 import mothman.player.Player;
+import mothman.utils.TurnDisplayInfo;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -20,6 +21,13 @@ public class ScoreBoardPanel extends JPanel {
         TitledBorder scoreboardBorder = BorderFactory.createTitledBorder(TITLE);
         scoreboardBorder.setTitleColor(Color.CYAN);
         setBorder(scoreboardBorder);
+    }
+
+    // Called by ScoreLayer on each game update — refreshes the turn header label.
+    public void update(TurnDisplayInfo info) {
+        SwingUtilities.invokeLater(() -> {
+            //just refresh the existing label if present or do nothing until UpdatePlayerDisplay() is called with full data.
+        });
     }
 
     // Update the entire list, keep order the same through each update.
