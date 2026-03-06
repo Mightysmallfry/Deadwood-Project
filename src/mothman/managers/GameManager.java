@@ -124,6 +124,7 @@ public class GameManager {
 
         GetGameBoard().Clear();
         GetGameBoard().Populate(vc);
+        vc.DealCards();
     }
 
 

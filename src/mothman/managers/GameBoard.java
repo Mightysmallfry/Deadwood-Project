@@ -76,8 +76,6 @@ public class GameBoard {
                 randomCard.SetVisible(false);
             }
         }
-
-        vc.DealCards();
     }
 
 
