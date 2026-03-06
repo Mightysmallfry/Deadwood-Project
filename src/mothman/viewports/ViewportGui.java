@@ -1,5 +1,6 @@
 package mothman.viewports;
 
+import mothman.gui.ScoreBoardPanel;
 import mothman.managers.GameBoard;
 import mothman.managers.GameManager;
 import mothman.managers.PlayerManager;
@@ -27,7 +28,7 @@ public class ViewportGui extends JFrame implements Viewport {
     private final Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
     private Map<String, String> _pendingCardImages = null;  // [gameSet, SceneCardLabel]
     private Map<String, Area>   _pendingCardAreas  = null; // [gameSet, SceneCardImage]
-    private JPanel _scoreboardPanel;
+    private ScoreBoardPanel _scoreboardPanel;
     private JPanel _rightContainer;
     private JPanel _pastLogPanel;
     private JPanel _actionsPanel;
@@ -60,13 +61,7 @@ public class ViewportGui extends JFrame implements Viewport {
         add(mainContainer, BorderLayout.CENTER);
 
         // LEFT PANEL (Player Info)
-        _scoreboardPanel = new JPanel();
-        _scoreboardPanel.setPreferredSize(new Dimension(boardW/5, boardH));
-        _scoreboardPanel.setBackground(new Color(35, 35, 35));
-        _scoreboardPanel.setLayout(new BoxLayout(_scoreboardPanel, BoxLayout.Y_AXIS));
-        TitledBorder scoreboardBorder = BorderFactory.createTitledBorder("Scoreboard");
-        scoreboardBorder.setTitleColor(Color.CYAN);
-        _scoreboardPanel.setBorder(scoreboardBorder);
+        _scoreboardPanel = new ScoreBoardPanel(boardW/5, boardH/5);
 
         mainContainer.add(_scoreboardPanel, BorderLayout.WEST);
 
@@ -460,4 +455,5 @@ public class ViewportGui extends JFrame implements Viewport {
         _gameLayeredPane.revalidate();
         _gameLayeredPane.repaint();
     }
+
 }
