@@ -12,7 +12,9 @@ public class TurnDisplayInfo {
     public int actionTokens;
     public boolean sceneComplete;
     public boolean isActingSet;
-    public Map<String, String> activeCardImages;   // setName -> "01.png"
-    public Map<String, Area>   activeCardAreas;    // setName -> Area(x,y,w,h)
+    public Map<String, String> activeCardImages;   // ActingSetName -> "01.png"
+    public Map<String, Area>   activeCardAreas;    // ActingSetName -> Area(x,y,w,h)
     public String cardImageName;  // current player's set card, if any
+    public Map<String, String> allPresentCards; // ActingSetName -> SceneCardName
+    public Map<String, Area> allPresentCardAreas; // ActingSetName -> Area(x,y,w,h)
 }

@@ -17,5 +17,5 @@ public interface Viewport {
     String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles);
     void DisplayActionList(ArrayList<String> actionList);
     void DisplayMessage(String message); // replaces System.out in TurnActions
-    void DealCards();
+    void DealCards(TurnDisplayInfo info);
 }

@@ -125,7 +125,7 @@ public class ViewportText implements Viewport{
      * Text has no need for this since the cards are naturally hidden at first.
      */
     @Override
-    public void DealCards(){
+    public void DealCards(TurnDisplayInfo info){
     }
 
 }

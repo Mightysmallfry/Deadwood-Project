@@ -135,26 +135,34 @@ public class ViewportController {
         }
 
         Map<String, String> images = new HashMap<>();
+        Map<String, String> allSceneCards = new HashMap<>();
+        Map<String, mothman.utils.Area> allSceneCardAreas = new HashMap<>();
         Map<String, mothman.utils.Area> areas  = new HashMap<>();
-        GameSet[] allSets = GameManager.GetInstance()
-                .GetGameBoard().GetAllGameSets();
+        GameSet[] allSets = GameManager.GetInstance().GetGameBoard().GetAllGameSets();
 
-        for (GameSet gs : allSets) {
-
-            if (gs instanceof ActingSet actingSet) {
-
+        // Get all of the cards on the board
+        for (GameSet gameSet : allSets) {
+            if (gameSet instanceof ActingSet actingSet) {
                 SceneCard card = actingSet.GetCurrentSceneCard();
-
-                if (card != null && card.IsVisible()) {
-
-                    images.put(gs.GetName(), card.GetImageName());
-                    areas.put(gs.GetName(), gs.GetArea());
+                if (card == null) {
+                    continue;
                 }
+                // If the card is not null, then we have a card present
+                if (card.IsVisible()) {
+
+                    images.put(gameSet.GetName(), card.GetImageName());
+                    areas.put(gameSet.GetName(), gameSet.GetArea());
+                }
+
+                allSceneCards.put(gameSet.GetName(), card.GetName());
+                allSceneCardAreas.put(gameSet.GetName(), gameSet.GetArea());
             }
         }
 
         info.activeCardImages = images;
         info.activeCardAreas  = areas;
+        info.allPresentCards = allSceneCards;
+        info.allPresentCardAreas = allSceneCardAreas;
 
         return info;
     }
@@ -198,7 +206,7 @@ public class ViewportController {
     }
 
     public void DealCards(){
-        _viewport.DealCards();
+        _viewport.DealCards(BuildTurnInfo());
     }
 
 }

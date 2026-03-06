@@ -249,8 +249,6 @@ public class GameManager {
      */
     public void StartGame(ViewportController vc)
     {
-        // Populate board
-        _gameBoard.Populate(vc);
         // Let's be careful with indexing here
         SetCurrentDay(1);
 
@@ -259,6 +257,9 @@ public class GameManager {
         Dice dice = Dice.GetInstance();
         int startingPlayer = dice.Roll(1, _rules.GetPlayerCount()) - 1;
         PlayerManager.GetInstance().SetCurrentPlayer(PlayerManager.GetInstance().GetPlayerLibrary()[startingPlayer]);
+
+        // Populate board
+        _gameBoard.Populate(vc);
 
         // Start updating the game until it ends.
         _hasGameEnded = false;

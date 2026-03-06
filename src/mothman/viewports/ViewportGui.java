@@ -25,8 +25,8 @@ public class ViewportGui extends JFrame implements Viewport {
 
     // --- Layout ---
     private final Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
-    private Map<String, String> _pendingCardImages = null;
-    private Map<String, Area>   _pendingCardAreas  = null;
+    private Map<String, String> _pendingCardImages = null;  // [gameSet, SceneCardLabel]
+    private Map<String, Area>   _pendingCardAreas  = null; // [gameSet, SceneCardImage]
     private JPanel _scoreboardPanel;
     private JPanel _rightContainer;
     private JPanel _pastLogPanel;
@@ -282,32 +282,7 @@ public class ViewportGui extends JFrame implements Viewport {
         return new String[]{ String.valueOf(chosenRank), currencyChoice };
     }
 
-    // Scene card overlay
-    private void applySceneCards(Map<String, String> images, Map<String, Area> areas) {
-        for (Map.Entry<String, JLabel> entry : _cardLabels.entrySet()) {
-            if (!images.containsKey(entry.getKey())) {
-                entry.getValue().setVisible(false);
-            }
-        }
-        for (Map.Entry<String, String> entry : images.entrySet()) {
-            String setName = entry.getKey();
-            String imgName = entry.getValue();
-            Area   area    = areas.get(setName);
-            ImageIcon icon = new ImageIcon(CARD_IMAGE_PATH + imgName);
 
-            if (icon.getIconWidth() <= 0) continue;
-            JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
-                JLabel l = new JLabel();
-                _gameLayeredPane.add(l, JLayeredPane.PALETTE_LAYER);
-                return l;
-            });
-            label.setIcon(icon);
-            label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
-            label.setVisible(true);
-        }
-        _gameLayeredPane.revalidate();
-        _gameLayeredPane.repaint();
-    }
 
     /**
      * Hides the card for a specific set immediately — call this from Act.java when a scene completes.
@@ -348,11 +323,6 @@ public class ViewportGui extends JFrame implements Viewport {
 
                 _actionsPanel.revalidate();
                 _actionsPanel.repaint();
-                if (_pendingCardImages != null && _pendingCardAreas != null) {
-                    applySceneCards(_pendingCardImages, _pendingCardAreas);
-                    _pendingCardImages = null;
-                    _pendingCardAreas  = null;
-                }
             });
         } catch (Exception e) {
             Thread.currentThread().interrupt();
@@ -418,28 +388,77 @@ public class ViewportGui extends JFrame implements Viewport {
         });
     }
 
+
+    // =========== Card Layer =============
+
     /**
-     * Used to update the actual gameboard, this should be used when
-     * we clear and populate the game board
-     *
+     * Used to redraw the card layer, drawing all cards, Called only after
+     * Gameboard.Populate()
      */
     @Override
-    public void DealCards()
+    public void DealCards(TurnDisplayInfo info)
     {
-        GameBoard gameBoard = GameManager.GetInstance().GetGameBoard();
-
-        for (GameSet gameSet : gameBoard.GetAllGameSets())
+        // If the card is on the board
+        for (Map.Entry<String, String> entry : info.allPresentCards.entrySet())
         {
-            // If we get to a game set, populate the card panel with a card backing.
-            if (gameSet instanceof ActingSet)
-            {
-                Area cardArea = ((ActingSet) gameSet).GetArea();
-                // TODO: We should talk about how cards are dealt with
-                // I was thinking that when we populate the board,
-                // we update the icons associated with the sets
-                // Then as we move we can check if it has been revealed
-                // If it has we swap the icon and move one.
+            // Print that card face down.
+            String setName = entry.getKey();
+            String imgName = entry.getValue();
+            Area   area    = info.allPresentCardAreas.get(setName);
+            ImageIcon icon = new ImageIcon(CARD_BACKING_IMAGE_PATH);
+
+            // If the card has not been made yet, create it
+            JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
+                JLabel lable = new JLabel();
+                _gameLayeredPane.add(lable, JLayeredPane.PALETTE_LAYER);
+                return lable;
+            });
+
+            label.setIcon(icon);
+            label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
+            label.setVisible(true);
+        }
+        _gameLayeredPane.revalidate();
+        _gameLayeredPane.repaint();
+    }
+
+    /**
+     * Redraws only the active cards that have been discovered, should be called
+     * after move, act (specifically on complete)
+     * @param images
+     * @param areas
+     */
+    private void applySceneCards(Map<String, String> images, Map<String, Area> areas) {
+        // Compares the scene has been recorded in both [gameSet, SceneCardLabel] and [gameSet, SceneCardImage]
+        for (Map.Entry<String, JLabel> entry : _cardLabels.entrySet()) {
+            if (!images.containsKey(entry.getKey())) {
+                entry.getValue().setVisible(false);
             }
         }
+
+        // Create a sceneCardLabel component if it does not already exist
+        for (Map.Entry<String, String> entry : images.entrySet()) {
+            String setName = entry.getKey();
+            String imgName = entry.getValue();
+            Area   area    = areas.get(setName);
+            ImageIcon icon = new ImageIcon(CARD_IMAGE_PATH + imgName);
+
+            // If invalid icon just skip
+            if (icon.getIconWidth() <= 0) continue;
+
+            // Create if the card is missing
+            JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
+                JLabel l = new JLabel();
+                _gameLayeredPane.add(l, JLayeredPane.PALETTE_LAYER);
+                return l;
+            });
+            label.setIcon(icon);
+            label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
+            label.setVisible(true);
+        }
+
+        // Redraw the layer, applying the buffer
+        _gameLayeredPane.revalidate();
+        _gameLayeredPane.repaint();
     }
 }
