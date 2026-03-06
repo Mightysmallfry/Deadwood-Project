@@ -425,19 +425,18 @@ public class ViewportGui extends JFrame implements Viewport {
     /**
      * Redraws only the active cards that have been discovered, should be called
      * after move, act (specifically on complete)
-     * @param images
-     * @param areas
      */
-    private void applySceneCards(Map<String, String> images, Map<String, Area> areas) {
-        // Compares the scene has been recorded in both [gameSet, SceneCardLabel] and [gameSet, SceneCardImage]
-        for (Map.Entry<String, JLabel> entry : _cardLabels.entrySet()) {
-            if (!images.containsKey(entry.getKey())) {
-                entry.getValue().setVisible(false);
-            }
-        }
+    @Override
+    public void UpdateCardDisplay(TurnDisplayInfo info) {
+        Map<String, String> images = info.activeCardImages;
+        Map<String, Area> areas = info.activeCardAreas;
+
+        //TODO: Combine this with a DealCards and make the difference be the input maps?
+        // They have the same usage but differing contexts.
 
         // Create a sceneCardLabel component if it does not already exist
         for (Map.Entry<String, String> entry : images.entrySet()) {
+
             String setName = entry.getKey();
             String imgName = entry.getValue();
             Area   area    = areas.get(setName);
@@ -446,7 +445,7 @@ public class ViewportGui extends JFrame implements Viewport {
             // If invalid icon just skip
             if (icon.getIconWidth() <= 0) continue;
 
-            // Create if the card is missing
+            // Create if the card is missing, Otherwise simply swap out the icon.
             JLabel label = _cardLabels.computeIfAbsent(setName, k -> {
                 JLabel l = new JLabel();
                 _gameLayeredPane.add(l, JLayeredPane.PALETTE_LAYER);

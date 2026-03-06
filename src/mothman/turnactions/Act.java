@@ -44,6 +44,7 @@ public class Act implements TurnAction {
                 playerManager.BasicPay(currentPlayer, true);
                 playerManager.BonusPay(currentPlayer);
                 playerManager.PostSceneReset(currentPlayer);
+                vc.UpdateBoardDisplay();
             }
         } else {
             playerManager.BasicPay(currentPlayer, false);

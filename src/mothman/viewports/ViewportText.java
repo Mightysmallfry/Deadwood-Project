@@ -128,4 +128,7 @@ public class ViewportText implements Viewport{
     public void DealCards(TurnDisplayInfo info){
     }
 
+    @Override
+    public void UpdateCardDisplay(TurnDisplayInfo info){
+    }
 }

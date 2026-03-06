@@ -181,6 +181,7 @@ public class ViewportController {
 
         possibleActions.add("quit");
         possibleActions.add("pass");
+        possibleActions.add("force");
 
         if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
                 GameManager.GetInstance().GetActionTokens() >= 0 &&
@@ -209,4 +210,7 @@ public class ViewportController {
         _viewport.DealCards(BuildTurnInfo());
     }
 
+    public void UpdateBoardDisplay(){
+        _viewport.UpdateCardDisplay(BuildTurnInfo());
+    }
 }

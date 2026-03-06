@@ -63,18 +63,19 @@ public class GameManager {
      */
     public void UpdateGame(String action, ViewportController vc)
     {
+        Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
         switch (action) {
-            case "quit"     -> System.exit(1);
-            case "pass"     -> {}
-            case "acquire"  -> new Acquire().Execute(vc);
-            case "act"      -> new Act().Execute(vc);
-            case "rehearse" -> new Rehearse().Execute(vc);
-            case "move"     -> new Move().Execute(vc);
-            case "upgrade"  -> new Upgrade().Execute(vc);
-            case "force"    -> _gameBoard.Clear();
-            case "end game" -> EndGame(vc);
-            case "board"    -> vc.ShowBoard();
-            case "profile"  -> vc.ShowMessage(PlayerManager.GetInstance().GetCurrentPlayer().toString());
+            case "quit"     -> System.exit(1);                        // Quit Game
+            case "pass"     -> {}                                           // Pass Turn
+            case "acquire"  -> new Acquire().Execute(vc);                   // Acquire Acting Job
+            case "act"      -> new Act().Execute(vc);                       // Act an Acting Job
+            case "rehearse" -> new Rehearse().Execute(vc);                  // Practice an Acting Job
+            case "move"     -> new Move().Execute(vc);                      // Move from one set to another
+            case "upgrade"  -> new Upgrade().Execute(vc);                   // Upgrade the player's rank?
+            case "force"    -> _gameBoard.Clear();                          // For a new Day
+            case "end game" -> EndGame(vc);                                 // End the game
+            case "board"    -> vc.ShowBoard();                              // Show current board status
+            case "profile"  -> vc.ShowMessage(currentPlayer.toString());    // Show the profile of the Current Profile
             default         -> vc.ShowMessage("Invalid Choice");
         }
     }
