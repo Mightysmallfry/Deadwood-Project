@@ -24,14 +24,6 @@ public class ScoreBoardPanel extends JPanel {
         setBorder(scoreboardBorder);
     }
 
-    // Called by ScoreLayer on each game update — refreshes the turn header label.
-    public void update(TurnDisplayInfo info) {
-        SwingUtilities.invokeLater(() -> {
-            //just refresh the existing label if present
-            // or do nothing until UpdatePlayerDisplay() is called with full data.
-        });
-    }
-
     // Update the entire list, keep order the same through each update.
     public void Update(Player[] players)
     {
@@ -42,7 +34,7 @@ public class ScoreBoardPanel extends JPanel {
                 // Create a ProfilePanel for each player and add it
                 for (Player player : players) {
                     PlayerProfilePanel playerProfile = new PlayerProfilePanel(player);
-                    playerProfile.SetColor(PlayerColor.GetInstance().GetNextColor());
+                    playerProfile.SetColor(PlayerColor.GetInstance().GetColor(player));
                     add(playerProfile);
                     add(Box.createVerticalStrut(4));
                 }

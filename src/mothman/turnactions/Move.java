@@ -72,6 +72,9 @@ public class Move implements TurnAction{
         currentSet.GetPlayers().remove(currentPlayer);
         currentPlayer.GetLocation().SetCurrentGameSet(targetLocation);
 
+        // Update ui
+        vc.UpdateViewport();
+
         // Update the action economy.
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         actionTokens -= ACTION_COST;

@@ -8,7 +8,6 @@ import java.awt.*;
 
 // Responsible for being a self contained profile panel to be added elsewhere
 public class PlayerProfilePanel extends JPanel{
-    // TODO: Randomize and Queue 8 colors for player.
 
     private String _playerName;
     private JLabel _playerInfo;
@@ -33,20 +32,29 @@ public class PlayerProfilePanel extends JPanel{
     {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><body style='width:170px'>");
-        sb.append("<b>").append(player.GetPersonalId()).append("</b>");
         sb.append(" - Rank: ").append(player.GetCurrentRank()).append("<br>");
+        sb.append("Coin: ").append(player.GetCurrency().GetCoins()).append("<br>");
+        sb.append("Credits: ").append(player.GetCurrency().GetCredits()).append("<br>");
         sb.append("Score: ").append(player.GetScore()).append("<br>");
         sb.append("Location: ").append(player.GetLocation().GetCurrentGameSet().GetName());
+
+        if (player.HasRole())
+        {
+            sb.append("<br>").append("Role: ").append(player.GetLocation().GetCurrentRole().GetName()).append("<br>");
+            sb.append("<em>\"").append(player.GetLocation().GetCurrentRole().GetLine()).append("\"</em><br>");
+        }
+
         sb.append("</body></html>");
 
         return sb.toString();
     }
 
-    public void Update(Player player)
-    {
-        _playerName = player.GetPersonalId();
-        _playerInfo.setText(GetFormattedInfo(player));
-    }
+    // We already just remove and replace the whole thing
+//    public void Update(Player player)
+//    {
+//        _playerName = player.GetPersonalId();
+//        _playerInfo.setText(GetFormattedInfo(player));
+//    }
 
     public void SetColor(Color playerColor){
         _playerColor = playerColor;

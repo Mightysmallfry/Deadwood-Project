@@ -53,6 +53,7 @@ public class Acquire implements TurnAction {
                     if (currentPlayer.GetCurrentRank() >= role.GetRank()){
                         choosingRole = false;
                         chosenRole = role;
+
                     }
                     else {
                         viewportController.ShowMessage("! You're rank is too low. Choose another role!");
@@ -78,6 +79,7 @@ public class Acquire implements TurnAction {
             sceneCard.GetRoleCatalog().put(chosenRole, currentPlayer);
         }
 
+        viewportController.UpdateViewport();
         // Process end of action
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         actionTokens -= ACTION_COST;

@@ -4,7 +4,6 @@ import mothman.player.Player;
 import mothman.sets.*;
 import mothman.utils.TurnDisplayInfo;
 import mothman.viewports.Viewport;
-import mothman.viewports.ViewportGui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,14 +15,6 @@ public class ViewportController {
 
     public ViewportController(Viewport viewport) {
         _viewport = viewport;
-    }
-
-    public void updateViewport() {
-
-        TurnDisplayInfo info = BuildTurnInfo();
-
-        _viewport.update(info);
-
     }
 
     public Viewport GetViewport() { return _viewport; }
@@ -93,6 +84,7 @@ public class ViewportController {
         info.locationName = currentSet.GetName();
         info.actionTokens = GameManager.GetInstance().GetActionTokens();
         info.isActingSet  = currentSet instanceof ActingSet;
+        info.players = PlayerManager.GetInstance().GetPlayerLibrary();
 
         if (currentSet instanceof ActingSet actSet) {
             SceneCard card = actSet.GetCurrentSceneCard();
@@ -180,11 +172,23 @@ public class ViewportController {
         return possibleActions;
     }
 
+
     public void DealCards(){
         _viewport.DealCards(BuildTurnInfo());
     }
 
+    // ================ UPDATE METHODS ===================
+
     public void UpdateBoardDisplay(){
         _viewport.UpdateCardDisplay(BuildTurnInfo());
     }
+
+    /**
+     * Use this for updating the Ui Elements as a whole.
+     */
+    public void UpdateViewport() {
+        TurnDisplayInfo info = BuildTurnInfo();
+        _viewport.Update(info);
+    }
+
 }

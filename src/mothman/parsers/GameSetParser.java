@@ -346,7 +346,7 @@ public class GameSetParser extends ParseDaddy{
                 area = ParseArea(child);
             }
         }
-        return new GameSet("trailer", new HashMap<>(), area);
+        return new GameSet("Trailer", new HashMap<>(), area);
     }
 
 

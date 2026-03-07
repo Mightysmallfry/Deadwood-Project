@@ -55,6 +55,7 @@ public class Upgrade implements TurnAction {
                 playerCurrency.SetCoins(playerCurrency.GetCoins() - cost);
                 currentPlayer.SetCurrentRank(rankRequest);
                 vc.ShowMessage("Successfully upgraded to Rank " + rankRequest + "!");
+                vc.UpdateViewport();
                 break;
 
             case "credit":
@@ -65,6 +66,7 @@ public class Upgrade implements TurnAction {
                 playerCurrency.SetCredits(playerCurrency.GetCredits() - cost);
                 currentPlayer.SetCurrentRank(rankRequest);
                 vc.ShowMessage("Successfully upgraded from Rank " + currentRank + " to Rank " + rankRequest + "!");
+                vc.UpdateViewport();
                 break;
 
             default:

@@ -46,10 +46,10 @@ public class Act implements TurnAction {
                 playerManager.PostSceneReset(currentPlayer);
                 vc.UpdateBoardDisplay();
             }
-        } else {
-            playerManager.BasicPay(currentPlayer, false);
-            vc.ShowMessage("Act failed, better luck next time!");
-        }
+        } else
+
+        // Update Ui
+        vc.UpdateViewport();
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         GameManager.GetInstance().SetActionTokens(actionTokens - ACTION_COST);

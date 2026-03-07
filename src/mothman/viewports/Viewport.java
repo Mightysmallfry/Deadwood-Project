@@ -20,7 +20,7 @@ public interface Viewport {
     String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles);
     void DisplayActionList(ArrayList<String> actionList);
     void DisplayMessage(String message); // replaces System.out in TurnActions
-    void update(TurnDisplayInfo info);
+    void Update(TurnDisplayInfo info);
     void DealCards(TurnDisplayInfo info);
     void UpdateCardDisplay(TurnDisplayInfo info);
 }

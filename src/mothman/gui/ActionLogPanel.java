@@ -27,14 +27,14 @@ public class ActionLogPanel extends JPanel {
         add(new JScrollPane(_logArea), BorderLayout.CENTER);
     }
 
-    public void addToLog(String message) {
+    public void AddToLog(String message) {
         SwingUtilities.invokeLater(() -> {
             _logArea.append(message + "\n");
             _logArea.setCaretPosition(_logArea.getDocument().getLength());
         });
     }
 
-    public void update(TurnDisplayInfo info) {
+    public void Update() {
         // Called each turn — hook here for any turn-based log updates
     }
 

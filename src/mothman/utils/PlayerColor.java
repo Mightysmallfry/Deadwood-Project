@@ -1,24 +1,29 @@
 package mothman.utils;
 
+import mothman.player.Player;
+
 import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlayerColor {
 
     private static PlayerColor _instance = new PlayerColor();
     private PlayerColor() {}
 
+    private Map<Player, Color> _playerColors = new HashMap<>();
     private Color[] _colors = new Color[] {
-            Color.CYAN,             // 0
-            Color.GREEN,            // 1
-            Color.MAGENTA,          // 2
-            Color.ORANGE,           // 3
-            Color.PINK,             // 4
-            Color.RED,              // 5
-            Color.YELLOW,           // 6
-            Color.LIGHT_GRAY        // 7
+            Color.PINK,
+            Color.GREEN,
+            Color.MAGENTA,
+            Color.ORANGE,
+            Color.RED,
+            Color.YELLOW,
+            Color.CYAN,
+            Color.LIGHT_GRAY
     };
 
-    private int _playerIterator;
+    private int _colorIndex = 0;
 
     public static PlayerColor GetInstance() {
         if (_instance == null) {
@@ -27,11 +32,14 @@ public class PlayerColor {
         return _instance;
     }
 
-    public Color GetNextColor()
+    public Color GetColor(Player player)
     {
-        int colorIndex = _playerIterator % 8;
-        _playerIterator++;
-        return _colors[colorIndex];
+        if (!_playerColors.containsKey(player)) {
+            _playerColors.put(player, _colors[_colorIndex % 8]);
+            _colorIndex++;
+        }
+
+        return _playerColors.get(player);
     }
 
 }

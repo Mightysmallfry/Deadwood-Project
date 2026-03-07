@@ -1,5 +1,8 @@
 package mothman.utils;
 
+import mothman.managers.PlayerManager;
+import mothman.player.Player;
+
 import java.util.Map;
 
 public class TurnDisplayInfo {
@@ -17,4 +20,5 @@ public class TurnDisplayInfo {
     public String cardImageName;  // current player's set card, if any
     public Map<String, String> allPresentCards; // ActingSetName -> SceneCardName
     public Map<String, Area> allPresentCardAreas; // ActingSetName -> Area(x,y,w,h)
+    public Player[] players;
 }

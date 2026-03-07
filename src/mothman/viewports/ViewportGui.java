@@ -1,5 +1,6 @@
 package mothman.viewports;
 
+import mothman.gui.ActionLogPanel;
 import mothman.gui.ScoreBoardPanel;
 import mothman.managers.PlayerManager;
 import mothman.sets.*;
@@ -26,8 +27,8 @@ public class ViewportGui extends JFrame implements Viewport {
     private Map<String, String> _pendingCardImages = null;  // [gameSet, SceneCardLabel]
     private Map<String, Area>   _pendingCardAreas  = null; // [gameSet, SceneCardImage]
     private ScoreBoardPanel _scoreboardPanel;
+    private ActionLogPanel _pastLogPanel;
     private JPanel _rightContainer;
-    private JPanel _pastLogPanel;
     private JPanel _actionsPanel;
     private JTextArea _pastLogArea;
     private JLayeredPane _gameLayeredPane;
@@ -38,20 +39,11 @@ public class ViewportGui extends JFrame implements Viewport {
     // Bridges button clicks (EDT) to blocking Viewport calls (game thread).
     private final BlockingQueue<String> _inputQueue = new LinkedBlockingQueue<>();
 
-    //TODO: implement Panel and layer classes.
+    //TODO: Keep splitting up the logic into our panel classes
+    // These help significantly with readability
 
-    // Layers
-    // - We add all the panels to the layers and then when a particular
-    //   action happens we just need to update that layer.
-    // - However I think we only need 2 Layers
-    //      - Gameboard
-    //      - Ui
-    //   Gameboard should already be a GameLayeredPane.
-    //      So it has the card layer and player layer already in it no?
-    //   Then our ui Layer which is on our sides... Maybe we don't worry about layers in this context.
-    //   Perhaps we just give GameBoard Panel the updateLayer() methods ie. UpdateCards(), UpdatePlayers()
-
-
+    // This is really Complicated RN Oh my lord
+    //TODO: How do we want to log days/end of game?
 
     // Constructor
     public ViewportGui() {
@@ -89,7 +81,7 @@ public class ViewportGui extends JFrame implements Viewport {
         mainContainer.add(_rightContainer, BorderLayout.EAST);
 
         // PAST TURNS LOG (Top Right)
-        _pastLogPanel = new JPanel(new BorderLayout());
+        _pastLogPanel = new ActionLogPanel();
         _pastLogPanel.setPreferredSize(new Dimension(3 * boardW / 10, boardH / 3));
         _pastLogPanel.setBackground(new Color(50, 50, 50));
         TitledBorder pastLogBorder = BorderFactory.createTitledBorder("Past Turns Log");
@@ -115,6 +107,7 @@ public class ViewportGui extends JFrame implements Viewport {
         _actionsPanel.setBorder(actionBorder);
 
         // Message label (turn info)
+
         _messageLabel = new JLabel();
         _messageLabel.setForeground(Color.LIGHT_GRAY);
         _messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -216,6 +209,7 @@ public class ViewportGui extends JFrame implements Viewport {
     public void DisplayMessage(String message) {
         SwingUtilities.invokeLater(() -> {
             _messageLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
+            _pastLogPanel.AddToLog(message);
             _actionsPanel.revalidate();
             _actionsPanel.repaint();
         });
@@ -361,7 +355,9 @@ public class ViewportGui extends JFrame implements Viewport {
     /** Parks the game thread until a button click arrives in the queue. */
     private String blockForInput() {
         try {
-            return _inputQueue.take();
+            String input = _inputQueue.take();
+            addToLog(input);
+            return input;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return "pass";
@@ -420,12 +416,6 @@ public class ViewportGui extends JFrame implements Viewport {
         });
     }
 
-    @Override
-    public void update(TurnDisplayInfo info) {
-        updateTurnHeader(info);
-        _scoreboardPanel.update(info);
-    }
-
     /**
      * Used to redraw the card layer, drawing all cards, Called only after
      * Gameboard.Populate()
@@ -451,6 +441,16 @@ public class ViewportGui extends JFrame implements Viewport {
         _scoreboardPanel.Update(PlayerManager.GetInstance().GetPlayerLibrary());
         _gameLayeredPane.revalidate();
         _gameLayeredPane.repaint();
+    }
+
+    // ======================= UPDATE METHODS ========================
+
+
+    @Override
+    public void Update(TurnDisplayInfo info) {
+        updateTurnHeader(info);
+        _scoreboardPanel.Update(info.players);
+        _pastLogPanel.Update(); // Does nothing ATM
     }
 
     /**

@@ -174,7 +174,7 @@ public class ViewportText implements Viewport{
      * Text has no need for this since the cards are naturally hidden at first.
      */
     @Override
-    public void update(TurnDisplayInfo info) {
+    public void Update(TurnDisplayInfo info) {
         // Text viewport has no live display to update
         // THis is not ideal
     }

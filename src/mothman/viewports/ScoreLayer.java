@@ -13,7 +13,7 @@ public class ScoreLayer implements ViewLayer {
 
     @Override
     public void update(TurnDisplayInfo info) {
-        scoreBoardPanel.update(info);
+//        scoreBoardPanel.update(info);
     }
 
 }

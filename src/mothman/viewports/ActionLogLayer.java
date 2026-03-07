@@ -3,9 +3,6 @@ package mothman.viewports;
 import mothman.gui.ActionLogPanel;
 import mothman.utils.TurnDisplayInfo;
 
-import mothman.gui.ActionLogPanel;
-import mothman.utils.TurnDisplayInfo;
-
 public class ActionLogLayer implements ViewLayer {
 
     private ActionLogPanel actionLogPanel;
@@ -16,10 +13,10 @@ public class ActionLogLayer implements ViewLayer {
 
     @Override
     public void update(TurnDisplayInfo info) {
-        actionLogPanel.update(info);
+        actionLogPanel.Update();
     }
 
     public void addToLog(String message) {
-        actionLogPanel.addToLog(message);
+        actionLogPanel.AddToLog(message);
     }
 }
