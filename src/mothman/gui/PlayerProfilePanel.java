@@ -32,12 +32,11 @@ public class PlayerProfilePanel extends JPanel{
     private String GetFormattedInfo(Player player)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append(player.GetPersonalId());
-        sb.append("<html><body style='width:170px;>- Rank: ");
-        sb.append(player.GetCurrentRank()).append("<br>");
-
-        sb.append("[Score : ").append(player.GetScore()).append("]<br>");
-        sb.append("[Location : ").append(player.GetLocation().GetCurrentGameSet().GetName()).append("]<br>");
+        sb.append("<html><body style='width:170px'>");
+        sb.append("<b>").append(player.GetPersonalId()).append("</b>");
+        sb.append(" - Rank: ").append(player.GetCurrentRank()).append("<br>");
+        sb.append("Score: ").append(player.GetScore()).append("<br>");
+        sb.append("Location: ").append(player.GetLocation().GetCurrentGameSet().GetName());
         sb.append("</body></html>");
 
         return sb.toString();
