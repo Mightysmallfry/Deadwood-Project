@@ -2,7 +2,9 @@ package mothman.utils;
 
 import mothman.managers.PlayerManager;
 import mothman.player.Player;
+import mothman.sets.ActingSet;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class TurnDisplayInfo {
@@ -17,8 +19,8 @@ public class TurnDisplayInfo {
     public boolean isActingSet;
     public Map<String, String> activeCardImages;   // ActingSetName -> "01.png"
     public Map<String, Area>   activeCardAreas;    // ActingSetName -> Area(x,y,w,h)
-    public String cardImageName;  // current player's set card, if any
     public Map<String, String> allPresentCards; // ActingSetName -> SceneCardName
     public Map<String, Area> allPresentCardAreas; // ActingSetName -> Area(x,y,w,h)
     public Player[] players;
+    public ArrayList<ActingSet> actingSetArrayList;
 }

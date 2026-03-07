@@ -93,7 +93,6 @@ public class ViewportController {
                 info.budget        = card.GetDifficulty();
                 info.maxShots      = actSet.GetMaxProgress();
                 info.currentShots  = actSet.GetCurrentProgress();
-                info.cardImageName = card.GetImageName();
                 if (player.HasRole()) {
                     info.roleLine = player.GetLocation().GetCurrentRole().GetLine();
                 }
@@ -132,6 +131,7 @@ public class ViewportController {
         info.activeCardAreas  = areas;
         info.allPresentCards = allSceneCards;
         info.allPresentCardAreas = allSceneCardAreas;
+        info.actingSetArrayList = GameManager.GetInstance().GetGameBoard().GetALlActingSets();
 
         return info;
     }

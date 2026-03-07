@@ -41,9 +41,6 @@ public class ViewportGui extends JFrame implements Viewport {
     // Bridges button clicks (EDT) to blocking Viewport calls (game thread).
     private final BlockingQueue<String> _inputQueue = new LinkedBlockingQueue<>();
 
-    //TODO: Keep splitting up the logic into our panel classes
-    // These help significantly with readability
-
     // This is really Complicated RN Oh my lord
     //TODO: How do we want to log days/end of game?
 

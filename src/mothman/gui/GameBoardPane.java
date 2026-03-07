@@ -1,6 +1,7 @@
 package mothman.gui;
 
 import mothman.player.Player;
+import mothman.sets.ActingSet;
 import mothman.utils.Area;
 import mothman.utils.PlayerColor;
 import mothman.utils.TurnDisplayInfo;
@@ -8,6 +9,7 @@ import mothman.turnactions.Move;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 // Goal is to show the entire board in a layered fashion
@@ -20,6 +22,7 @@ public class GameBoardPane extends JLayeredPane {
     private static final String CARD_IMAGE_PATH = "Assets/Card/";
     private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
     private static final String PLAYER_ICON_IMAGE_PATH = "Assets/Dice/";
+    private static final String SHOT_ICON_IMAGE_PATH = "Assets/shot.png";
 
     private static final Integer CARD_LAYER = PALETTE_LAYER;  // Equivalent to PaletteLayer
     private static final Integer SHOT_LAYER = PALETTE_LAYER + 50;
@@ -94,7 +97,39 @@ public class GameBoardPane extends JLayeredPane {
         }
     }
 
+    // TODO: BugFix DrawShots. We need to first populate the board
+    // The this will just check each set's progress and reveal the image instead.
     private void DrawShots(TurnDisplayInfo info) {
+        HideLayer(SHOT_LAYER);
+
+        ArrayList<ActingSet> actingSets = info.actingSetArrayList;
+
+        for (ActingSet set : actingSets)
+        {
+            // For every shot area
+            for (Area shotArea : set.GetShotAreas()){
+                // If we have progress reveal an icon.
+
+                for (int i = set.GetCurrentProgress() - 1; i >= 0; i--)
+                {
+                    JLabel shotLabel = new JLabel();
+                    ImageIcon shotIcon = new ImageIcon(SHOT_ICON_IMAGE_PATH);
+                    shotLabel.setIcon(shotIcon);
+
+                    shotLabel.setBounds(
+                            shotArea.GetX(),
+                            shotArea.GetY(),
+                            shotArea.GetWidth(),
+                            shotArea.GetHeight()
+                    );
+
+                    add(shotLabel, SHOT_LAYER);
+
+                    shotLabel.setVisible(true);
+                }
+            }
+        }
+
     }
 
     // TODO Hella Buggy, something is wrong with card offsets

@@ -14,6 +14,7 @@ public class GameBoard {
 
     // Members
     private GameSet[] _gameSets;
+    private ArrayList<ActingSet> _actingSets;
     private GameSet _startingGameSet;   // Trailer Set
     private CastingSet _upgradeSet;     // Casting Office Set
 
@@ -112,6 +113,22 @@ public class GameBoard {
     {
         return _gameSets;
     }
+
+    public ArrayList<ActingSet> GetALlActingSets() {
+        if (_actingSets == null)
+        {
+            _actingSets = new ArrayList<ActingSet>();
+            for (GameSet gameSet : _gameSets)
+            {
+                if (gameSet instanceof ActingSet actingSet)
+                {
+                    _actingSets.add(actingSet);
+                }
+            }
+        }
+        return _actingSets;
+    }
+
 
     @Override
     public String toString() {
