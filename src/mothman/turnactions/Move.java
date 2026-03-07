@@ -65,7 +65,6 @@ public class Move implements TurnAction{
             if (card != null && !card.IsVisible()){
                 card.SetVisible(true);
             }
-            vc.DealCards();
         }
 
         // Update old Location and Player

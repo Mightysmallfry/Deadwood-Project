@@ -413,6 +413,7 @@ public class ViewportGui extends JFrame implements Viewport {
     public void Update(TurnDisplayInfo info) {
         updateTurnHeader(info);
         _scoreboardPanel.Update(info.players);
+        _gameLayeredPane.Update(info);
         _pastLogPanel.Update(); // Does nothing ATM
     }
 

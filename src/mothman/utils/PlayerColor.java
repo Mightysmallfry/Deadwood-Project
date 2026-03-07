@@ -20,8 +20,19 @@ public class PlayerColor {
             Color.RED,
             Color.YELLOW,
             Color.CYAN,
-            Color.LIGHT_GRAY
+            Color.BLUE
     };
+
+    private Map<Color, String> _colorDicePrefix = new HashMap<>(){{
+        put(Color.PINK, "p");
+        put(Color.GREEN, "g");
+        put(Color.MAGENTA, "v");    // Magenta/Violet
+        put(Color.ORANGE, "o");
+        put(Color.RED, "r");
+        put(Color.YELLOW, "y");
+        put(Color.CYAN, "c");
+        put(Color.BLUE, "b");
+    }};
 
     private int _colorIndex = 0;
 
@@ -41,5 +52,12 @@ public class PlayerColor {
 
         return _playerColors.get(player);
     }
+
+    public String GetColorPrefix(Player player)
+    {
+        Color playerColor = GetColor(player);
+        return _colorDicePrefix.get(playerColor);
+    }
+
 
 }

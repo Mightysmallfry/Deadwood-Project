@@ -1,7 +1,8 @@
 package mothman.gui;
 
-import mothman.managers.PlayerManager;
+import mothman.player.Player;
 import mothman.utils.Area;
+import mothman.utils.PlayerColor;
 import mothman.utils.TurnDisplayInfo;
 import mothman.turnactions.Move;
 
@@ -18,6 +19,12 @@ public class GameBoardPane extends JLayeredPane {
     // Card images are exactly 205x115px - What an annoying resolution
     private static final String CARD_IMAGE_PATH = "Assets/Card/";
     private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
+    private static final String PLAYER_ICON_IMAGE_PATH = "Assets/Dice/";
+
+    private static final Integer CARD_LAYER = PALETTE_LAYER;  // Equivalent to PaletteLayer
+    private static final Integer SHOT_LAYER = PALETTE_LAYER + 50;
+    private static final Integer PLAYER_LAYER = MODAL_LAYER;
+
 
     ImageIcon boardIcon = new ImageIcon("Assets/board.jpg");
     private JLabel boardLabel;
@@ -36,6 +43,25 @@ public class GameBoardPane extends JLayeredPane {
     }
 
     public void Update(TurnDisplayInfo info) {
+        // TODO: On Card Completion we need to redraw the board.
+        DrawCards(info);
+        DrawShots(info);
+        DrawPlayers(info);
+
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Draws the cards, both present and flipped onto the board.
+     *
+     * Does not revalidate or repaint
+     * @param info
+     */
+    private void DrawCards(TurnDisplayInfo info){
+        // Hide all cards and make only the present ones visible
+        HideLayer(CARD_LAYER);
+
         // These data types don't help at all understand what these hold lol.
 
         // Active is revealed
@@ -63,12 +89,60 @@ public class GameBoardPane extends JLayeredPane {
             }
 
             label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
+
             label.setVisible(true);
         }
-
-        revalidate();
-        repaint();
     }
+
+    private void DrawShots(TurnDisplayInfo info) {
+    }
+
+    // TODO Hella Buggy, something is wrong with card offsets
+    private void DrawPlayers(TurnDisplayInfo info){
+        HideLayer(PLAYER_LAYER);
+
+        Player[] players = info.players;
+
+        for (Player player : players){
+            if (player.HasRole())
+            {
+                Area playerArea = player.GetLocation().GetCurrentRole().GetArea();
+                Icon playerIcon = GetPlayerIcon(player);
+                // We only want to get make a new one if we have not made it before.
+                // Then we can just reuse the already existing ones, swapping icons
+                JLabel playerLabel = new JLabel(playerIcon);
+                add(playerLabel, PLAYER_LAYER);
+
+                if (player.GetLocation().GetOnCard())
+                {
+                    Area cardOffset = player.GetLocation().GetCurrentGameSet().GetArea();
+
+                    playerArea = new Area(playerArea.GetX() + cardOffset.GetX(),
+                            playerArea.GetY() + cardOffset.GetY(),
+                            playerArea.GetWidth(),
+                            playerArea.GetHeight()
+                    );
+                }
+
+                playerLabel.setBounds(playerArea.GetX(),
+                        playerArea.GetY(),
+                        playerArea.GetWidth(),
+                        playerArea.GetHeight());
+                playerLabel.setVisible(true);
+            }
+        }
+    }
+
+    private Icon GetPlayerIcon(Player player)
+    {
+        // Get Player Color
+        String playerImageName = PlayerColor.GetInstance().GetColorPrefix(player);
+        int playerRank = player.GetCurrentRank();
+        playerImageName = playerImageName + String.valueOf(playerRank) + ".png";
+
+        return new ImageIcon(PLAYER_ICON_IMAGE_PATH + playerImageName);
+    }
+
 
     /**
      * Gets the label for a scene card if possible, if one does not yet exist
@@ -77,7 +151,7 @@ public class GameBoardPane extends JLayeredPane {
     private JLabel GetCardLabel(String setName) {
         return _cardLabels.computeIfAbsent(setName, k -> {
             JLabel label = new JLabel();
-            add(label, JLayeredPane.PALETTE_LAYER);
+            add(label, GameBoardPane.CARD_LAYER);
             return label;
         });
     }
@@ -86,12 +160,20 @@ public class GameBoardPane extends JLayeredPane {
      * Removes all components from a layer, the components will still exist.
      * @param layer
      */
-    private void ClearLayer(int layer)
+    private void ClearLayer(Integer layer)
     {
         Component[] ToRemoveLayer = getComponentsInLayer(layer);
         for (Component component : ToRemoveLayer)
         {
             remove(component);
+        }
+    }
+
+    private void HideLayer(Integer layer){
+        Component[] ToRemoveLayer = getComponentsInLayer(layer);
+        for (Component component : ToRemoveLayer)
+        {
+            component.setVisible(false);
         }
     }
 
