@@ -1,6 +1,7 @@
 package mothman.viewports;
 
 import mothman.gui.ScoreBoardPanel;
+import mothman.managers.PlayerManager;
 import mothman.sets.*;
 import mothman.utils.Area;
 import mothman.utils.TurnDisplayInfo;
@@ -39,6 +40,19 @@ public class ViewportGui extends JFrame implements Viewport {
 
     //TODO: implement Panel and layer classes.
 
+    // Layers
+    // - We add all the panels to the layers and then when a particular
+    //   action happens we just need to update that layer.
+    // - However I think we only need 2 Layers
+    //      - Gameboard
+    //      - Ui
+    //   Gameboard should already be a GameLayeredPane.
+    //      So it has the card layer and player layer already in it no?
+    //   Then our ui Layer which is on our sides... Maybe we don't worry about layers in this context.
+    //   Perhaps we just give GameBoard Panel the updateLayer() methods ie. UpdateCards(), UpdatePlayers()
+
+
+
     // Constructor
     public ViewportGui() {
         super("Deadwood");
@@ -58,7 +72,7 @@ public class ViewportGui extends JFrame implements Viewport {
         JPanel mainContainer = new JPanel(new BorderLayout());
         add(mainContainer, BorderLayout.CENTER);
 
-        // LEFT PANEL (Player Info)
+        // LEFT PANEL (Player Info and Scoreboard)
         _scoreboardPanel = new ScoreBoardPanel(boardW/5, boardH);
 
         mainContainer.add(_scoreboardPanel, BorderLayout.WEST);
@@ -434,6 +448,7 @@ public class ViewportGui extends JFrame implements Viewport {
             label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
             label.setVisible(true);
         }
+        _scoreboardPanel.Update(PlayerManager.GetInstance().GetPlayerLibrary());
         _gameLayeredPane.revalidate();
         _gameLayeredPane.repaint();
     }

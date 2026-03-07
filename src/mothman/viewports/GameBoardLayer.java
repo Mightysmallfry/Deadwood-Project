@@ -1,24 +1,24 @@
 package mothman.viewports;
 
-import mothman.gui.GameBoardPanel;
+import mothman.gui.GameBoardPane;
 import mothman.turnactions.Move;
 import mothman.utils.TurnDisplayInfo;
 
 public class GameBoardLayer implements ViewLayer {
 
-    private GameBoardPanel gameBoardPanel;
+    private GameBoardPane gameBoardPane;
 
-    public GameBoardLayer(GameBoardPanel gameBoardPanel) {
-        this.gameBoardPanel = gameBoardPanel;
+    public GameBoardLayer(GameBoardPane gameBoardPanel) {
+        this.gameBoardPane = gameBoardPane;
     }
 
     @Override
     public void update(TurnDisplayInfo info) {
-        gameBoardPanel.update(info);
+        gameBoardPane.update(info);
     }
 
     public Move getMove() {
-        return gameBoardPanel.getMove();
+        return gameBoardPane.getMove();
     }
 
 }

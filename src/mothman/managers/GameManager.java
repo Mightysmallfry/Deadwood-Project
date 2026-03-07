@@ -123,7 +123,7 @@ public class GameManager {
         }
 
         GetGameBoard().Clear();
-        GetGameBoard().Populate(vc);
+        GetGameBoard().Populate();
         vc.DealCards();
     }
 
@@ -261,7 +261,8 @@ public class GameManager {
         PlayerManager.GetInstance().SetCurrentPlayer(PlayerManager.GetInstance().GetPlayerLibrary()[startingPlayer]);
 
         // Populate board
-        _gameBoard.Populate(vc);
+        _gameBoard.Populate();
+        vc.DealCards();
 
         // Start updating the game until it ends.
         _hasGameEnded = false;

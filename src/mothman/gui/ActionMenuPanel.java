@@ -3,9 +3,10 @@ package mothman.gui;
 import mothman.sets.UpgradeData;
 import mothman.utils.TurnDisplayInfo;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
-public class ActionMenuPanel {
+public class ActionMenuPanel extends JPanel {
 
     public ActionMenuPanel() {
     }

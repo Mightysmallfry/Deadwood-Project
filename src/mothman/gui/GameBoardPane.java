@@ -3,11 +3,13 @@ package mothman.gui;
 import mothman.utils.TurnDisplayInfo;
 import mothman.turnactions.Move;
 
-public class GameBoardPanel {
+import javax.swing.*;
+
+public class GameBoardPane extends JLayeredPane {
 
     private Move selectedMove;
 
-    public GameBoardPanel() {
+    public GameBoardPane() {
     }
 
     public void update(TurnDisplayInfo info) {

@@ -6,17 +6,16 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class ActionLogPanel {
+public class ActionLogPanel extends JPanel {
 
-    private final JPanel _panel;
     private final JTextArea _logArea;
 
     public ActionLogPanel() {
-        _panel = new JPanel(new BorderLayout());
-        _panel.setBackground(new Color(50, 50, 50));
+        setLayout(new BorderLayout());
+        setBackground(new Color(50, 50, 50));
         TitledBorder border = BorderFactory.createTitledBorder("Past Turns Log");
         border.setTitleColor(Color.ORANGE);
-        _panel.setBorder(border);
+        setBorder(border);
 
         _logArea = new JTextArea();
         _logArea.setEditable(false);
@@ -25,10 +24,8 @@ public class ActionLogPanel {
         _logArea.setBackground(new Color(50, 50, 50));
         _logArea.setForeground(Color.LIGHT_GRAY);
 
-        _panel.add(new JScrollPane(_logArea), BorderLayout.CENTER);
+        add(new JScrollPane(_logArea), BorderLayout.CENTER);
     }
-
-    public JPanel getComponent() { return _panel; }
 
     public void addToLog(String message) {
         SwingUtilities.invokeLater(() -> {

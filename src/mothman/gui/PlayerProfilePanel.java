@@ -6,32 +6,59 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
+// Responsible for being a self contained profile panel to be added elsewhere
 public class PlayerProfilePanel extends JPanel{
     // TODO: Randomize and Queue 8 colors for player.
 
-    JLabel playerInfo;
+    private String _playerName;
+    private JLabel _playerInfo;
+    private Color _playerColor = Color.GREEN;
 
     public PlayerProfilePanel(Player player)
     {
+        _playerName = player.GetPersonalId();
+
         TitledBorder scoreboardBorder = BorderFactory.createTitledBorder(player.GetPersonalId());
         scoreboardBorder.setTitleColor(Color.GREEN);
+        setBackground(new Color(40, 40, 40));
         setBorder(scoreboardBorder);
 
-        playerInfo = new JLabel(GetFormattedInfo(player));
+        _playerInfo = new JLabel();
+        _playerInfo.setText(GetFormattedInfo(player));
+        _playerInfo.setForeground(_playerColor);
+        add(_playerInfo);
     }
 
     private String GetFormattedInfo(Player player)
     {
         StringBuilder sb = new StringBuilder();
         sb.append(player.GetPersonalId());
-        sb.append(" - Rank: ");
-        sb.append(player.GetCurrentRank()).append("\n");
+        sb.append("<html><body style='width:170px;>- Rank: ");
+        sb.append(player.GetCurrentRank()).append("<br>");
 
-        sb.append("[Score : ").append(player.GetScore()).append("]\n");
-        sb.append("[Location : ").append(player.GetLocation()).append("]\n");
+        sb.append("[Score : ").append(player.GetScore()).append("]<br>");
+        sb.append("[Location : ").append(player.GetLocation().GetCurrentGameSet().GetName()).append("]<br>");
+        sb.append("</body></html>");
 
         return sb.toString();
     }
 
+    public void Update(Player player)
+    {
+        _playerName = player.GetPersonalId();
+        _playerInfo.setText(GetFormattedInfo(player));
+    }
 
+    public void SetColor(Color playerColor){
+        _playerColor = playerColor;
+        _playerInfo.setForeground(_playerColor);
+        UpdateBorder();
+    }
+
+    private void UpdateBorder(){
+        TitledBorder scoreboardBorder = BorderFactory.createTitledBorder(_playerName);
+        scoreboardBorder.setTitleColor(_playerColor);
+        setBackground(new Color(40, 40, 40));
+        setBorder(scoreboardBorder);
+    }
 }
