@@ -8,8 +8,10 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.sql.Array;
 import java.util.ArrayList;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,6 @@ public class GameSetParser extends ParseDaddy{
             System.out.println("Something went wrong parsing : [" + fileName + "] : " + e);
         }
     }
-
 
     /**
      * Attempts to open xml file by the given fileName
@@ -252,6 +253,7 @@ public class GameSetParser extends ParseDaddy{
 
         Area area = null;
         ArrayList<ActingRole> roles = new ArrayList<>();
+        ArrayList<Area> shotAreas = new ArrayList<>();
         int maximumProgress = 0;
 
         NodeList children = setNode.getChildNodes();
@@ -271,6 +273,7 @@ public class GameSetParser extends ParseDaddy{
                     break;
 
                 case "takes":
+                    shotAreas = ParseTakes(child);
                     maximumProgress = ParseMaxTakes(child);
                     break;
 
@@ -279,7 +282,7 @@ public class GameSetParser extends ParseDaddy{
                     break;
                 }
             }
-        return new ActingSet(name, area, new HashMap<>(), maximumProgress, roles);
+        return new ActingSet(name, area, new HashMap<>(), maximumProgress, roles, shotAreas);
     }
 
 
@@ -327,6 +330,36 @@ public class GameSetParser extends ParseDaddy{
         }
         return max;
     }
+
+    private ArrayList<Area> ParseTakes(Node takesNode)
+    {
+        NodeList takeNodes = takesNode.getChildNodes();
+        ArrayList<Area> takesList = new ArrayList<>();
+
+        for (int i = 0; i < takeNodes.getLength(); i++)
+        {
+            Node take = takeNodes.item(i);
+
+            if (take.getNodeType() == Node.ELEMENT_NODE && "take".equals(take.getNodeName()))
+            {
+                NodeList takeChildren= take.getChildNodes();
+                for (int j = 0; j < takeChildren.getLength(); j++)
+                {
+                    Node child = takeChildren.item(j);
+
+                    if (child.getNodeName().equals("area")){
+                        Area area = ParseArea(child);
+                        takesList.add(area);
+                    }
+                }
+            }
+        }
+
+        Collections.reverse(takesList);
+
+        return takesList;
+    }
+
 
     private GameSet FindTrailerSetData(Node trailerNode)
     {

@@ -10,6 +10,7 @@ import mothman.sets.ActingSet;
 import mothman.sets.CastingSet;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
+import mothman.utils.Area;
 import mothman.utils.RulesPackage;
 import mothman.viewports.ViewportGui;
 import mothman.viewports.ViewportText;
@@ -60,6 +61,7 @@ public class Deadwood {
         CastingSet castingSet = boardParser.FindCastingSet();
         GameSet trailerSet = boardParser.FindTrailer();
         ArrayList<ActingSet> actingSets = boardParser.FindActingSets();
+//        TestSetList(actingSets);
 
         // =========    =========   =========   =========   =========
         // CHECKPOINT 1: ALL FILES PARSED AND DATA RECEIVED
@@ -138,7 +140,12 @@ public class Deadwood {
     public static void TestSetList(ArrayList<ActingSet> list) {
         for (ActingSet set : list)
         {
-            System.out.println(set.toString());
+//            System.out.println(set.toString());
+            System.out.println(set.GetName());
+            for (Area area : set.GetShotAreas())
+            {
+                System.out.println(area.toString());
+            }
         }
     }
 

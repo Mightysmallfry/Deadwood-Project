@@ -12,6 +12,9 @@ public class ActingSet extends GameSet {
     private int _maximumProgress = 3;   // At this progress the card should be complete
     private int _currentProgress = 0;   // Current Progress via running Game
 
+    // First area is the first shot value etc.
+    private ArrayList<Area> _shotAreas = new ArrayList<>();
+
     private boolean _complete = false;
     private boolean revealed = false;
 
@@ -37,7 +40,7 @@ public class ActingSet extends GameSet {
     }
 
     public ActingSet(String name, Area area, HashMap<String,GameSet> neighbors,
-                     int maximumProgress, ArrayList<ActingRole> localRoles){
+                     int maximumProgress, ArrayList<ActingRole> localRoles, ArrayList<Area> shotAreas){
         // Inherited
         _name = name;
         _area = area;
@@ -55,6 +58,8 @@ public class ActingSet extends GameSet {
         for (ActingRole role : localRoles){
             _roleCatalog.put(role, null);
         }
+
+        _shotAreas = shotAreas;
     }
 
     // Methods
@@ -69,6 +74,15 @@ public class ActingSet extends GameSet {
 
         // clear local role occupancy
         _roleCatalog.replaceAll((r, v) -> null);
+    }
+
+
+    public void SetShotAreas(ArrayList<Area> shotAreas){
+        _shotAreas = shotAreas;
+    }
+
+    public ArrayList<Area> GetShotAreas() {
+        return _shotAreas;
     }
 
 
