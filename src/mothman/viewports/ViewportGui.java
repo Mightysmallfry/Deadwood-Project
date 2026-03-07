@@ -1,6 +1,7 @@
 package mothman.viewports;
 
 import mothman.gui.ActionLogPanel;
+import mothman.gui.GameBoardPane;
 import mothman.gui.ScoreBoardPanel;
 import mothman.managers.PlayerManager;
 import mothman.sets.*;
@@ -22,16 +23,17 @@ public class ViewportGui extends JFrame implements Viewport {
     private static final String CARD_IMAGE_PATH = "Assets/Card/";
     private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
 
-    // --- Layout ---
-    private final Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
+    // Card Images and Loc
     private Map<String, String> _pendingCardImages = null;  // [gameSet, SceneCardLabel]
     private Map<String, Area>   _pendingCardAreas  = null; // [gameSet, SceneCardImage]
+
+    // --- Layout ---
     private ScoreBoardPanel _scoreboardPanel;
     private ActionLogPanel _pastLogPanel;
     private JPanel _rightContainer;
     private JPanel _actionsPanel;
     private JTextArea _pastLogArea;
-    private JLayeredPane _gameLayeredPane;
+    private GameBoardPane _gameLayeredPane;
     private JLabel _messageLabel;
     private int boardW = 1200;
     private int boardH = 900;
@@ -45,6 +47,8 @@ public class ViewportGui extends JFrame implements Viewport {
     // This is really Complicated RN Oh my lord
     //TODO: How do we want to log days/end of game?
 
+    //TODO: Viewports should be notified when something is changed. Thus
+
     // Constructor
     public ViewportGui() {
         super("Deadwood");
@@ -52,13 +56,7 @@ public class ViewportGui extends JFrame implements Viewport {
         setLayout(new BorderLayout());
 
         // BOARD LAYER (CENTER)
-        _gameLayeredPane = new JLayeredPane();
-        _gameLayeredPane.setPreferredSize(new Dimension(boardW, boardH));
-        _gameLayeredPane.setLayout(null); // absolute positioning for cards
-        ImageIcon boardIcon = new ImageIcon("Assets/board.jpg");
-        JLabel boardLabel = new JLabel(boardIcon);
-        boardLabel.setBounds(0, 0, boardW, boardH);
-        _gameLayeredPane.add(boardLabel, JLayeredPane.DEFAULT_LAYER);
+        _gameLayeredPane = new GameBoardPane(boardW, boardH);
 
         // MAIN CONTAINER (3 columns)
         JPanel mainContainer = new JPanel(new BorderLayout());
@@ -297,19 +295,6 @@ public class ViewportGui extends JFrame implements Viewport {
         return new String[]{ String.valueOf(chosenRank), currencyChoice };
     }
 
-
-
-    /**
-     * Hides the card for a specific set immediately — call this from Act.java when a scene completes.
-     */
-    public void hideSceneCard(String setName) {
-        SwingUtilities.invokeLater(() -> {
-            JLabel label = _cardLabels.get(setName);
-            if (label != null) label.setVisible(false);
-            _gameLayeredPane.repaint();
-        });
-    }
-
     // Private helpers
     /**
      * Clears the dynamic button area (indices 4+) and rebuilds it.
@@ -408,14 +393,6 @@ public class ViewportGui extends JFrame implements Viewport {
 
     // =========== Card Layer =============
 
-    private JLabel getOrCreateCardLabel(String setName) {
-        return _cardLabels.computeIfAbsent(setName, k -> {
-            JLabel label = new JLabel();
-            _gameLayeredPane.add(label, JLayeredPane.PALETTE_LAYER);
-            return label;
-        });
-    }
-
     /**
      * Used to redraw the card layer, drawing all cards, Called only after
      * Gameboard.Populate()
@@ -423,24 +400,10 @@ public class ViewportGui extends JFrame implements Viewport {
     @Override
     public void DealCards(TurnDisplayInfo info)
     {
-        // If the card is on the board
-        for (Map.Entry<String, String> entry : info.allPresentCards.entrySet())
-        {
-            // Print that card face down.
-            String setName = entry.getKey();
-            Area   area    = info.allPresentCardAreas.get(setName);
-            ImageIcon icon = new ImageIcon(CARD_BACKING_IMAGE_PATH);
-
-            // If the card has not been made yet, create it
-            JLabel label = getOrCreateCardLabel(setName);
-
-            label.setIcon(icon);
-            label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
-            label.setVisible(true);
-        }
+        // This viewport is really the final container, all the other containers
+        // need to be aware of their changes so they redraw themselves.
+        _gameLayeredPane.Update(info);
         _scoreboardPanel.Update(PlayerManager.GetInstance().GetPlayerLibrary());
-        _gameLayeredPane.revalidate();
-        _gameLayeredPane.repaint();
     }
 
     // ======================= UPDATE METHODS ========================
@@ -453,37 +416,4 @@ public class ViewportGui extends JFrame implements Viewport {
         _pastLogPanel.Update(); // Does nothing ATM
     }
 
-    /**
-     * Redraws only the active cards that have been discovered, should be called
-     * after move, act (specifically on complete)
-     */
-    @Override
-    public void UpdateCardDisplay(TurnDisplayInfo info) {
-        Map<String, String> images = info.activeCardImages;
-        Map<String, Area> areas = info.activeCardAreas;
-
-        //TODO: Combine this with a DealCards and make the difference be the input maps?
-        // They have the same usage but differing contexts.
-
-        // Create a sceneCardLabel component if it does not already exist
-        for (Map.Entry<String, String> entry : images.entrySet()) {
-
-            String setName = entry.getKey();
-            Area   area    = areas.get(setName);
-            ImageIcon icon = new ImageIcon(CARD_IMAGE_PATH + entry.getValue());
-
-            // If invalid icon just skip
-            if (icon.getIconWidth() <= 0) continue;
-
-            // Create if the card is missing, Otherwise simply swap out the icon.
-            JLabel label = getOrCreateCardLabel(setName);
-            label.setIcon(icon);
-            label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
-            label.setVisible(true);
-        }
-
-        // Redraw the layer, applying the buffer
-        _gameLayeredPane.revalidate();
-        _gameLayeredPane.repaint();
-    }
 }

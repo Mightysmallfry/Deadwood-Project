@@ -22,5 +22,4 @@ public interface Viewport {
     void DisplayMessage(String message); // replaces System.out in TurnActions
     void Update(TurnDisplayInfo info);
     void DealCards(TurnDisplayInfo info);
-    void UpdateCardDisplay(TurnDisplayInfo info);
 }

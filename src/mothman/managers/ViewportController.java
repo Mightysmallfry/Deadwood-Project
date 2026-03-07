@@ -120,8 +120,11 @@ public class ViewportController {
                     areas.put(gameSet.GetName(), gameSet.GetArea());
                 }
 
-                allSceneCards.put(gameSet.GetName(), card.GetName());
-                allSceneCardAreas.put(gameSet.GetName(), gameSet.GetArea());
+                if (!actingSet.IsComplete())
+                {
+                    allSceneCards.put(gameSet.GetName(), card.GetName());
+                    allSceneCardAreas.put(gameSet.GetName(), gameSet.GetArea());
+                }
             }
         }
 
@@ -172,16 +175,12 @@ public class ViewportController {
         return possibleActions;
     }
 
-
     public void DealCards(){
         _viewport.DealCards(BuildTurnInfo());
     }
 
     // ================ UPDATE METHODS ===================
 
-    public void UpdateBoardDisplay(){
-        _viewport.UpdateCardDisplay(BuildTurnInfo());
-    }
 
     /**
      * Use this for updating the Ui Elements as a whole.

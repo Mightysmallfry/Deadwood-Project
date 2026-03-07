@@ -11,12 +11,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ViewportText implements Viewport{
+public class ViewportText implements Viewport {
 
     private Scanner _sc = new Scanner(System.in);
 
     @Override
-    public String GetName(){
+    public String GetName() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Please input your name: ");
         String name = sc.nextLine();
@@ -75,7 +75,7 @@ public class ViewportText implements Viewport{
             if (u.GetRank() == rankRequest &&
                     u.GetCurrencyType().equals(currencyChoice)) {
 
-                return new int[]{ rankRequest, u.GetCostAmount() };
+                return new int[]{rankRequest, u.GetCostAmount()};
             }
         }
 
@@ -134,6 +134,7 @@ public class ViewportText implements Viewport{
         System.out.print("Choice: ");
         return _sc.nextLine().toLowerCase().strip();
     }
+
     @Override
     public int GetUpgradeRank() {
         System.out.println("Enter the rank you want to purchase:");
@@ -176,13 +177,10 @@ public class ViewportText implements Viewport{
     @Override
     public void Update(TurnDisplayInfo info) {
         // Text viewport has no live display to update
-        // THis is not ideal
+        // This is not ideal
     }
 
-    public void DealCards(TurnDisplayInfo info){
+    public void DealCards(TurnDisplayInfo info) {
     }
 
-    @Override
-    public void UpdateCardDisplay(TurnDisplayInfo info){
-    }
 }

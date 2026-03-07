@@ -14,7 +14,7 @@ public class GameBoardLayer implements ViewLayer {
 
     @Override
     public void update(TurnDisplayInfo info) {
-        gameBoardPane.update(info);
+        gameBoardPane.Update(info);
     }
 
     public Move getMove() {
