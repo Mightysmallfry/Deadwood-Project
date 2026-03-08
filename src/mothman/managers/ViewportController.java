@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO: Direct ViewportController to becoming more of an update dispatcher.
 public class ViewportController {
 
     private Viewport _viewport;
@@ -27,11 +28,12 @@ public class ViewportController {
     public String AskAction() {
         ArrayList<String> possibleActions = GetActionList();
         TurnDisplayInfo info = BuildTurnInfo();
+
+        // TODO: Try out forcing and ending the game, these seem to be good
+//        possibleActions.add("force");
+//        possibleActions.add("end game");
+
         String choice = _viewport.GetAction(possibleActions, info);
-
-        possibleActions.add("force");
-        possibleActions.add("end game");
-
         return choice;
     }
 
@@ -68,6 +70,11 @@ public class ViewportController {
     public String AskMove(HashMap<String, GameSet> neighbors, Player player) {
         return _viewport.GetMove(neighbors, player);
     }
+
+    // -------------------------------------------------------------------------
+    // Game state helpers
+    // -------------------------------------------------------------------------
+
 
     // Internal helpers
     /**

@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+// TODO: Direct ViewportGui to becoming a ui-ui interaction manager
 public class ViewportGui extends JFrame implements Viewport {
 
     // Card images are exactly 205x115px
