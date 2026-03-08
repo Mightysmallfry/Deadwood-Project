@@ -15,6 +15,7 @@ public class TurnDisplayInfo {
     public int maxShots;
     public int currentShots;
     public int actionTokens;
+    public int rehearsals;
     public boolean sceneComplete;
     public boolean isActingSet;
     public Map<String, String> activeCardImages;   // ActingSetName -> "01.png"

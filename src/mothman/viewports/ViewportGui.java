@@ -83,7 +83,6 @@ public class ViewportGui extends JFrame implements Viewport {
 
         JScrollPane logScrollPane = new JScrollPane(_pastLogPanel.GetLogArea());
         _pastLogPanel.add(logScrollPane, BorderLayout.CENTER);
-
         _rightContainer.add(_pastLogPanel, BorderLayout.NORTH);
 
         // ACTIONS PANEL (Bottom Right)
@@ -95,7 +94,6 @@ public class ViewportGui extends JFrame implements Viewport {
         _actionsPanel.setBorder(actionBorder);
 
         // Message label (turn info)
-
         _messageLabel = new JLabel();
         _messageLabel.setForeground(Color.LIGHT_GRAY);
         _messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -360,6 +358,7 @@ public class ViewportGui extends JFrame implements Viewport {
                 sb.append("Budget: ").append(info.budget).append("<br>");
                 sb.append("Shots: ").append(info.currentShots)
                         .append("/").append(info.maxShots).append("<br>");
+                sb.append("Rehearsals: ").append(info.rehearsals).append("<br>");
                 if (info.roleLine != null) {
                     sb.append("<i>\"").append(info.roleLine).append("\"</i><br>");
                 }

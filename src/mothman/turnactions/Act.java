@@ -29,7 +29,7 @@ public class Act implements TurnAction {
 
         // Roll 1d6 against difficulty
         int attempt = Dice.GetInstance().Roll();
-        vc.ShowMessage("! " + currentPlayer.GetPersonalId() " rolled: " + attempt +
+        vc.ShowMessage("! " + currentPlayer.GetPersonalId() + " rolled: " + attempt +
                 " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
 
         attempt += currentPlayer.GetLocation().GetRehearseTokens();
