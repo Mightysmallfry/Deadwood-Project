@@ -89,7 +89,7 @@ public class ViewportController {
 
         if (currentSet instanceof ActingSet actSet) {
             SceneCard card = actSet.GetCurrentSceneCard();
-            info.sceneComplete = (card == null);
+            info.sceneComplete = actSet.IsComplete();
             if (card != null) {
                 info.budget        = card.GetDifficulty();
                 info.maxShots      = actSet.GetMaxProgress();
