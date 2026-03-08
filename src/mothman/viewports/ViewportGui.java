@@ -35,7 +35,7 @@ public class ViewportGui extends JFrame implements Viewport {
     private JPanel _rightContainer;
     private JPanel _actionsPanel;
     private GameBoardPane _gameLayeredPane;
-    private JLabel _messageLabel;
+    private JLabel _turnInfoLabel;
     private int boardW = 1200;
     private int boardH = 900;
 
@@ -94,10 +94,10 @@ public class ViewportGui extends JFrame implements Viewport {
         _actionsPanel.setBorder(actionBorder);
 
         // Message label (turn info)
-        _messageLabel = new JLabel();
-        _messageLabel.setForeground(Color.LIGHT_GRAY);
-        _messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        _actionsPanel.add(_messageLabel);
+        _turnInfoLabel = new JLabel();
+        _turnInfoLabel.setForeground(Color.LIGHT_GRAY);
+        _turnInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _actionsPanel.add(_turnInfoLabel);
         _actionsPanel.add(Box.createVerticalStrut(10));
 
         _rightContainer.add(_actionsPanel, BorderLayout.CENTER);
@@ -289,7 +289,7 @@ public class ViewportGui extends JFrame implements Viewport {
         try {
             SwingUtilities.invokeAndWait(() -> {
                 _actionsPanel.removeAll();
-                _actionsPanel.add(_messageLabel);
+                _actionsPanel.add(_turnInfoLabel);
                 _actionsPanel.add(Box.createVerticalStrut(10));
 
                 JLabel headerLabel = new JLabel(header);
@@ -371,7 +371,7 @@ public class ViewportGui extends JFrame implements Viewport {
 
         final String text = sb.toString();
         SwingUtilities.invokeLater(() -> {
-            _messageLabel.setText(text);
+            _turnInfoLabel.setText(text);
             _actionsPanel.revalidate();
             _actionsPanel.repaint();
         });
