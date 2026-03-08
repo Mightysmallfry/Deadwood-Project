@@ -78,6 +78,7 @@ public class GameManager {
             case "profile"  -> vc.ShowMessage(currentPlayer.toString());    // Show the profile of the Current Profile
             default         -> vc.ShowMessage("Invalid Choice");
         }
+        vc.UpdateViewport();
     }
 
     /**

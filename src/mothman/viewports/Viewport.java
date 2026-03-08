@@ -1,5 +1,6 @@
 package mothman.viewports;
 
+import mothman.player.Player;
 import mothman.sets.ActingRole;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
@@ -15,11 +16,13 @@ public interface Viewport {
     String GetName();
     int GetUpgradeRank();
     String GetUpgradeCurrency();
-    String GetMove(HashMap<String, GameSet> neighbors);
+    String GetMove(HashMap<String, GameSet> neighbors, Player player);
     String GetAction(ArrayList<String> possibleActions, TurnDisplayInfo info);
-    String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles);
+    String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles, Player player);
     void DisplayActionList(ArrayList<String> actionList);
     void DisplayMessage(String message); // replaces System.out in TurnActions
+
     void Update(TurnDisplayInfo info);
     void DealCards(TurnDisplayInfo info);
+
 }

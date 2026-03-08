@@ -29,13 +29,14 @@ public class Act implements TurnAction {
 
         // Roll 1d6 against difficulty
         int attempt = Dice.GetInstance().Roll();
-        vc.ShowMessage("You rolled: " + attempt + " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
+        vc.ShowMessage("! " + currentPlayer.GetPersonalId() " rolled: " + attempt +
+                " with a " + currentPlayer.GetLocation().GetRehearseTokens() + " bonus");
+
         attempt += currentPlayer.GetLocation().GetRehearseTokens();
 
         boolean success = attempt >= currentCard.GetDifficulty();
 
         PlayerManager playerManager = PlayerManager.GetInstance();
-
         if (success) {
             currentSet.SetCurrentProgress(currentSet.GetCurrentProgress() + 1);
             playerManager.BasicPay(currentPlayer, true);
@@ -45,10 +46,10 @@ public class Act implements TurnAction {
                 playerManager.BonusPay(currentPlayer);
                 playerManager.PostSceneReset(currentPlayer);
             }
-        } else
+        }
 
         // Update Ui
-        vc.UpdateViewport();
+//        vc.UpdateViewport();
 
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         GameManager.GetInstance().SetActionTokens(actionTokens - ACTION_COST);

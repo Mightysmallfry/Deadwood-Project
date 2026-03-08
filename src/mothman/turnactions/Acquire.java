@@ -41,7 +41,8 @@ public class Acquire implements TurnAction {
         boolean choosingRole = true;
         while (choosingRole)
         {
-           String playerChoice = viewportController.AskRoleSelection(sceneCard, actingSet.GetAvailableLocalRoles());
+           String playerChoice = viewportController.AskRoleSelection(sceneCard,
+                   actingSet.GetAvailableLocalRoles(), currentPlayer);
 
             if (playerChoice.equals("cancel")) {
                 return;
@@ -79,7 +80,7 @@ public class Acquire implements TurnAction {
             sceneCard.GetRoleCatalog().put(chosenRole, currentPlayer);
         }
 
-        viewportController.UpdateViewport();
+//        viewportController.UpdateViewport();
         // Process end of action
         int actionTokens = GameManager.GetInstance().GetActionTokens();
         actionTokens -= ACTION_COST;

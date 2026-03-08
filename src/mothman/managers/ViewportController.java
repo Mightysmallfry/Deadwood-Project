@@ -35,8 +35,8 @@ public class ViewportController {
         return choice;
     }
 
-    public String AskRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles) {
-        return _viewport.GetRoleSelection(sceneCard, localRoles);
+    public String AskRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles, Player player) {
+        return _viewport.GetRoleSelection(sceneCard, localRoles, player);
     }
 
     public int AskUpgradeRank() {
@@ -65,8 +65,8 @@ public class ViewportController {
         _viewport.DisplayMessage(PlayerManager.LocatePlayers());
     }
 
-    public String AskMove(HashMap<String, GameSet> neighbors) {
-        return _viewport.GetMove(neighbors);
+    public String AskMove(HashMap<String, GameSet> neighbors, Player player) {
+        return _viewport.GetMove(neighbors, player);
     }
 
     // Internal helpers

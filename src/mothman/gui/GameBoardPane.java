@@ -18,11 +18,10 @@ import java.util.Map;
 //  - Players (Top)
 public class GameBoardPane extends JLayeredPane {
 
-    // Card images are exactly 205x115px - What an annoying resolution
     private static final String CARD_IMAGE_PATH = "Assets/Card/";
     private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
     private static final String PLAYER_ICON_IMAGE_PATH = "Assets/Dice/";
-    private static final String SHOT_ICON_IMAGE_PATH = "Assets/shot.png";
+    private static final String SHOT_ICON_IMAGE_PATH = "Assets/Hat.png";
 
     private static final Integer CARD_LAYER = PALETTE_LAYER;  // Equivalent to PaletteLayer
     private static final Integer SHOT_LAYER = PALETTE_LAYER + 50;
@@ -43,6 +42,7 @@ public class GameBoardPane extends JLayeredPane {
         boardLabel = new JLabel(boardIcon);
         boardLabel.setBounds(0, 0, boardWidth, boardHeight);
         add(boardLabel, JLayeredPane.DEFAULT_LAYER);
+
     }
 
     public void Update(TurnDisplayInfo info) {
@@ -97,8 +97,7 @@ public class GameBoardPane extends JLayeredPane {
         }
     }
 
-    // TODO: BugFix DrawShots. We need to first populate the board
-    // The this will just check each set's progress and reveal the image instead.
+    //TODO: BugFix DrawShots. Same process as cards?
     private void DrawShots(TurnDisplayInfo info) {
         HideLayer(SHOT_LAYER);
 
@@ -110,7 +109,7 @@ public class GameBoardPane extends JLayeredPane {
             for (Area shotArea : set.GetShotAreas()){
                 // If we have progress reveal an icon.
 
-                for (int i = set.GetCurrentProgress() - 1; i >= 0; i--)
+                for (int i = set.GetCurrentProgress(); i > 0; i--)
                 {
                     JLabel shotLabel = new JLabel();
                     ImageIcon shotIcon = new ImageIcon(SHOT_ICON_IMAGE_PATH);
@@ -132,7 +131,8 @@ public class GameBoardPane extends JLayeredPane {
 
     }
 
-    // TODO Hella Buggy, something is wrong with card offsets
+    //TODO: Fixed offsets, now we need to add areas for people to be in
+    // trailer and casting office.
     private void DrawPlayers(TurnDisplayInfo info){
         HideLayer(PLAYER_LAYER);
 

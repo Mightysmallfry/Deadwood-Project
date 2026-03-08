@@ -21,8 +21,8 @@ public class ActionLogPanel extends JPanel {
         _logArea.setEditable(false);
         _logArea.setLineWrap(true);
         _logArea.setWrapStyleWord(true);
-        _logArea.setBackground(new Color(50, 50, 50));
-        _logArea.setForeground(Color.LIGHT_GRAY);
+
+
 
         add(new JScrollPane(_logArea), BorderLayout.CENTER);
     }
@@ -32,6 +32,10 @@ public class ActionLogPanel extends JPanel {
             _logArea.append(message + "\n");
             _logArea.setCaretPosition(_logArea.getDocument().getLength());
         });
+    }
+
+    public JTextArea GetLogArea(){
+        return _logArea;
     }
 
     public void Update() {

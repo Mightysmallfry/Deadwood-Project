@@ -4,6 +4,7 @@ import mothman.gui.ActionLogPanel;
 import mothman.gui.GameBoardPane;
 import mothman.gui.ScoreBoardPanel;
 import mothman.managers.PlayerManager;
+import mothman.player.Player;
 import mothman.sets.*;
 import mothman.utils.Area;
 import mothman.utils.TurnDisplayInfo;
@@ -30,9 +31,9 @@ public class ViewportGui extends JFrame implements Viewport {
     // --- Layout ---
     private ScoreBoardPanel _scoreboardPanel;
     private ActionLogPanel _pastLogPanel;
+
     private JPanel _rightContainer;
     private JPanel _actionsPanel;
-    private JTextArea _pastLogArea;
     private GameBoardPane _gameLayeredPane;
     private JLabel _messageLabel;
     private int boardW = 1200;
@@ -78,17 +79,9 @@ public class ViewportGui extends JFrame implements Viewport {
         // PAST TURNS LOG (Top Right)
         _pastLogPanel = new ActionLogPanel();
         _pastLogPanel.setPreferredSize(new Dimension(3 * boardW / 10, boardH / 3));
-        _pastLogPanel.setBackground(new Color(50, 50, 50));
-        TitledBorder pastLogBorder = BorderFactory.createTitledBorder("Past Turns Log");
-        pastLogBorder.setTitleColor(Color.ORANGE);
-        _pastLogPanel.setBorder(pastLogBorder);
 
-        _pastLogArea = new JTextArea();
-        _pastLogArea.setEditable(false);
-        _pastLogArea.setLineWrap(true);
-        _pastLogArea.setWrapStyleWord(true);
 
-        JScrollPane logScrollPane = new JScrollPane(_pastLogArea);
+        JScrollPane logScrollPane = new JScrollPane(_pastLogPanel.GetLogArea());
         _pastLogPanel.add(logScrollPane, BorderLayout.CENTER);
 
         _rightContainer.add(_pastLogPanel, BorderLayout.NORTH);
@@ -133,19 +126,23 @@ public class ViewportGui extends JFrame implements Viewport {
         _pendingCardImages = info.activeCardImages;
         _pendingCardAreas  = info.activeCardAreas;
         showButtons(possibleActions, "Actions:");
-        return blockForInput();
+        String input = blockForInput();
+        DisplayMessage(info.playerId + " : " + input);
+        return input;
     }
 
     @Override
-    public String GetMove(HashMap<String, GameSet> neighbors) {
+    public String GetMove(HashMap<String, GameSet> neighbors, Player player) {
         ArrayList<String> locationNames = new ArrayList<>(neighbors.keySet());
         locationNames.add("cancel");
         showButtons(locationNames, "Move to:");
-        return blockForInput();
+        String input = blockForInput();
+        DisplayMessage(player.GetPersonalId() + " : " + input);
+        return input;
     }
 
     @Override
-    public String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles) {
+    public String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles, Player player) {
         ArrayList<String> roleOptions = new ArrayList<>();
 
         if (sceneCard != null) {
@@ -164,8 +161,9 @@ public class ViewportGui extends JFrame implements Viewport {
         showButtons(roleOptions, "Roles — " + cardName + ":");
 
         String raw = blockForInput();
-        if (raw.equals("cancel")) return "cancel";
+        DisplayMessage(player.GetPersonalId() + " : " + raw);
 
+        if (raw.equals("cancel")) return "cancel";
         return raw.replaceAll("\\s*\\(rank \\d+\\)$", "").replaceAll("^\\[Extra\\] ", "").strip();
     }
 
@@ -200,15 +198,7 @@ public class ViewportGui extends JFrame implements Viewport {
         // Button panel IS the action list
     }
 
-    @Override
-    public void DisplayMessage(String message) {
-        SwingUtilities.invokeLater(() -> {
-            _messageLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
-            _pastLogPanel.AddToLog(message);
-            _actionsPanel.revalidate();
-            _actionsPanel.repaint();
-        });
-    }
+
 
     @Override
     public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
@@ -326,11 +316,13 @@ public class ViewportGui extends JFrame implements Viewport {
         }
     }
 
-    //used to update the live log in the future in managers or smthn
-    public void addToLog(String message) {
+    @Override
+    public void DisplayMessage(String message) {
         SwingUtilities.invokeLater(() -> {
-            _pastLogArea.append(message + "\n");
-            _pastLogArea.setCaretPosition(_pastLogArea.getDocument().getLength());
+//            _messageLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
+            _pastLogPanel.AddToLog(message);
+            revalidate();
+            repaint();
         });
     }
 
@@ -338,7 +330,6 @@ public class ViewportGui extends JFrame implements Viewport {
     private String blockForInput() {
         try {
             String input = _inputQueue.take();
-            addToLog(input);
             return input;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -387,6 +378,9 @@ public class ViewportGui extends JFrame implements Viewport {
         });
     }
 
+    // -------------------------------------------------------------------------
+    // Cards and the main game board.
+    // -------------------------------------------------------------------------
 
     // =========== Card Layer =============
 

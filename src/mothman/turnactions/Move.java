@@ -29,7 +29,7 @@ public class Move implements TurnAction{
         // Get the player's input
         while (!_validInput)
         {
-            playerInput = vc.AskMove(neighbors);
+            playerInput = vc.AskMove(neighbors, PlayerManager.GetInstance().GetCurrentPlayer());
             // Check validity
 
             if (playerInput.equals("cancel")) {
@@ -49,7 +49,8 @@ public class Move implements TurnAction{
             {
                 _validInput = !_validInput;
 
-                vc.ShowMessage("! Moving current player from " + currentSet.GetName() + " to " + playerInput + "!");
+                vc.ShowMessage("! Moving " + currentPlayer.GetPersonalId() + " from " +
+                        currentSet.GetName() + " to " + playerInput + "!");
             }
         }
 
@@ -72,7 +73,7 @@ public class Move implements TurnAction{
         currentPlayer.GetLocation().SetCurrentGameSet(targetLocation);
 
         // Update ui
-        vc.UpdateViewport();
+//        vc.UpdateViewport();
 
         // Update the action economy.
         int actionTokens = GameManager.GetInstance().GetActionTokens();

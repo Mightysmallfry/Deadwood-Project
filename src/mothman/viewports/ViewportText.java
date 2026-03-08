@@ -1,6 +1,7 @@
 package mothman.viewports;
 
 import mothman.managers.PlayerManager;
+import mothman.player.Player;
 import mothman.sets.ActingRole;
 import mothman.sets.GameSet;
 import mothman.sets.SceneCard;
@@ -25,7 +26,7 @@ public class ViewportText implements Viewport {
     }
 
     @Override
-    public String GetMove(HashMap<String, GameSet> neighbors) {
+    public String GetMove(HashMap<String, GameSet> neighbors, Player player) {
         System.out.print("Available Locations: ");
         for (HashMap.Entry<String, GameSet> entry : neighbors.entrySet()) {
             System.out.print("[" + entry.getKey() + "] ");
@@ -83,7 +84,7 @@ public class ViewportText implements Viewport {
     }
 
     @Override
-    public String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles) {
+    public String GetRoleSelection(SceneCard sceneCard, ArrayList<ActingRole> localRoles, Player player) {
         System.out.println("Active Scene: " + sceneCard.GetName());
 
         System.out.print("Available Starring Roles: ");
@@ -180,6 +181,7 @@ public class ViewportText implements Viewport {
         // This is not ideal
     }
 
+    @Override
     public void DealCards(TurnDisplayInfo info) {
     }
 
