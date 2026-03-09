@@ -72,8 +72,8 @@ public class ActingSet extends GameSet {
         _currentProgress = 0;
         _complete = false;
 
-        // clear local role occupancy
-        _roleCatalog.replaceAll((r, v) -> null);
+        // clear local role occupancy - This only sets the values to null which is good
+        _roleCatalog.replaceAll((r, p) -> null);
     }
 
 

@@ -93,7 +93,26 @@ public class GameManager {
         }
         _currentDay++;
         vc.ShowMessage("-|-|- Starting Day " + _currentDay + " -|-|-");
+
         // ... player reset loop ...
+
+        // Man deleted the whole player location reset code
+        GameSet trailer = GetGameBoard().GetStartingSet();
+        for (Player player : PlayerManager.GetInstance().GetPlayerLibrary())
+        {
+            LocationComponent playerLocation = player.GetLocation();
+
+            // reset player state
+            playerLocation.SetCurrentRole(null);
+            playerLocation.SetOnCard(false);
+            playerLocation.SetRehearseTokens(0);
+
+            // move to trailer
+            playerLocation.SetCurrentGameSet(trailer);
+            trailer.AddPlayer(player);
+        }
+
+
         GetGameBoard().Clear();
         GetGameBoard().Populate();
         vc.DealCards();
