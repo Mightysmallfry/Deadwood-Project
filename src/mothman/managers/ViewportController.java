@@ -7,6 +7,7 @@ import mothman.viewports.Viewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // TODO: Direct ViewportController to becoming more of an update dispatcher.
@@ -14,8 +15,10 @@ public class ViewportController {
 
     private Viewport _viewport;
 
+
     public ViewportController(Viewport viewport) {
         _viewport = viewport;
+        _viewport.SetController(this);
     }
 
     public Viewport GetViewport() { return _viewport; }
@@ -53,7 +56,7 @@ public class ViewportController {
      * Handles the full upgrade interaction — rank then currency — routing to the
      * GUI panel flow or text fallback depending on the active viewport.
      *
-     * @return int[]{ rank, cost } for the chosen upgrade, or null if cancelle.
+     * @return int[]{ rank, cost } for the chosen upgrade, or null if cancelled.
      */
     public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
         return _viewport.AskUpgrade(currentRank, maxRank, upgrades);
@@ -108,7 +111,7 @@ public class ViewportController {
         }
 
         Map<String, String> images = new HashMap<>();
-        Map<String, String> allSceneCards = new HashMap<>();
+        Map<String, ActingSet> allSceneCardLocations = new HashMap<>();
         Map<String, mothman.utils.Area> allSceneCardAreas = new HashMap<>();
         Map<String, mothman.utils.Area> areas  = new HashMap<>();
         GameSet[] allSets = GameManager.GetInstance().GetGameBoard().GetAllGameSets();
@@ -122,22 +125,17 @@ public class ViewportController {
                 }
                 // If the card is not null, then we have a card present
                 if (card.IsVisible()) {
-
                     images.put(gameSet.GetName(), card.GetImageName());
                     areas.put(gameSet.GetName(), gameSet.GetArea());
                 }
-
-                if (!actingSet.IsComplete())
-                {
-                    allSceneCards.put(gameSet.GetName(), card.GetName());
-                    allSceneCardAreas.put(gameSet.GetName(), gameSet.GetArea());
-                }
+                allSceneCardLocations.put(gameSet.GetName(), actingSet);
+                allSceneCardAreas.put(gameSet.GetName(), gameSet.GetArea());
             }
         }
 
         info.activeCardImages = images;
         info.activeCardAreas  = areas;
-        info.allPresentCards = allSceneCards;
+        info.allPresentCards = allSceneCardLocations;
         info.allPresentCardAreas = allSceneCardAreas;
         info.actingSetArrayList = GameManager.GetInstance().GetGameBoard().GetALlActingSets();
 
@@ -183,12 +181,14 @@ public class ViewportController {
         return possibleActions;
     }
 
+
+    // -------------------------------------------------------------------------
+    // Dispatcher Methods
+    // -------------------------------------------------------------------------
+
     public void DealCards(){
         _viewport.DealCards(BuildTurnInfo());
     }
-
-    // ================ UPDATE METHODS ===================
-
 
     /**
      * Use this for updating the Ui Elements as a whole.

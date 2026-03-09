@@ -1,6 +1,7 @@
 package mothman.viewports;
 
 import mothman.managers.PlayerManager;
+import mothman.managers.ViewportController;
 import mothman.player.Player;
 import mothman.sets.ActingRole;
 import mothman.sets.GameSet;
@@ -15,6 +16,12 @@ import java.util.Scanner;
 public class ViewportText implements Viewport {
 
     private Scanner _sc = new Scanner(System.in);
+    private ViewportController _viewportController;
+
+    @Override
+    public void SetController(ViewportController controller){
+        _viewportController = controller;
+    }
 
     @Override
     public String GetName() {

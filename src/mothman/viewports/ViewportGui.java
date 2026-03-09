@@ -4,6 +4,7 @@ import mothman.gui.ActionLogPanel;
 import mothman.gui.GameBoardPane;
 import mothman.gui.ScoreBoardPanel;
 import mothman.managers.PlayerManager;
+import mothman.managers.ViewportController;
 import mothman.player.Player;
 import mothman.sets.*;
 import mothman.utils.Area;
@@ -21,14 +22,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 // TODO: Direct ViewportGui to becoming a ui-ui interaction manager
 public class ViewportGui extends JFrame implements Viewport {
 
-    // Card images are exactly 205x115px
-    private static final String CARD_IMAGE_PATH = "Assets/Card/";
-    private static final String CARD_BACKING_IMAGE_PATH = "Assets/SceneCardBacking.png";
-
-    // Card Images and Loc
-    private Map<String, String> _pendingCardImages = null;  // [gameSet, SceneCardLabel]
-    private Map<String, Area>   _pendingCardAreas  = null; // [gameSet, SceneCardImage]
-
     // --- Layout ---
     private ScoreBoardPanel _scoreboardPanel;
     private ActionLogPanel _pastLogPanel;
@@ -40,13 +33,10 @@ public class ViewportGui extends JFrame implements Viewport {
     private int boardW = 1200;
     private int boardH = 900;
 
+    private ViewportController _viewportController;
+
     // Bridges button clicks (EDT) to blocking Viewport calls (game thread).
     private final BlockingQueue<String> _inputQueue = new LinkedBlockingQueue<>();
-
-    // This is really Complicated RN Oh my lord
-    //TODO: How do we want to log days/end of game?
-
-    //TODO: Viewports should be notified when something is changed. Thus
 
     // Constructor
     public ViewportGui() {
@@ -113,6 +103,17 @@ public class ViewportGui extends JFrame implements Viewport {
     // -------------------------------------------------------------------------
 
     @Override
+    public void SetController(ViewportController controller){
+        _viewportController = controller;
+        InitializeObservers();
+    }
+
+    public void InitializeObservers(){
+
+    }
+
+
+    @Override
     public String GetName() {
         String name = JOptionPane.showInputDialog(
                 this, "Enter your name:", "Welcome to Deadwood", JOptionPane.PLAIN_MESSAGE);
@@ -122,8 +123,6 @@ public class ViewportGui extends JFrame implements Viewport {
     @Override
     public String GetAction(ArrayList<String> possibleActions, TurnDisplayInfo info) {
         updateTurnHeader(info);
-        _pendingCardImages = info.activeCardImages;
-        _pendingCardAreas  = info.activeCardAreas;
         showButtons(possibleActions, "Actions:");
         String input = blockForInput();
         DisplayMessage(info.playerId + " : " + input);
@@ -196,8 +195,6 @@ public class ViewportGui extends JFrame implements Viewport {
     public void DisplayActionList(ArrayList<String> actionList) {
         // Button panel IS the action list
     }
-
-
 
     @Override
     public int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades) {
@@ -318,7 +315,6 @@ public class ViewportGui extends JFrame implements Viewport {
     @Override
     public void DisplayMessage(String message) {
         SwingUtilities.invokeLater(() -> {
-//            _messageLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
             _pastLogPanel.AddToLog(message);
             revalidate();
             repaint();
@@ -396,8 +392,6 @@ public class ViewportGui extends JFrame implements Viewport {
         _gameLayeredPane.Update(info);
         _scoreboardPanel.Update(PlayerManager.GetInstance().GetPlayerLibrary());
     }
-
-    // ======================= UPDATE METHODS ========================
 
 
     @Override

@@ -2,6 +2,7 @@ package mothman.gui;
 
 import mothman.player.Player;
 import mothman.sets.ActingSet;
+import mothman.sets.SceneCard;
 import mothman.utils.Area;
 import mothman.utils.PlayerColor;
 import mothman.utils.TurnDisplayInfo;
@@ -62,38 +63,42 @@ public class GameBoardPane extends JLayeredPane {
      * @param info
      */
     private void DrawCards(TurnDisplayInfo info){
-        // Hide all cards and make only the present ones visible
-        HideLayer(CARD_LAYER);
+        // Hide only the completed cards
+        Map<String, ActingSet> allCards = info.allPresentCards;
 
+        // If the card is not visible hide the card
+        for (Map.Entry<String, ActingSet> entry : allCards.entrySet()) {
+            if (entry.getValue().IsComplete() && _cardLabels.get(entry.getKey()).isVisible()){
+                HideCard(entry.getKey());
+            }
+        }
         // These data types don't help at all understand what these hold lol.
 
         // Active is revealed
         Map<String, String> visitedCardImages = info.activeCardImages;
-        Map<String, Area> visitedAreas = info.activeCardAreas;
-
-        // All cards on the board
-        Map<String, String> presentCardImages = info.allPresentCards;
         Map<String, Area> presentCardAreas = info.allPresentCardAreas;
 
-        for (Map.Entry<String, String> presentCard : presentCardImages.entrySet())
+        for (Map.Entry<String, ActingSet> presentCard : allCards.entrySet())
         {
-            // Get the labeled card creating on not finding it.
-            String setName = presentCard.getKey();
-            JLabel label = GetCardLabel(setName);
+            if (!presentCard.getValue().IsComplete()){
+                // Get the labeled card creating on not finding it.
+                String setName = presentCard.getKey();
+                JLabel label = GetCardLabel(setName);
 
-            // No matter what, if the card exists, we first paint it face down
-            Area area = presentCardAreas.get(setName);
-            label.setIcon(new ImageIcon(CARD_BACKING_IMAGE_PATH));
+                // No matter what, if the card exists, we first paint it face down
+                Area area = presentCardAreas.get(setName);
+                label.setIcon(new ImageIcon(CARD_BACKING_IMAGE_PATH));
 
-            // If the card has actually been visited, print the revealed card instead.
-            if (visitedCardImages.containsKey(presentCard.getKey()))
-            {
-                label.setIcon(new ImageIcon(CARD_IMAGE_PATH + visitedCardImages.get(presentCard.getKey())));
-            }
+                // If the card has actually been visited, print the revealed card instead.
+                if (visitedCardImages.containsKey(presentCard.getKey()))
+                {
+                    label.setIcon(new ImageIcon(CARD_IMAGE_PATH + visitedCardImages.get(presentCard.getKey())));
+                }
 
-            label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
+                label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
 
-            label.setVisible(true);
+                    label.setVisible(true);
+                }
         }
     }
 
@@ -212,6 +217,18 @@ public class GameBoardPane extends JLayeredPane {
         }
     }
 
+    private void HideCard(String setName) {
+        SwingUtilities.invokeLater(() -> {
+            JLabel label = _cardLabels.get(setName);
+            if (label != null) {
+                label.setIcon(null);
+                label.setVisible(false);
+            }
+            repaint();
+        });
+    }
+
+
     public Move getMove() {
         return selectedMove;
     }
@@ -220,14 +237,4 @@ public class GameBoardPane extends JLayeredPane {
         this.selectedMove = move;
     }
 
-    /**
-     * Hides the card for a specific set immediately — call this from Act.java when a scene completes.
-     */
-    public void hideSceneCard(String setName) {
-        SwingUtilities.invokeLater(() -> {
-            JLabel label = _cardLabels.get(setName);
-            if (label != null) label.setVisible(false);
-            repaint();
-        });
-    }
 }

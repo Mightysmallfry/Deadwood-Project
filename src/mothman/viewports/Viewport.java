@@ -1,5 +1,6 @@
 package mothman.viewports;
 
+import mothman.managers.ViewportController;
 import mothman.player.Player;
 import mothman.sets.ActingRole;
 import mothman.sets.GameSet;
@@ -23,6 +24,9 @@ public interface Viewport {
     void DisplayMessage(String message); // replaces System.out in TurnActions
 
     void Update(TurnDisplayInfo info);
+
     void DealCards(TurnDisplayInfo info);
+
+    void SetController(ViewportController viewportController);
 
 }
