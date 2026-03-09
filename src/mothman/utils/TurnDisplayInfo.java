@@ -10,6 +10,7 @@ public class TurnDisplayInfo {
     public String playerId;
     public String locationName;
     public String roleLine;
+    public int playerRank;
     public int budget;
     public int maxShots;
     public int currentShots;

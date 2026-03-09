@@ -27,6 +27,8 @@ public class GameBoardPane extends JLayeredPane {
     private static final Integer SHOT_LAYER = PALETTE_LAYER + 50;
     private static final Integer PLAYER_LAYER = MODAL_LAYER;
 
+    private static final int MAX_PLAYER_COLUMNS = 4;
+
 
     ImageIcon boardIcon = new ImageIcon("Assets/board.jpg");
     private JLabel boardLabel;
@@ -124,16 +126,17 @@ public class GameBoardPane extends JLayeredPane {
 
         Player[] players = info.players;
 
-        for (Player player : players) {
+        for (int playerIndex = 0; playerIndex < players.length; playerIndex++) {
+            Player player = players[playerIndex];
+            Icon playerIcon = GetPlayerIcon(player);
+            JLabel playerLabel = new JLabel(playerIcon);
+            add(playerLabel, PLAYER_LAYER);
+
             if (player.HasRole()) {
-                Icon playerIcon = GetPlayerIcon(player);
                 Area playerArea = player.GetLocation().GetCurrentRole().GetArea();
 
                 // We only want to get make a new one if we have not made it before.
                 // Then we can just reuse the already existing ones, swapping icons
-                JLabel playerLabel = new JLabel(playerIcon);
-                add(playerLabel, PLAYER_LAYER);
-
                 if (player.GetLocation().GetOnCard()) {
                     Area cardOffset = player.GetLocation().GetCurrentGameSet().GetArea();
 
@@ -148,8 +151,22 @@ public class GameBoardPane extends JLayeredPane {
                         playerArea.GetY(),
                         playerArea.GetWidth(),
                         playerArea.GetHeight());
-                playerLabel.setVisible(true);
+            } else {
+                Area cardArea = player.GetLocation().GetCurrentGameSet().GetArea();
+                int yOffset = cardArea.GetHeight();
+                int xOffset = playerIcon.getIconWidth() * (playerIndex % MAX_PLAYER_COLUMNS);
+                if ( (float) playerIndex / MAX_PLAYER_COLUMNS >= 1.0) {
+                    yOffset += playerIcon.getIconHeight()/2;
+                }
+                playerLabel.setBounds(
+                        cardArea.GetX() + xOffset,
+                        cardArea.GetY() + yOffset,
+                        playerIcon.getIconWidth(),
+                        playerIcon.getIconHeight()
+                );
             }
+
+            playerLabel.setVisible(true);
         }
     }
 

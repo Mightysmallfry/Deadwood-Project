@@ -90,6 +90,7 @@ public class ViewportController {
 
         info.playerId     = player.GetPersonalId();
         info.locationName = currentSet.GetName();
+        info.playerRank   = player.GetCurrentRank();
         info.actionTokens = GameManager.GetInstance().GetActionTokens();
         info.isActingSet  = currentSet instanceof ActingSet;
         info.players = PlayerManager.GetInstance().GetPlayerLibrary();

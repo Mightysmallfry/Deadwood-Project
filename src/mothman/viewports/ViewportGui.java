@@ -234,6 +234,7 @@ public class ViewportGui extends JFrame implements Viewport {
         StringBuilder sb = new StringBuilder();
         sb.append("<html><body style='width:170px; color:#cccccc'>");
         sb.append("<b>").append(info.playerId).append("'s Turn</b><br>");
+        sb.append("Rank: ").append(info.playerRank).append("<br>");
         sb.append("Location: ").append(info.locationName).append("<br>");
 
         if (info.isActingSet) {
