@@ -33,6 +33,7 @@ public class GameBoardPane extends JLayeredPane {
     private Move selectedMove;
 
     private Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
+    private Map<String, JLabel> _shotLabels = new java.util.HashMap<>();
 
     public GameBoardPane(int boardWidth, int boardHeight) {
         setPreferredSize(new Dimension(boardWidth, boardHeight));
@@ -101,57 +102,22 @@ public class GameBoardPane extends JLayeredPane {
         }
     }
 
-    //TODO: BugFix DrawShots. Same process as cards?
     private void DrawShots(TurnDisplayInfo info) {
         HideLayer(SHOT_LAYER);
 
-        ArrayList<ActingSet> actingSets = info.allActingSets;
-
-        for (ActingSet set : actingSets)
-        {
-            // For every shot area
+        for (ActingSet set : info.allActingSets) {
             int shotTally = set.GetMaxProgress();
-            for (Area shotArea : set.GetShotAreas()){
-                // If we have progress reveal an icon.
-                //perhapse we say if set.GetcurrentPrrogress
+            for (Area shotArea : set.GetShotAreas()) {
                 int shotProgress = set.GetMaxProgress() - set.GetCurrentProgress();
+                String key = set.GetName() + "_" + shotTally;
 
-                if (shotTally > shotProgress){
-                    JLabel shotLabel = new JLabel();
-                    ImageIcon shotIcon = new ImageIcon(SHOT_ICON_IMAGE_PATH);
-                    shotLabel.setIcon(shotIcon);
+                JLabel shotLabel = GetShotLabel(key);
+                shotLabel.setBounds(shotArea.GetX(), shotArea.GetY(), shotArea.GetWidth(), shotArea.GetHeight());
+                shotLabel.setVisible(shotTally <= shotProgress);
 
-                    shotLabel.setBounds(
-                            shotArea.GetX(),
-                            shotArea.GetY(),
-                            shotArea.GetWidth(),
-                            shotArea.GetHeight()
-                    );
-
-                    add(shotLabel, SHOT_LAYER);
-
-                    shotLabel.setVisible(false);
-                }
-                else{
-                    JLabel shotLabel = new JLabel();
-                    ImageIcon shotIcon = new ImageIcon(SHOT_ICON_IMAGE_PATH);
-                    shotLabel.setIcon(shotIcon);
-
-                    shotLabel.setBounds(
-                            shotArea.GetX(),
-                            shotArea.GetY(),
-                            shotArea.GetWidth(),
-                            shotArea.GetHeight()
-                    );
-
-                    add(shotLabel, SHOT_LAYER);
-
-                    shotLabel.setVisible(true);
-                }
-                shotTally --;
+                shotTally--;
             }
         }
-
     }
 
     //TODO: Fixed offsets, now we need to add areas for people to be in
@@ -200,6 +166,15 @@ public class GameBoardPane extends JLayeredPane {
         playerImageName = playerImageName + String.valueOf(playerRank) + ".png";
 
         return new ImageIcon(PLAYER_ICON_IMAGE_PATH + playerImageName);
+    }
+
+    private JLabel GetShotLabel(String key) {
+        return _shotLabels.computeIfAbsent(key, k -> {
+            JLabel label = new JLabel();
+            label.setIcon(new ImageIcon(SHOT_ICON_IMAGE_PATH));
+            add(label, SHOT_LAYER);
+            return label;
+        });
     }
 
 
