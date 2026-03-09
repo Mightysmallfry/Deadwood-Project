@@ -47,13 +47,13 @@ public class GameBoardPane extends JLayeredPane {
     }
 
     public void Update(TurnDisplayInfo info) {
-        // TODO: On Card Completion we need to redraw the board.
-        DrawCards(info);
-        DrawShots(info);
-        DrawPlayers(info);
-
-        revalidate();
-        repaint();
+        SwingUtilities.invokeLater(() -> {
+            DrawCards(info);
+            DrawShots(info);
+            DrawPlayers(info);
+            revalidate();
+            repaint();
+        });
     }
 
     /**

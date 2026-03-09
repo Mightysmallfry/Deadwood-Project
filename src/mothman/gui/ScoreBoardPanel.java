@@ -25,27 +25,18 @@ public class ScoreBoardPanel extends JPanel {
     }
 
     // Update the entire list, keep order the same through each update.
-    public void Update(Player[] players)
-    {
-        try {
-            SwingUtilities.invokeAndWait(() -> {
-                removeAll();
-
-                // Create a ProfilePanel for each player and add it
-                for (Player player : players) {
-                    PlayerProfilePanel playerProfile = new PlayerProfilePanel(player);
-                    playerProfile.SetColor(PlayerColor.GetInstance().GetColor(player));
-                    add(playerProfile);
-                    add(Box.createVerticalStrut(4));
-                }
-
-                // Repaint the canvas.
-                revalidate();
-                repaint();
-            });
-        } catch (Exception e) {
-            Thread.currentThread().interrupt();
-        }
+    public void Update(Player[] players) {
+        SwingUtilities.invokeLater(() -> {
+            removeAll();
+            for (Player player : players) {
+                PlayerProfilePanel playerProfile = new PlayerProfilePanel(player);
+                playerProfile.SetColor(PlayerColor.GetInstance().GetColor(player));
+                add(playerProfile);
+                add(Box.createVerticalStrut(4));
+            }
+            revalidate();
+            repaint();
+        });
     }
 
 

@@ -189,6 +189,17 @@ public class ViewportText implements Viewport {
     }
 
     @Override
+    public void ShowGameOver() {
+        System.out.println("=== GAME OVER === Type [quit] to exit.");
+        while (true) {
+            String input = _sc.nextLine().strip().toLowerCase();
+            if (input.equals("quit")) {
+                System.exit(0);
+            }
+        }
+    }
+
+    @Override
     public void DealCards(TurnDisplayInfo info) {
     }
 

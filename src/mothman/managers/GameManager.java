@@ -65,7 +65,7 @@ public class GameManager {
     {
         Player currentPlayer = PlayerManager.GetInstance().GetCurrentPlayer();
         switch (action) {
-            case "quit"     -> System.exit(1);                        // Quit Game
+            case "quit"     -> System.exit(0);                        // Quit Game
             case "pass"     -> {}                                           // Pass Turn
             case "acquire"  -> new Acquire().Execute(vc);                   // Acquire Acting Job
             case "act"      -> new Act().Execute(vc);                       // Act an Acting Job
@@ -85,44 +85,15 @@ public class GameManager {
      * Gets called if there is only one scene card remaining UpdateGame.
      * Removes SceneCards and Resets Shot Tokens
      */
-    public void EndDay(ViewportController vc) //may be off by 1
-    {
+    public void EndDay(ViewportController vc) {
         vc.ShowMessage("-|-|- Ending Day " + _currentDay + " -|-|-");
-
-        // Check if it is the end of the Game
         if (IsEndGame()) {
             EndGame(vc);
             return;
         }
-
-        // Continue the Day loop
         _currentDay++;
         vc.ShowMessage("-|-|- Starting Day " + _currentDay + " -|-|-");
-
-        // Reset everyone's location to the trailer and reset sets
-        GameSet trailer = GetGameBoard().GetStartingSet();
-        for (Player p : PlayerManager.GetInstance().GetPlayerLibrary())
-        {
-            LocationComponent loc = p.GetLocation();
-
-            // remove from old set first
-            GameSet oldSet = loc.GetCurrentGameSet();
-            if (oldSet instanceof ActingSet) {
-                ((ActingSet) oldSet).RemovePlayer(p);
-            } else if (oldSet != null) {
-                oldSet.RemovePlayer(p);
-            }
-
-            // reset player state
-            loc.SetCurrentRole(null);
-            loc.SetOnCard(false);
-            loc.SetRehearseTokens(0);
-
-            // move to trailer
-            loc.SetCurrentGameSet(trailer);
-            trailer.AddPlayer(p);
-        }
-
+        // ... player reset loop ...
         GetGameBoard().Clear();
         GetGameBoard().Populate();
         vc.DealCards();
@@ -164,7 +135,7 @@ public class GameManager {
 
         for (GameSet set : _gameBoard.GetAllGameSets()) {
             if (set instanceof ActingSet act) {
-                if (act.GetCurrentSceneCard() != null) {
+                if (act.GetCurrentSceneCard() != null && !act.IsComplete()) {
                     activeScenes++;
                 }
             }
@@ -243,7 +214,7 @@ public class GameManager {
                 vc.ShowMessage("Winner: Player " + winner.GetPersonalId() + " with score " + winner.GetScore());
             }
         }
-
+        vc.ShowGameOver();
     }
 
     /**

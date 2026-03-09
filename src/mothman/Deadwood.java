@@ -118,6 +118,11 @@ public class Deadwood {
 
         while (!gameManager.HasGameEnded()) {
             String action = viewportController.AskAction();
+
+            if (action.equals("quit")) {
+                System.exit(0);
+            }
+
             gameManager.UpdateGame(action, viewportController);
 
             if (action.equals("pass") || action.equals("force")) {

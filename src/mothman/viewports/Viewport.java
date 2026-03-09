@@ -15,6 +15,7 @@ import java.util.HashMap;
 public interface Viewport {
     int[] AskUpgrade(int currentRank, int maxRank, ArrayList<UpgradeData> upgrades);
     String GetName();
+    void ShowGameOver();
     int GetUpgradeRank();
     String GetUpgradeCurrency();
     String GetMove(HashMap<String, GameSet> neighbors, Player player);

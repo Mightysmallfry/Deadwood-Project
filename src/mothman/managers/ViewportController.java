@@ -155,7 +155,7 @@ public class ViewportController {
 
         possibleActions.add("quit");
         possibleActions.add("pass");
-//        possibleActions.add("force");
+        possibleActions.add("force");
 
         if (!PlayerManager.GetInstance().GetCurrentPlayer().HasRole() &&
                 GameManager.GetInstance().GetActionTokens() >= 0 &&
@@ -180,6 +180,9 @@ public class ViewportController {
         return possibleActions;
     }
 
+    public void ShowGameOver() {
+        _viewport.ShowGameOver();
+    }
 
     // -------------------------------------------------------------------------
     // Dispatcher Methods
