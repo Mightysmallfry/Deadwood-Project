@@ -12,7 +12,7 @@ import java.util.concurrent.BlockingQueue;
 public class ActionMenuPanel {
 
     private final JPanel _panel;
-    private final JLabel _messageLabel;
+    private final JLabel _turnInfoLabel;
     private final BlockingQueue<String> _inputQueue;
 
     public ActionMenuPanel(BlockingQueue<String> inputQueue) {
@@ -25,16 +25,16 @@ public class ActionMenuPanel {
         border.setTitleColor(Color.ORANGE);
         _panel.setBorder(border);
 
-        _messageLabel = new JLabel();
-        _messageLabel.setForeground(Color.LIGHT_GRAY);
-        _messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        _panel.add(_messageLabel);
+        _turnInfoLabel = new JLabel();
+        _turnInfoLabel.setForeground(Color.LIGHT_GRAY);
+        _turnInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _panel.add(_turnInfoLabel);
         _panel.add(Box.createVerticalStrut(10));
     }
 
     public JPanel getComponent() { return _panel; }
 
-    public JLabel getMessageLabel() { return _messageLabel; }
+    public JLabel getMessageLabel() { return _turnInfoLabel; }
 
     public void update(TurnDisplayInfo info) {
         // Called each turn — buttons are rebuilt by showButtons()
@@ -44,7 +44,7 @@ public class ActionMenuPanel {
         Runnable buildButtons = () -> {
             _inputQueue.clear();
             _panel.removeAll();
-            _panel.add(_messageLabel);
+            _panel.add(_turnInfoLabel);
             _panel.add(Box.createVerticalStrut(10));
 
             JLabel headerLabel = new JLabel(header);
@@ -77,9 +77,9 @@ public class ActionMenuPanel {
         }
     }
 
-    public void displayMessage(String message) {
+    public void SetTurnInfoLabelText(String message) {
         SwingUtilities.invokeLater(() -> {
-            _messageLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
+            _turnInfoLabel.setText("<html><body style='width:170px'>" + message + "</body></html>");
             _panel.revalidate();
             _panel.repaint();
         });
@@ -92,10 +92,10 @@ public class ActionMenuPanel {
             Integer dollarCost = null;
             Integer creditCost = null;
 
-            for (UpgradeData u : upgrades) {
-                if (u.GetRank() == rank) {
-                    if ("dollar".equals(u.GetCurrencyType())) dollarCost = u.GetCostAmount();
-                    if ("credit".equals(u.GetCurrencyType())) creditCost = u.GetCostAmount();
+            for (UpgradeData upgrade : upgrades) {
+                if (upgrade.GetRank() == rank) {
+                    if ("dollar".equals(upgrade.GetCurrencyType())) dollarCost = upgrade.GetCostAmount();
+                    if ("credit".equals(upgrade.GetCurrencyType())) creditCost = upgrade.GetCostAmount();
                 }
             }
 
@@ -108,7 +108,7 @@ public class ActionMenuPanel {
         }
 
         if (rankButtons.isEmpty()) {
-            displayMessage("No upgrades available.");
+            SetTurnInfoLabelText("No upgrades available.");
             return null;
         }
 

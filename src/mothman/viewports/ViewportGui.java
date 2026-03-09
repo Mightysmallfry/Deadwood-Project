@@ -73,6 +73,11 @@ public class ViewportGui extends JFrame implements Viewport {
     // Viewport Interface
     // -------------------------------------------------------------------------
 
+    /**
+     * Likely don't need this because we're not really using observer at all
+     * we can remove this later, closer to the end.
+     * @param controller
+     */
     @Override
     public void SetController(ViewportController controller) {
         _viewportController = controller;
@@ -84,6 +89,7 @@ public class ViewportGui extends JFrame implements Viewport {
         ArrayList<String> options = new ArrayList<>();
         options.add("quit");
         _actionMenuPanel.showButtons(options, "Game Over!");
+        _actionMenuPanel.SetTurnInfoLabelText("");
         // Block here until quit is clicked, then exit
         try {
             _inputQueue.take();
@@ -105,6 +111,7 @@ public class ViewportGui extends JFrame implements Viewport {
     @Override
     public String GetAction(ArrayList<String> possibleActions, TurnDisplayInfo info) {
         updateTurnHeader(info);
+
         _actionMenuPanel.showButtons(possibleActions, "Actions:");
         String input = blockForInput();
         DisplayMessage(info.playerId + " : " + input);
@@ -210,7 +217,8 @@ public class ViewportGui extends JFrame implements Viewport {
     @Override
     public void Update(TurnDisplayInfo info) {
         SwingUtilities.invokeLater(() -> {
-            updateTurnHeader(info);
+            // updateTurnHeader(info);
+            // System.out.println("Updating Header - Update");
             _scoreboardPanel.Update(info.players);
             _gameLayeredPane.Update(info);
             _pastLogPanel.Update();
@@ -250,6 +258,6 @@ public class ViewportGui extends JFrame implements Viewport {
         }
 
         sb.append("</body></html>");
-        _actionMenuPanel.displayMessage(sb.toString());
+        _actionMenuPanel.SetTurnInfoLabelText(sb.toString());
     }
 }
