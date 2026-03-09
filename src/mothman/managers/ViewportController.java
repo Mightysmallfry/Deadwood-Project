@@ -7,7 +7,6 @@ import mothman.viewports.Viewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 // TODO: Direct ViewportController to becoming more of an update dispatcher.
@@ -133,11 +132,11 @@ public class ViewportController {
             }
         }
 
-        info.activeCardImages = images;
-        info.activeCardAreas  = areas;
-        info.allPresentCards = allSceneCardLocations;
-        info.allPresentCardAreas = allSceneCardAreas;
-        info.actingSetArrayList = GameManager.GetInstance().GetGameBoard().GetALlActingSets();
+        info.visibleCardImages = images;
+        info.visibleCardAreas = areas;
+        info.presentActingSets = allSceneCardLocations;
+        info.actingSetCardAreas = allSceneCardAreas;
+        info.allActingSets = GameManager.GetInstance().GetGameBoard().GetALlActingSets();
 
         return info;
     }

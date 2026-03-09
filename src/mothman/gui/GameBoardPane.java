@@ -2,7 +2,6 @@ package mothman.gui;
 
 import mothman.player.Player;
 import mothman.sets.ActingSet;
-import mothman.sets.SceneCard;
 import mothman.utils.Area;
 import mothman.utils.PlayerColor;
 import mothman.utils.TurnDisplayInfo;
@@ -64,7 +63,7 @@ public class GameBoardPane extends JLayeredPane {
      */
     private void DrawCards(TurnDisplayInfo info){
         // Hide only the completed cards
-        Map<String, ActingSet> allCards = info.allPresentCards;
+        Map<String, ActingSet> allCards = info.presentActingSets;
 
         // If the card is not visible hide the card
         for (Map.Entry<String, ActingSet> entry : allCards.entrySet()) {
@@ -75,8 +74,8 @@ public class GameBoardPane extends JLayeredPane {
         // These data types don't help at all understand what these hold lol.
 
         // Active is revealed
-        Map<String, String> visitedCardImages = info.activeCardImages;
-        Map<String, Area> presentCardAreas = info.allPresentCardAreas;
+        Map<String, String> visitedCardImages = info.visibleCardImages;
+        Map<String, Area> presentCardAreas = info.actingSetCardAreas;
 
         for (Map.Entry<String, ActingSet> presentCard : allCards.entrySet())
         {
@@ -106,16 +105,34 @@ public class GameBoardPane extends JLayeredPane {
     private void DrawShots(TurnDisplayInfo info) {
         HideLayer(SHOT_LAYER);
 
-        ArrayList<ActingSet> actingSets = info.actingSetArrayList;
+        ArrayList<ActingSet> actingSets = info.allActingSets;
 
         for (ActingSet set : actingSets)
         {
             // For every shot area
+            int shotTally = set.GetMaxProgress();
             for (Area shotArea : set.GetShotAreas()){
                 // If we have progress reveal an icon.
+                //perhapse we say if set.GetcurrentPrrogress
+                int shotProgress = set.GetMaxProgress() - set.GetCurrentProgress();
 
-                for (int i = set.GetCurrentProgress(); i > 0; i--)
-                {
+                if (shotTally > shotProgress){
+                    JLabel shotLabel = new JLabel();
+                    ImageIcon shotIcon = new ImageIcon(SHOT_ICON_IMAGE_PATH);
+                    shotLabel.setIcon(shotIcon);
+
+                    shotLabel.setBounds(
+                            shotArea.GetX(),
+                            shotArea.GetY(),
+                            shotArea.GetWidth(),
+                            shotArea.GetHeight()
+                    );
+
+                    add(shotLabel, SHOT_LAYER);
+
+                    shotLabel.setVisible(false);
+                }
+                else{
                     JLabel shotLabel = new JLabel();
                     ImageIcon shotIcon = new ImageIcon(SHOT_ICON_IMAGE_PATH);
                     shotLabel.setIcon(shotIcon);
@@ -131,6 +148,7 @@ public class GameBoardPane extends JLayeredPane {
 
                     shotLabel.setVisible(true);
                 }
+                shotTally --;
             }
         }
 
@@ -146,8 +164,9 @@ public class GameBoardPane extends JLayeredPane {
         for (Player player : players){
             if (player.HasRole())
             {
-                Area playerArea = player.GetLocation().GetCurrentRole().GetArea();
                 Icon playerIcon = GetPlayerIcon(player);
+                Area playerArea = player.GetLocation().GetCurrentRole().GetArea();
+
                 // We only want to get make a new one if we have not made it before.
                 // Then we can just reuse the already existing ones, swapping icons
                 JLabel playerLabel = new JLabel(playerIcon);

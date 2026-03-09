@@ -1,9 +1,7 @@
 package mothman.utils;
 
-import mothman.managers.PlayerManager;
 import mothman.player.Player;
 import mothman.sets.ActingSet;
-import mothman.sets.SceneCard;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -19,10 +17,10 @@ public class TurnDisplayInfo {
     public int rehearsals;
     public boolean sceneComplete;
     public boolean isActingSet;
-    public Map<String, String> activeCardImages;   // ActingSetName -> "01.png"
-    public Map<String, Area>   activeCardAreas;    // ActingSetName -> Area(x,y,w,h)
-    public Map<String, ActingSet> allPresentCards; // ActingSetName -> SceneCardName
-    public Map<String, Area> allPresentCardAreas; // ActingSetName -> Area(x,y,w,h)
+    public Map<String, String> visibleCardImages;   // ActingSetName -> "01.png", holds the images of all visible card images
+    public Map<String, Area> visibleCardAreas;    // ActingSetName -> Area(x,y,w,h), holds the map of all visible card areas
+    public Map<String, ActingSet> presentActingSets; // ActingSetName -> ActingSet, holds all acting sets with cards currently on the board (revealed or not)
+    public Map<String, Area> actingSetCardAreas; // ActingSetName -> Area(x,y,w,h), Holds all Card Areas for acting sets on the board.
     public Player[] players;
-    public ArrayList<ActingSet> actingSetArrayList;
+    public ArrayList<ActingSet> allActingSets;
 }
