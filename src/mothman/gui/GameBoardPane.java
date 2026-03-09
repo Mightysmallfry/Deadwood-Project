@@ -23,14 +23,13 @@ public class GameBoardPane extends JLayeredPane {
     private static final String PLAYER_ICON_IMAGE_PATH = "Assets/Dice/";
     private static final String SHOT_ICON_IMAGE_PATH = "Assets/Hat.png";
 
-    private static final Integer CARD_LAYER = PALETTE_LAYER;  // Equivalent to PaletteLayer
+    private static final Integer CARD_LAYER = PALETTE_LAYER;
     private static final Integer SHOT_LAYER = PALETTE_LAYER + 50;
     private static final Integer PLAYER_LAYER = MODAL_LAYER;
 
 
     ImageIcon boardIcon = new ImageIcon("Assets/board.jpg");
     private JLabel boardLabel;
-    private Move selectedMove;
 
     private Map<String, JLabel> _cardLabels = new java.util.HashMap<>();
     private Map<String, JLabel> _shotLabels = new java.util.HashMap<>();
@@ -58,17 +57,18 @@ public class GameBoardPane extends JLayeredPane {
 
     /**
      * Draws the cards, both present and flipped onto the board.
-     *
+     * <p>
      * Does not revalidate or repaint
+     *
      * @param info
      */
-    private void DrawCards(TurnDisplayInfo info){
+    private void DrawCards(TurnDisplayInfo info) {
         // Hide only the completed cards
         Map<String, ActingSet> allCards = info.presentActingSets;
 
         // If the card is not visible hide the card
         for (Map.Entry<String, ActingSet> entry : allCards.entrySet()) {
-            if (entry.getValue().IsComplete() && _cardLabels.get(entry.getKey()).isVisible()){
+            if (entry.getValue().IsComplete() && _cardLabels.get(entry.getKey()).isVisible()) {
                 HideCard(entry.getKey());
             }
         }
@@ -78,9 +78,8 @@ public class GameBoardPane extends JLayeredPane {
         Map<String, String> visitedCardImages = info.visibleCardImages;
         Map<String, Area> presentCardAreas = info.actingSetCardAreas;
 
-        for (Map.Entry<String, ActingSet> presentCard : allCards.entrySet())
-        {
-            if (!presentCard.getValue().IsComplete()){
+        for (Map.Entry<String, ActingSet> presentCard : allCards.entrySet()) {
+            if (!presentCard.getValue().IsComplete()) {
                 // Get the labeled card creating on not finding it.
                 String setName = presentCard.getKey();
                 JLabel label = GetCardLabel(setName);
@@ -90,15 +89,13 @@ public class GameBoardPane extends JLayeredPane {
                 label.setIcon(new ImageIcon(CARD_BACKING_IMAGE_PATH));
 
                 // If the card has actually been visited, print the revealed card instead.
-                if (visitedCardImages.containsKey(presentCard.getKey()))
-                {
+                if (visitedCardImages.containsKey(presentCard.getKey())) {
                     label.setIcon(new ImageIcon(CARD_IMAGE_PATH + visitedCardImages.get(presentCard.getKey())));
                 }
 
                 label.setBounds(area.GetX(), area.GetY(), area.GetWidth(), area.GetHeight());
-
-                    label.setVisible(true);
-                }
+                label.setVisible(true);
+            }
         }
     }
 
@@ -122,14 +119,13 @@ public class GameBoardPane extends JLayeredPane {
 
     //TODO: Fixed offsets, now we need to add areas for people to be in
     // trailer and casting office.
-    private void DrawPlayers(TurnDisplayInfo info){
+    private void DrawPlayers(TurnDisplayInfo info) {
         HideLayer(PLAYER_LAYER);
 
         Player[] players = info.players;
 
-        for (Player player : players){
-            if (player.HasRole())
-            {
+        for (Player player : players) {
+            if (player.HasRole()) {
                 Icon playerIcon = GetPlayerIcon(player);
                 Area playerArea = player.GetLocation().GetCurrentRole().GetArea();
 
@@ -138,8 +134,7 @@ public class GameBoardPane extends JLayeredPane {
                 JLabel playerLabel = new JLabel(playerIcon);
                 add(playerLabel, PLAYER_LAYER);
 
-                if (player.GetLocation().GetOnCard())
-                {
+                if (player.GetLocation().GetOnCard()) {
                     Area cardOffset = player.GetLocation().GetCurrentGameSet().GetArea();
 
                     playerArea = new Area(playerArea.GetX() + cardOffset.GetX(),
@@ -158,8 +153,7 @@ public class GameBoardPane extends JLayeredPane {
         }
     }
 
-    private Icon GetPlayerIcon(Player player)
-    {
+    private Icon GetPlayerIcon(Player player) {
         // Get Player Color
         String playerImageName = PlayerColor.GetInstance().GetColorPrefix(player);
         int playerRank = player.GetCurrentRank();
@@ -192,21 +186,19 @@ public class GameBoardPane extends JLayeredPane {
 
     /**
      * Removes all components from a layer, the components will still exist.
+     *
      * @param layer
      */
-    private void ClearLayer(Integer layer)
-    {
+    private void ClearLayer(Integer layer) {
         Component[] ToRemoveLayer = getComponentsInLayer(layer);
-        for (Component component : ToRemoveLayer)
-        {
+        for (Component component : ToRemoveLayer) {
             remove(component);
         }
     }
 
-    private void HideLayer(Integer layer){
+    private void HideLayer(Integer layer) {
         Component[] ToRemoveLayer = getComponentsInLayer(layer);
-        for (Component component : ToRemoveLayer)
-        {
+        for (Component component : ToRemoveLayer) {
             component.setVisible(false);
         }
     }
@@ -220,15 +212,6 @@ public class GameBoardPane extends JLayeredPane {
             }
             repaint();
         });
-    }
-
-
-    public Move getMove() {
-        return selectedMove;
-    }
-
-    public void setMove(Move move) {
-        this.selectedMove = move;
     }
 
 }

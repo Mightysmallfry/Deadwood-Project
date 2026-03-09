@@ -73,15 +73,9 @@ public class ViewportGui extends JFrame implements Viewport {
     // Viewport Interface
     // -------------------------------------------------------------------------
 
-    /**
-     * Likely don't need this because we're not really using observer at all
-     * we can remove this later, closer to the end.
-     * @param controller
-     */
     @Override
     public void SetController(ViewportController controller) {
         _viewportController = controller;
-        InitializeObservers();
     }
 
     @Override
@@ -99,7 +93,6 @@ public class ViewportGui extends JFrame implements Viewport {
         System.exit(0);
     }
 
-    public void InitializeObservers() {}
 
     @Override
     public String GetName() {
@@ -113,7 +106,7 @@ public class ViewportGui extends JFrame implements Viewport {
         updateTurnHeader(info);
 
         _actionMenuPanel.showButtons(possibleActions, "Actions:");
-        String input = blockForInput();
+        String input = BlockForActionInput();
         DisplayMessage(info.playerId + " : " + input);
         return input;
     }
@@ -123,7 +116,7 @@ public class ViewportGui extends JFrame implements Viewport {
         ArrayList<String> locationNames = new ArrayList<>(neighbors.keySet());
         locationNames.add("cancel");
         _actionMenuPanel.showButtons(locationNames, "Move to:");
-        String input = blockForInput();
+        String input = BlockForActionInput();
         DisplayMessage(player.GetPersonalId() + " : " + input);
         return input;
     }
@@ -147,7 +140,7 @@ public class ViewportGui extends JFrame implements Viewport {
         String cardName = sceneCard != null ? sceneCard.GetName() : "Unknown Scene";
         _actionMenuPanel.showButtons(roleOptions, "Roles — " + cardName + ":");
 
-        String raw = blockForInput();
+        String raw = BlockForActionInput();
         DisplayMessage(player.GetPersonalId() + " : " + raw);
 
         if (raw.equals("cancel")) return "cancel";
@@ -174,7 +167,7 @@ public class ViewportGui extends JFrame implements Viewport {
         options.add("credit");
         options.add("cancel");
         _actionMenuPanel.showButtons(options, "Pay with:");
-        String choice = blockForInput();
+        String choice = BlockForActionInput();
         return choice.equals("cancel") ? "dollar" : choice;
     }
 
@@ -228,7 +221,7 @@ public class ViewportGui extends JFrame implements Viewport {
     // Private helpers
     // -------------------------------------------------------------------------
 
-    private String blockForInput() {
+    private String BlockForActionInput() {
         try {
             return _inputQueue.take();
         } catch (InterruptedException e) {

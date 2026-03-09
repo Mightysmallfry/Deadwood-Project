@@ -102,6 +102,7 @@ public class PlayerManager {
      */
     public void BasicPay(Player player, boolean success)
     {
+        // TODO: Do we add a viewport controller here to display how much they earn?
         if(player.GetLocation().GetOnCard())
         {
             if(success)

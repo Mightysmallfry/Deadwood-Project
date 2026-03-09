@@ -13,8 +13,7 @@ import java.util.Map;
 public class ViewportController {
 
     private Viewport _viewport;
-
-
+    
     public ViewportController(Viewport viewport) {
         _viewport = viewport;
         _viewport.SetController(this);

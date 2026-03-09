@@ -34,7 +34,7 @@ public class ActionMenuPanel {
 
     public JPanel getComponent() { return _panel; }
 
-    public JLabel getMessageLabel() { return _turnInfoLabel; }
+    public JLabel GetTurnInfoLabel() { return _turnInfoLabel; }
 
     public void update(TurnDisplayInfo info) {
         // Called each turn — buttons are rebuilt by showButtons()
@@ -114,7 +114,7 @@ public class ActionMenuPanel {
 
         rankButtons.add("cancel");
         showButtons(rankButtons, "Upgrade  (current rank: " + currentRank + "):");
-        String rankChoice = blockForInput();
+        String rankChoice = BlockForUpgradeInput();
         if (rankChoice.equals("cancel")) return null;
 
         int chosenRank;
@@ -137,13 +137,13 @@ public class ActionMenuPanel {
         currencyOptions.add("cancel");
 
         showButtons(currencyOptions, "Pay with:");
-        String currencyChoice = blockForInput();
+        String currencyChoice = BlockForUpgradeInput();
         if (currencyChoice.equals("cancel")) return null;
 
         return new String[]{ String.valueOf(chosenRank), currencyChoice };
     }
 
-    private String blockForInput() {
+    private String BlockForUpgradeInput() {
         try {
             return _inputQueue.take();
         } catch (InterruptedException e) {
@@ -164,7 +164,4 @@ public class ActionMenuPanel {
         return btn;
     }
 
-    public String getAction() { return null; }
-    public int getRoleSelection() { return -1; }
-    public boolean getUpgradeCurrent() { return false; }
 }

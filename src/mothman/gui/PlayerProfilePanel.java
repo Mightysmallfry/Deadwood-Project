@@ -49,13 +49,6 @@ public class PlayerProfilePanel extends JPanel{
         return sb.toString();
     }
 
-    // We already just remove and replace the whole thing
-//    public void Update(Player player)
-//    {
-//        _playerName = player.GetPersonalId();
-//        _playerInfo.setText(GetFormattedInfo(player));
-//    }
-
     public void SetColor(Color playerColor){
         _playerColor = playerColor;
         _playerInfo.setForeground(_playerColor);

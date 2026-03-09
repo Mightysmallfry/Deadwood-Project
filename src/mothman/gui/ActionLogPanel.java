@@ -22,8 +22,6 @@ public class ActionLogPanel extends JPanel {
         _logArea.setLineWrap(true);
         _logArea.setWrapStyleWord(true);
 
-
-
         add(new JScrollPane(_logArea), BorderLayout.CENTER);
     }
 
