@@ -16,7 +16,6 @@ public class ScoreBoardPanel extends JPanel {
 
     // Observer of players?
     public ScoreBoardPanel(int width, int height) {
-        setPreferredSize(new Dimension(width, height));
         setBackground(new Color(40, 40, 40));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         TitledBorder scoreboardBorder = BorderFactory.createTitledBorder(TITLE);

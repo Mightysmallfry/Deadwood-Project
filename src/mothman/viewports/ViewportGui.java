@@ -44,7 +44,11 @@ public class ViewportGui extends JFrame implements Viewport {
         add(mainContainer, BorderLayout.CENTER);
 
         _scoreboardPanel = new ScoreBoardPanel(boardW / 5, boardH);
-        mainContainer.add(_scoreboardPanel, BorderLayout.WEST);
+        JScrollPane scoreScrollPane = new JScrollPane(_scoreboardPanel);
+        scoreScrollPane.setPreferredSize(new Dimension(boardW / 5, boardH));
+        scoreScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scoreScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        mainContainer.add(scoreScrollPane, BorderLayout.WEST);
         mainContainer.add(_gameLayeredPane, BorderLayout.CENTER);
 
         _rightContainer = new JPanel(new BorderLayout());
