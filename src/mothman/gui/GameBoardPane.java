@@ -119,8 +119,7 @@ public class GameBoardPane extends JLayeredPane {
         }
     }
 
-    //TODO: Fixed offsets, now we need to add areas for people to be in
-    // trailer and casting office.
+    // TODO: Only location that looks odd now is trailer.
     private void DrawPlayers(TurnDisplayInfo info) {
         HideLayer(PLAYER_LAYER);
 

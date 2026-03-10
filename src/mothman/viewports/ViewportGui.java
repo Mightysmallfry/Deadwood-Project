@@ -43,6 +43,8 @@ public class ViewportGui extends JFrame implements Viewport {
         JPanel mainContainer = new JPanel(new BorderLayout());
         add(mainContainer, BorderLayout.CENTER);
 
+        //TODO: We may want to change the order, maybe scoreboard has
+        // a scrollPane because we get some odd edge artifacting.
         _scoreboardPanel = new ScoreBoardPanel(boardW / 5, boardH);
         JScrollPane scoreScrollPane = new JScrollPane(_scoreboardPanel);
         scoreScrollPane.setPreferredSize(new Dimension(boardW / 5, boardH));
