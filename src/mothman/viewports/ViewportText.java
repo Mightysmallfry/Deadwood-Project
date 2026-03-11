@@ -83,7 +83,7 @@ public class ViewportText implements Viewport {
             if (u.GetRank() == rankRequest &&
                     u.GetCurrencyType().equals(currencyChoice)) {
 
-                return new int[]{rankRequest, u.GetCostAmount()};
+                return new int[]{rankRequest, u.GetCostAmount(), currencyChoice.equals("credit") ? 1 : 0};
             }
         }
 

@@ -31,9 +31,9 @@ public class Upgrade implements TurnAction {
         int[] result = vc.AskUpgrade(currentRank, maxRank, upgrades);
         if (result == null) return; // player cancelled
 
-        int rankRequest = result[0];
-        int cost        = result[1];
-        String currencyChoice = resolveCurrency(upgrades, rankRequest, cost);
+        int rankRequest       = result[0];
+        int cost              = result[1];
+        String currencyChoice = result[2] == 1 ? "credit" : "dollar";
         if (rankRequest <= currentRank) {
             vc.ShowMessage("You already have this rank or higher!");
             return;
@@ -74,16 +74,4 @@ public class Upgrade implements TurnAction {
         }
     }
 
-    /**
-     * Derives the currency string from the upgrades list by matching rank and cost.
-     * This avoids prompting the player a second time since AskUpgrade already captured it.
-     */
-    private String resolveCurrency(ArrayList<UpgradeData> upgrades, int rank, int cost) {
-        for (UpgradeData u : upgrades) {
-            if (u.GetRank() == rank && u.GetCostAmount() == cost) {
-                return u.GetCurrencyType();
-            }
-        }
-        return "dollar"; // safe default
-    }
 }

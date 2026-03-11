@@ -190,7 +190,7 @@ public class ViewportGui extends JFrame implements Viewport {
         String currency = result[1];
         for (UpgradeData u : upgrades) {
             if (u.GetRank() == rank && u.GetCurrencyType().equals(currency)) {
-                return new int[]{ rank, u.GetCostAmount() };
+                return new int[]{ rank, u.GetCostAmount(), currency.equals("credit") ? 1 : 0 };
             }
         }
         return null;
