@@ -2,6 +2,7 @@ package mothman.utils;
 
 import mothman.player.Player;
 import mothman.sets.ActingSet;
+import mothman.sets.GameSet;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,6 +11,8 @@ public class TurnDisplayInfo {
     public String playerId;
     public String locationName;
     public String roleLine;
+    public GameSet startingSet;
+    public GameSet officeSet;
     public int playerRank;
     public int budget;
     public int maxShots;

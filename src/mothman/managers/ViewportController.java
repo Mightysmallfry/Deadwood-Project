@@ -95,7 +95,8 @@ public class ViewportController {
         info.isActingSet  = currentSet instanceof ActingSet;
         info.players = PlayerManager.GetInstance().GetPlayerLibrary();
         info.rehearsals = player.GetLocation().GetRehearseTokens();
-
+        info.startingSet = GameManager.GetInstance().GetGameBoard().GetStartingSet();
+        info.officeSet = GameManager.GetInstance().GetGameBoard().GetUpgradeSet();
         if (currentSet instanceof ActingSet actSet) {
             SceneCard card = actSet.GetCurrentSceneCard();
             info.sceneComplete = actSet.IsComplete();

@@ -126,6 +126,10 @@ public class GameBoard {
         return _actingSets;
     }
 
+    public CastingSet GetUpgradeSet(){
+        return _upgradeSet;
+    }
+
 
     @Override
     public String toString() {

@@ -152,17 +152,29 @@ public class GameBoardPane extends JLayeredPane {
                         playerArea.GetHeight());
             } else {
                 Area cardArea = player.GetLocation().GetCurrentGameSet().GetArea();
-                int yOffset = cardArea.GetHeight();
+                int yOffset = 0;
                 int xOffset = playerIcon.getIconWidth() * (playerIndex % MAX_PLAYER_COLUMNS);
                 if ( (float) playerIndex / MAX_PLAYER_COLUMNS >= 1.0) {
                     yOffset += playerIcon.getIconHeight()/2;
                 }
-                playerLabel.setBounds(
-                        cardArea.GetX() + xOffset,
-                        cardArea.GetY() + yOffset,
-                        playerIcon.getIconWidth(),
-                        playerIcon.getIconHeight()
-                );
+
+                if (player.GetLocation().GetCurrentGameSet() == info.startingSet ||
+                        player.GetLocation().GetCurrentGameSet() == info.officeSet){
+                    playerLabel.setBounds(
+                            cardArea.GetX() + xOffset,
+                            cardArea.GetY() + yOffset,
+                            playerIcon.getIconWidth(),
+                            playerIcon.getIconHeight()
+                    );
+                } else {
+                    yOffset += cardArea.GetHeight();
+                    playerLabel.setBounds(
+                            cardArea.GetX() + xOffset,
+                            cardArea.GetY() + yOffset,
+                            playerIcon.getIconWidth(),
+                            playerIcon.getIconHeight()
+                    );
+                }
             }
 
             playerLabel.setVisible(true);
